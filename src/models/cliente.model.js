@@ -10,41 +10,21 @@ module.exports = (sequelize, Sequelize) => {
 				type: Sequelize.STRING(50),
 				allowNull: false,
 			},
-			telefono: {
-				type: Sequelize.INTEGER(9),
-				allowNull: false,
-			},
 			direccion: {
 				type: Sequelize.STRING(100),
 				allowNull: false,
 			},
-			distrito: {
-				type: Sequelize.STRING(50),
+			telefono: {
+				type: Sequelize.INTEGER(9),
 				allowNull: false,
 			},
 			otroDato: {
 				type: Sequelize.STRING(150),
-				allowNull: false,
+				allowNull: true,
 			},
-			tipoCarga: {
-				type: Sequelize.STRING(50),
-				allowNull: false,
-			},
-			modalidad: {
-				type: Sequelize.STRING(50),
-				allowNull: false,
-			},
-			comprobante: {
-				type: Sequelize.BOOLEAN,
-				allowNull: false,
-			},
-			facturado: {
-				type: Sequelize.BOOLEAN,
-				allowNull: false,
-			},
-			rol: {
-				type: Sequelize.STRING(50),
-				allowNull: false,
+			ruc: {
+				type: Sequelize.INTEGER(11),
+				allowNull: true,
 			},
 		},
 		{

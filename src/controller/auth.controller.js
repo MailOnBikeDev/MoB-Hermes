@@ -11,7 +11,7 @@ const bcrypt = require("bcryptjs");
 module.exports = {
 	// Register
 	signup: (req, res) => {
-		// Save the User to Database
+		// Guardar el usuario en la Base de Datos
 		User.create({
 			fullName: req.body.fullName,
 			username: req.body.username,
@@ -20,21 +20,19 @@ module.exports = {
 			empresa: req.body.empresa,
 		})
 			.then((user) => {
-				if (req.body.roles) {
-					Role.findAll({
-						where: {
-							name: {
-								[Op.or]: req.body.roles,
-							},
+				Role.findAll({
+					where: {
+						name: {
+							[Op.or]: req.body.roles,
 						},
-					}).then((roles) => {
-						user.setRoles(roles).then(() => {
-							res.send({
-								message: "¡El usuario fue registrado satisfactoriamente!",
-							});
+					},
+				}).then((roles) => {
+					user.setRoles(roles).then(() => {
+						res.send({
+							message: "¡El usuario fue registrado satisfactoriamente!",
 						});
 					});
-				}
+				});
 			})
 			.catch((err) => {
 				res.status(500).send({ message: err.message });

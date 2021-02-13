@@ -1,21 +1,21 @@
 module.exports = (sequelize, Sequelize) => {
-	const Role = sequelize.define(
-		"roles",
+	const Carga = sequelize.define(
+		"tipoDeCarga",
 		{
 			id: {
 				type: Sequelize.INTEGER(1),
 				primaryKey: true,
 				allowNull: false,
 			},
-			name: {
-				type: Sequelize.STRING(20),
+			tipo: {
+				type: Sequelize.STRING(25),
 				allowNull: false,
 			},
 		},
 		{
-			tableName: "roles",
+			tableName: "tipo de carga",
 			timestamps: false,
 		}
 	);
-	return Role;
+	return Carga;
 };
