@@ -10,6 +10,10 @@ module.exports = (sequelize, Sequelize) => {
 				type: Sequelize.STRING(70),
 				allowNull: false,
 			},
+			tag: {
+				type: Sequelize.STRING(15),
+				allowNull: false,
+			},
 		},
 		{
 			tableName: "status pedido",
