@@ -52,11 +52,19 @@ module.exports = (sequelize, Sequelize) => {
 				allowNull: true,
 			},
 			tarifa: {
-				type: Sequelize.FLOAT(3),
+				type: Sequelize.FLOAT(5),
+				allowNull: false,
+			},
+			recaudo: {
+				type: Sequelize.FLOAT(5),
+				allowNull: false,
+			},
+			tramite: {
+				type: Sequelize.FLOAT(5),
 				allowNull: false,
 			},
 			comision: {
-				type: Sequelize.FLOAT(3),
+				type: Sequelize.FLOAT(5),
 				allowNull: false,
 			},
 			tipoCarga: {
