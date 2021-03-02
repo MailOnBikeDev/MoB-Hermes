@@ -135,6 +135,11 @@ module.exports = {
 				fechaIngreso: req.body.fechaIngreso,
 			};
 
+			let separaNombres = req.body.nombres.split(" ");
+			let separaApellidos = req.body.apellidos.split(" ");
+
+			mobiker.fullName = separaNombres[0] + " " + separaApellidos[0];
+
 			let mobikerActualizado = await Mobiker.update(mobiker, {
 				where: {
 					id: id,
