@@ -5,6 +5,7 @@ const Distrito = db.distrito;
 const Comprobante = db.comprobante;
 const RolCliente = db.rolCliente;
 const Carga = db.carga;
+const Envio = db.envio;
 const FormaDePago = db.formaDePago;
 
 const Op = db.Sequelize.Op;
@@ -40,6 +41,12 @@ module.exports = {
 				},
 			});
 
+			let tipoEnvio = await Envio.findOne({
+				where: {
+					tipo: req.body.tipoEnvio,
+				},
+			});
+
 			let tipoDeCarga = await Carga.findOne({
 				where: {
 					tipo: req.body.carga,
@@ -61,6 +68,7 @@ module.exports = {
 					await nuevoCliente.setRolCliente(rolDelCliente);
 					await nuevoCliente.setTipoDeCarga(tipoDeCarga);
 					await nuevoCliente.setFormaDePago(pago);
+					await nuevoCliente.setTipoDeEnvio(tipoEnvio);
 
 					res.json({ message: "¡Se ha creado el Cliente con éxito!" });
 				} catch (err) {
@@ -94,6 +102,9 @@ module.exports = {
 					{
 						model: FormaDePago,
 					},
+					{
+						model: Envio,
+					},
 				],
 			});
 			res.json(clientes);
@@ -122,6 +133,9 @@ module.exports = {
 					},
 					{
 						model: FormaDePago,
+					},
+					{
+						model: Envio,
 					},
 				],
 			});
@@ -160,6 +174,12 @@ module.exports = {
 				},
 			});
 
+			let tipoEnvio = await Envio.findOne({
+				where: {
+					tipo: req.body.tipoEnvio,
+				},
+			});
+
 			let tipoDeCarga = await Carga.findOne({
 				where: {
 					tipo: req.body.carga,
@@ -185,6 +205,7 @@ module.exports = {
 				rolClienteId: rolDelCliente.id,
 				tipoDeCargaId: tipoDeCarga.id,
 				formaDePagoId: pago.id,
+				tipoDeEnvioId: tipoEnvio.id,
 			};
 
 			let clienteActualizado = await Cliente.update(cliente, {
@@ -230,6 +251,9 @@ module.exports = {
 					},
 					{
 						model: FormaDePago,
+					},
+					{
+						model: Envio,
 					},
 				],
 			});

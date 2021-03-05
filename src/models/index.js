@@ -81,6 +81,9 @@ db.cliente.belongsTo(db.carga);
 
 db.formaDePago.hasMany(db.cliente);
 db.cliente.belongsTo(db.formaDePago);
+
+db.envio.hasOne(db.cliente);
+db.cliente.belongsTo(db.envio);
 // Fin relaciones de Clientes
 
 // Relaciones de MoBikers

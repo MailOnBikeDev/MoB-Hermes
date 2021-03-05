@@ -181,6 +181,7 @@ module.exports = {
 					fullName: req.body.mobiker,
 				},
 			});
+
 			let tipoEnvio = await Envio.findOne({
 				where: {
 					tipo: req.body.tipoEnvio,

@@ -2,6 +2,7 @@ const db = require("../models/index");
 const Mobiker = db.mobiker;
 const Distrito = db.distrito;
 const Rango = db.rango;
+const Pedido = db.pedido;
 
 const Op = db.Sequelize.Op;
 

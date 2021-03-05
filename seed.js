@@ -96,8 +96,7 @@ const tipoDeCarga = [
 // Modalidad
 const modalidades = [
 	{ id: 1, tipo: "Una vía" },
-	{ id: 2, tipo: "Ruteo" },
-	{ id: 3, tipo: "Con Retorno" },
+	{ id: 2, tipo: "Con Retorno" },
 ];
 
 // Formas de Pago
