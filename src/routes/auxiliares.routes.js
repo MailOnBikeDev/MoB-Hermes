@@ -41,4 +41,7 @@ module.exports = (app) => {
 
 	// Ruta para obtener las Entidades Bancarias
 	app.get("/auxiliares/entidades-financieras", controller.sendBancos);
+
+	// Ruta para obtener los estados del Pedido
+	app.get("/auxiliares/status", controller.sendStatus);
 };

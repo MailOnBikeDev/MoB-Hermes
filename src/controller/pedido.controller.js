@@ -34,8 +34,9 @@ module.exports = {
 				distancia: req.body.distancia,
 				CO2Ahorrado: req.body.CO2Ahorrado,
 				ruido: req.body.ruido,
-				statusId: 1,
+				status: req.body.status,
 				statusFinanciero: req.body.statusFinanciero,
+				rolCliente: req.body.rolCliente,
 			};
 
 			let distritoPedido = await Distrito.findOne({
@@ -67,6 +68,12 @@ module.exports = {
 				},
 			});
 
+			let estadoPedido = await Status.findOne({
+				where: {
+					id: req.body.status,
+				},
+			});
+
 			if (
 				distritoPedido &&
 				mobiker &&
@@ -82,6 +89,7 @@ module.exports = {
 					await nuevoPedido.setTipoDeEnvio(tipoEnvio);
 					await nuevoPedido.setModalidad(modalidadPedido);
 					await nuevoPedido.setCliente(clienteAsignado);
+					await nuevoPedido.setStatus(estadoPedido);
 
 					res.json({ message: "¡Se ha creado el Pedido con éxito!" });
 				} catch (err) {
@@ -216,12 +224,13 @@ module.exports = {
 				distancia: req.body.distancia,
 				CO2Ahorrado: req.body.CO2Ahorrado,
 				ruido: req.body.ruido,
-				statusId: 1,
+				statusId: req.body.status,
 				statusFinanciero: req.body.statusFinanciero,
 				distritoId: distritoPedido.id,
 				mobikerId: mobiker.id,
 				tipoDeEnvioId: tipoEnvio.id,
 				modalidadId: modalidadPedido.id,
+				rolCliente: req.body.rolCliente,
 			};
 
 			let pedidoActualizado = await Pedido.update(pedido, {

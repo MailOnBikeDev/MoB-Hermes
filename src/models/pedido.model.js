@@ -91,6 +91,10 @@ module.exports = (sequelize, Sequelize) => {
 				type: Sequelize.INTEGER(1),
 				allowNull: false,
 			},
+			rolCliente: {
+				type: Sequelize.STRING(15),
+				allowNull: false,
+			},
 		},
 		{
 			tableName: "pedidos",

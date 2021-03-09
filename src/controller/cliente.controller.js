@@ -1,4 +1,3 @@
-const { rolCliente } = require("../models/index");
 const db = require("../models/index");
 const Cliente = db.cliente;
 const Distrito = db.distrito;
@@ -147,7 +146,7 @@ module.exports = {
 			}
 		} catch (error) {
 			res.status(500).send({
-				message: "Error, no se encontró el cliente con el id = " + id,
+				message: `Error, no se encontró el cliente con el id: ${this.id}`,
 			});
 		}
 	},

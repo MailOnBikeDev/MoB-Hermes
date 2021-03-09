@@ -9,6 +9,7 @@ const RolCliente = db.rolCliente;
 const Envio = db.envio;
 const Rango = db.rango;
 const Bancos = db.bancos;
+const Status = db.status;
 
 module.exports = {
 	sendRolesUsuarios: async (req, res) => {
@@ -59,5 +60,10 @@ module.exports = {
 	sendBancos: async (req, res) => {
 		bancos = await Bancos.findAll();
 		res.send(bancos);
+	},
+
+	sendStatus: async (req, res) => {
+		estados = await Status.findAll();
+		res.send(estados);
 	},
 };
