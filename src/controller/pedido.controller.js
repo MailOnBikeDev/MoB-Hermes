@@ -260,9 +260,46 @@ module.exports = {
 						{ id: { [Op.like]: `%${query}%` } },
 						{ contactoConsignado: { [Op.like]: `%${query}%` } },
 						{ empresaConsignado: { [Op.like]: `%${query}%` } },
-						{ contactoConsignado: { [Op.like]: `%${query}%` } },
+						{ distritoRemitente: { [Op.like]: `%${query}%` } },
+						{ fecha: { [Op.like]: `%${query}%` } },
 					],
 				},
+				include: [
+					{
+						model: Distrito,
+					},
+					{
+						model: Mobiker,
+						attributes: ["fullName"],
+					},
+					{
+						model: Cliente,
+						attributes: ["contacto", "empresa"],
+					},
+					{
+						model: Envio,
+					},
+					{
+						model: Modalidad,
+					},
+					{
+						model: Status,
+					},
+				],
+			});
+
+			res.json(pedido);
+		} catch (error) {
+			res.status(500).send({ message: error.message });
+		}
+	},
+
+	searchPedidoProgramados: async (req, res) => {
+		try {
+			const query = req.query.q;
+
+			let pedido = await Pedido.findAll({
+				where: { statusId: { [Op.like]: `%${query}%` } },
 				include: [
 					{
 						model: Distrito,

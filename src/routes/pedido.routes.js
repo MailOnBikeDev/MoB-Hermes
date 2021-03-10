@@ -15,12 +15,15 @@ module.exports = (app) => {
 	// Ruta para mostrar todos los Pedidos
 	app.get("/pedidos/tablero-pedidos", controller.indexPedidos);
 
-	// Ruta para mostrar UN MoBiker
+	// Ruta para mostrar UN Pedido
 	app.get("/pedidos/tablero-pedidos/:id", controller.getPedidoById);
 
-	// Ruta para editar un MoBiker
+	// Ruta para editar un Pedido
 	app.put("/pedidos/tablero-pedidos/:id", controller.updatePedido);
 
-	// Ruta para buscar mobikers por su nombre
+	// Ruta para buscar Pedidos por su nombre
 	app.get("/pedidos", controller.searchPedido);
+
+	// Ruta para buscar Pedidos por el status 1 = programado
+	app.get("/pedidos-programados", controller.searchPedidoProgramados);
 };
