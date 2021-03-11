@@ -2,7 +2,6 @@ const db = require("../models/index");
 const Mobiker = db.mobiker;
 const Distrito = db.distrito;
 const Rango = db.rango;
-const Pedido = db.pedido;
 
 const Op = db.Sequelize.Op;
 
@@ -26,6 +25,7 @@ module.exports = {
 				tipoBicicleta: req.body.tipoBicicleta,
 				fechaNacimiento: req.body.fechaNacimiento,
 				fechaIngreso: req.body.fechaIngreso,
+				status: req.body.status,
 			};
 
 			let separaNombres = req.body.nombres.split(" ");
@@ -39,9 +39,13 @@ module.exports = {
 				},
 			});
 
-			let rangoInicial = 1;
+			let rangoInicial = await Rango.findOne({
+				where: {
+					rangoMoBiker: req.body.rango,
+				},
+			});
 
-			if (distrito) {
+			if (distrito && rangoInicial) {
 				try {
 					let nuevoMobiker = await Mobiker.create(mobiker);
 
@@ -116,6 +120,12 @@ module.exports = {
 				},
 			});
 
+			let rangoInicial = await Rango.findOne({
+				where: {
+					rangoMoBiker: req.body.rango,
+				},
+			});
+
 			let mobiker = {
 				nombres: req.body.nombres,
 				apellidos: req.body.apellidos,
@@ -130,10 +140,12 @@ module.exports = {
 				banco: req.body.banco,
 				tipoCuenta: req.body.tipoCuenta,
 				numeroCuentaBancaria: req.body.numeroCuentaBancaria,
+				rangoId: rangoInicial.id,
 				equipo: req.body.equipo,
 				tipoBicicleta: req.body.tipoBicicleta,
 				fechaNacimiento: req.body.fechaNacimiento,
 				fechaIngreso: req.body.fechaIngreso,
+				status: req.body.status,
 			};
 
 			let separaNombres = req.body.nombres.split(" ");

@@ -81,8 +81,8 @@ module.exports = (sequelize, Sequelize) => {
 				defaultValue: 0,
 			},
 			status: {
-				type: Sequelize.INTEGER(1),
-				allowNull: true,
+				type: Sequelize.STRING(10),
+				allowNull: false,
 			},
 			fechaNacimiento: {
 				type: Sequelize.DATE,

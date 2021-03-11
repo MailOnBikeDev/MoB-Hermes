@@ -1,6 +1,7 @@
 const db = require("./src/models/index");
 const bcrypt = require("bcryptjs");
 const User = db.user;
+const Mobiker = db.mobiker;
 const Role = db.role;
 const Distrito = db.distrito;
 const CodigoPostal = db.codigoPostal;
@@ -55,6 +56,32 @@ const users = [
 		password: bcrypt.hashSync("123123", 10),
 		empresa: "Mail On Bike",
 		roles: [2, 5],
+	},
+];
+
+// MoBiker
+const mobikers = [
+	{
+		id: 1,
+		nombres: "Asignar",
+		apellidos: "MoBiker",
+		fullName: "Asignar MoBiker",
+		telefono: 999999999,
+		telegram: "asignarMoB",
+		direccion: "Loma Umbrosa",
+		distrito: 33,
+		tipoDocumento: "DNI",
+		numeroDocumento: 11111111,
+		genero: "No Binario",
+		email: "mob@mob.com",
+		fechaNacimiento: "2013-04-12 18:10:50",
+		banco: "Sin Banco",
+		tipoCuenta: "Sin Cuenta",
+		numeroCuentaBancaria: 0,
+		equipo: "Mochila",
+		tipoBicicleta: "Rutera/Fixie",
+		fechaIngreso: "2013-04-12 18:10:50",
+		status: "Activo",
 	},
 ];
 
@@ -523,6 +550,18 @@ db.sequelize
 			});
 		});
 	})
+	.then(() => {
+		// Creando los MoBikers
+		mobikers.forEach((mobiker) => {
+			let distrito = mobiker.distrito;
+			let rangoInicial = 1;
+			Mobiker.create(mobiker).then((nuevoMobiker) => {
+				nuevoMobiker.setDistrito(distrito);
+				nuevoMobiker.setRango(rangoInicial);
+			});
+		});
+	})
+	.catch((err) => console.log(err))
 	.then(() => {
 		// Creando los Códigos Postales
 		codigosPostales.forEach((codigo) => CodigoPostal.create(codigo));
