@@ -89,6 +89,8 @@ module.exports = {
 			const id = req.params.id;
 
 			let mobiker = await Mobiker.findByPk(id, {
+				raw: true,
+				nest: true,
 				include: [
 					{
 						model: Distrito,
