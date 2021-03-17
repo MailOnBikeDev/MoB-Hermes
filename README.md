@@ -1,13 +1,25 @@
 # MoB-Hermes
 
-Este es el código para el backend de un sistema de intranet para Mail On Bike.
+v1.0.0
 
-### Desarrollado por Daniel Colmenares
+Una sencilla API para integrar la Base de Datos MySQL con un FrontEnd. Está desarrollada usando JavaScript (NodeJS y Express) y un ORM (Sequelize).
 
-## Notas de la versión 1.0.0
-Permite la creación de usuarios y asignarlos a un rol. Los roles disponibles son:
-* Administrador
-* Operador
-* Auditor
-* Cliente
-* MoBiker
+## Instalación
+
+Usando el administrador de paquetes npm
+
+`npm install`
+
+## Configuración
+
+El archivo envExample.txt deja un ejemplo de la estructura de la configuración de un archivo .env para gestionar Sequelize con MySQL y JWT.
+
+## Ejecución
+
+Se puede iniciar la base de datos usando la siguiente línea de código:
+
+`npm run start`
+
+También trae una Seed para llenar con algunos usuarios, las tablas auxiliares y un MoBiker de ejemplo. Simplemente ejecute la línea de código:
+
+`npm run seed`

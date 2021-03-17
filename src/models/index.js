@@ -47,6 +47,8 @@ db.rolCliente = require("./tablas auxiliares/rolCliente.model")(
 	Sequelize
 );
 db.envio = require("./tablas auxiliares/envio.model")(sequelize, Sequelize);
+db.bancos = require("./tablas auxiliares/bancos.model")(sequelize, Sequelize);
+db.status = require("./tablas auxiliares/status.model")(sequelize, Sequelize);
 
 // Associations
 db.role.belongsToMany(db.user, {
@@ -79,7 +81,38 @@ db.cliente.belongsTo(db.carga);
 
 db.formaDePago.hasMany(db.cliente);
 db.cliente.belongsTo(db.formaDePago);
+
+db.envio.hasOne(db.cliente);
+db.cliente.belongsTo(db.envio);
 // Fin relaciones de Clientes
+
+// Relaciones de MoBikers
+db.distrito.hasOne(db.mobiker);
+db.mobiker.belongsTo(db.distrito);
+
+db.rango.hasOne(db.mobiker);
+db.mobiker.belongsTo(db.rango);
+// Fin relaciones de MoBikers
+
+// Relaciones de Pedidos
+db.distrito.hasOne(db.pedido);
+db.pedido.belongsTo(db.distrito);
+
+db.mobiker.hasOne(db.pedido);
+db.pedido.belongsTo(db.mobiker);
+
+db.cliente.hasOne(db.pedido);
+db.pedido.belongsTo(db.cliente);
+
+db.modalidad.hasOne(db.pedido);
+db.pedido.belongsTo(db.modalidad);
+
+db.envio.hasOne(db.pedido);
+db.pedido.belongsTo(db.envio);
+
+db.status.hasOne(db.pedido);
+db.pedido.belongsTo(db.status);
+// Fin relaciones de Pedidos
 
 db.ROLES = ["administrador", "operador", "auditor", "cliente", "mobiker"];
 

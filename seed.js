@@ -1,8 +1,8 @@
 const db = require("./src/models/index");
 const bcrypt = require("bcryptjs");
 const User = db.user;
-const Role = db.role;
 const Mobiker = db.mobiker;
+const Role = db.role;
 const Distrito = db.distrito;
 const CodigoPostal = db.codigoPostal;
 const Rango = db.rango;
@@ -12,6 +12,8 @@ const Modalidad = db.modalidad;
 const FormaDePago = db.formaDePago;
 const RolCliente = db.rolCliente;
 const Envio = db.envio;
+const Bancos = db.bancos;
+const Status = db.status;
 
 // Usuarios
 const users = [
@@ -57,6 +59,32 @@ const users = [
 	},
 ];
 
+// MoBiker
+const mobikers = [
+	{
+		id: 1,
+		nombres: "Asignar",
+		apellidos: "MoBiker",
+		fullName: "Asignar MoBiker",
+		telefono: 999999999,
+		telegram: "asignarMoB",
+		direccion: "Loma Umbrosa",
+		distrito: 33,
+		tipoDocumento: "DNI",
+		numeroDocumento: 11111111,
+		genero: "No Binario",
+		email: "mob@mob.com",
+		fechaNacimiento: "2013-04-12 18:10:50",
+		banco: "Sin Banco",
+		tipoCuenta: "Sin Cuenta",
+		numeroCuentaBancaria: 0,
+		equipo: "Mochila",
+		tipoBicicleta: "Rutera/Fixie",
+		fechaIngreso: "2013-04-12 18:10:50",
+		status: "Activo",
+	},
+];
+
 // Roles
 const roles = [
 	{ id: 1, name: "administrador" },
@@ -64,14 +92,6 @@ const roles = [
 	{ id: 3, name: "auditor" },
 	{ id: 4, name: "cliente" },
 	{ id: 5, name: "mobiker" },
-];
-
-// MoBikers
-const mobikers = [
-	{ nombres: "Daniel", apellidos: "Colmenares" },
-	{ nombres: "Alberto", apellidos: "Hernández" },
-	{ nombres: "Angélica", apellidos: "Moreno" },
-	{ nombres: "Fernando", apellidos: "Carbajal" },
 ];
 
 // Rangos
@@ -88,7 +108,6 @@ const tipoDeComprobante = [
 	{ id: 2, tipo: "Factura Inc/IGV" },
 	{ id: 3, tipo: "Factura Sin/IGV" },
 	{ id: 4, tipo: "Boleta" },
-	{ id: 5, tipo: "Recibo por Honorarios" },
 ];
 
 // Tipo de Carga
@@ -96,14 +115,15 @@ const tipoDeCarga = [
 	{ id: 1, tipo: "Producto E-commerce" },
 	{ id: 2, tipo: "Producto Alimenticio" },
 	{ id: 3, tipo: "Documento/Sobre" },
+	{ id: 4, tipo: "Dispositivo Electrónico" },
+	{ id: 5, tipo: "Obsequio" },
+	{ id: 6, tipo: "Paquete" },
 ];
 
 // Modalidad
 const modalidades = [
 	{ id: 1, tipo: "Una vía" },
-	{ id: 2, tipo: "Ruteo" },
-	{ id: 3, tipo: "Express" },
-	{ id: 4, tipo: "Con Retorno" },
+	{ id: 2, tipo: "Con Retorno" },
 ];
 
 // Formas de Pago
@@ -126,7 +146,6 @@ const formasDePago = [
 const rolesCliente = [
 	{ id: 1, rol: "Remitente" },
 	{ id: 2, rol: "Destinatario" },
-	{ id: 3, rol: "Monitor" },
 ];
 
 // Tipo de Envío
@@ -134,7 +153,109 @@ const tipoEnvio = [
 	{ id: 1, tipo: "E-Commerce" },
 	{ id: 2, tipo: "EmpresaG" },
 	{ id: 3, tipo: "Express" },
-	{ id: 4, tipo: "Juntoz" },
+	{ id: 4, tipo: "Persona" },
+];
+
+const entidadesFinancieras = [
+	{ id: 1, banco: "Banco de Comercio" },
+	{ id: 2, banco: "Banco de Crédito del Perú (BCP)" },
+	{ id: 3, banco: "Banco Interamericano de Finanzas (BanBif)" },
+	{ id: 4, banco: "Banco Pichincha" },
+	{ id: 5, banco: "BBVA Continental" },
+	{ id: 6, banco: "Citibank Perú" },
+	{ id: 7, banco: "Interbank" },
+	{ id: 8, banco: "MiBank" },
+	{ id: 9, banco: "Scotiabank Perú" },
+	{ id: 10, banco: "Banco GNB Perú" },
+	{ id: 11, banco: "Banco Falabella" },
+	{ id: 12, banco: "Banco Ripley" },
+	{ id: 13, banco: "Banco Santander Perú" },
+	{ id: 14, banco: "Banco Azteca" },
+	{ id: 15, banco: "Banco Cencosud" },
+	{ id: 16, banco: "ICBC PERU BANK" },
+	{ id: 17, banco: "Sin Banco" },
+];
+
+const estadosPedido = [
+	{ id: 1, codigo: 100, status: "Pedido programado", tag: "Programado" },
+	{
+		id: 2,
+		codigo: 200,
+		status: "Pedido asignado / Por recoger",
+		tag: "Por recoger",
+	},
+	{ id: 3, codigo: 300, status: "Pedido en tránsito", tag: "En tránsito" },
+	{
+		id: 4,
+		codigo: 401,
+		status: "Entregado: al destinatario",
+		tag: "Destinatario",
+	},
+	{
+		id: 5,
+		codigo: 402,
+		status: "Entregado: a un familiar o conocido",
+		tag: "Tercero",
+	},
+	{
+		id: 6,
+		codigo: 403,
+		status: "Entregado: al vigilante / portero",
+		tag: "Vigilancia",
+	},
+	{
+		id: 7,
+		codigo: 501,
+		status: "Falso flete: cliente ausente",
+		tag: "FF-1",
+	},
+	{
+		id: 8,
+		codigo: 502,
+		status: "Falso flete: destinatario ausente",
+		tag: "FF-2",
+	},
+	{ id: 9, codigo: 503, status: "Falso flete: dirección errada", tag: "FF-3" },
+	{
+		id: 10,
+		codigo: 504,
+		status: "Falso flete: No aplica a Entidad Institución",
+		tag: "FF-4",
+	},
+	{
+		id: 11,
+		codigo: 505,
+		status: "Falso flete: destinatario rechaza producto / documento",
+		tag: "FF-5",
+	},
+	{
+		id: 12,
+		codigo: 506,
+		status: "Falso flete: discrepancia con recepción",
+		tag: "FF-6",
+	},
+	{
+		id: 13,
+		codigo: 507,
+		status: "Falso flete: documentos incompletos",
+		tag: "FF-7",
+	},
+	{ id: 14, codigo: 508, status: "Falso flete: fuera de horario", tag: "FF-8" },
+	{ id: 15, codigo: 509, status: "Falso flete: fuera de fecha", tag: "FF-9" },
+	{
+		id: 16,
+		codigo: 510,
+		status: "Falso flete: importe no coincide con tasa",
+		tag: "FF-10",
+	},
+	{ id: 17, codigo: 601, status: "Anulado: cliente declina", tag: "Anulado-1" },
+	{
+		id: 18,
+		codigo: 602,
+		status: "Anulado: falta de disponibilidad de MoBikers",
+		tag: "Anulado-2",
+	},
+	{ id: 19, codigo: 700, status: "Devolución del producto", tag: "Devolución" },
 ];
 
 // Distritos
@@ -413,6 +534,14 @@ db.sequelize
 		tipoEnvio.forEach((envio) => Envio.create(envio));
 	})
 	.then(() => {
+		// Creando Tabla Entidades financieras
+		entidadesFinancieras.forEach((banco) => Bancos.create(banco));
+	})
+	.then(() => {
+		// Creando la tabla de status del Pedido
+		estadosPedido.forEach((status) => Status.create(status));
+	})
+	.then(() => {
 		// Creando usuarios
 		users.forEach((user) => {
 			let roles = user.roles;
@@ -422,9 +551,17 @@ db.sequelize
 		});
 	})
 	.then(() => {
-		// Creando MoBikers
-		mobikers.forEach((mobiker) => Mobiker.create(mobiker));
+		// Creando los MoBikers
+		mobikers.forEach((mobiker) => {
+			let distrito = mobiker.distrito;
+			let rangoInicial = 1;
+			Mobiker.create(mobiker).then((nuevoMobiker) => {
+				nuevoMobiker.setDistrito(distrito);
+				nuevoMobiker.setRango(rangoInicial);
+			});
+		});
 	})
+	.catch((err) => console.log(err))
 	.then(() => {
 		// Creando los Códigos Postales
 		codigosPostales.forEach((codigo) => CodigoPostal.create(codigo));
