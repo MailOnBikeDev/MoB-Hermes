@@ -1,3 +1,4 @@
+const { sequelize } = require("../models/index");
 const db = require("../models/index");
 const Pedido = db.pedido;
 const Distrito = db.distrito;
@@ -74,6 +75,8 @@ module.exports = {
 				},
 			});
 
+			let numeroDeBiciEnvios = clienteAsignado.biciEnvios + 1;
+
 			if (
 				distritoPedido &&
 				mobiker &&
@@ -90,6 +93,13 @@ module.exports = {
 					await nuevoPedido.setModalidad(modalidadPedido);
 					await nuevoPedido.setCliente(clienteAsignado);
 					await nuevoPedido.setStatus(estadoPedido);
+
+					await Cliente.update(
+						{ biciEnvios: numeroDeBiciEnvios },
+						{
+							where: { id: clienteAsignado.id },
+						}
+					);
 
 					res.json({ message: "¡Se ha creado el Pedido con éxito!" });
 				} catch (err) {
