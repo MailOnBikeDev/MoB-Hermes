@@ -1,4 +1,3 @@
-const { sequelize } = require("../models/index");
 const db = require("../models/index");
 const Pedido = db.pedido;
 const Distrito = db.distrito;
@@ -76,6 +75,9 @@ module.exports = {
 			});
 
 			let numeroDeBiciEnvios = clienteAsignado.biciEnvios + 1;
+			let kilometrosAsignados = clienteAsignado.kilometros + req.body.distancia;
+			let CO2Asignados = clienteAsignado.CO2Ahorrado + req.body.CO2Ahorrado;
+			let ruidoAsignados = clienteAsignado.ruido + req.body.ruido;
 
 			if (
 				distritoPedido &&
@@ -95,7 +97,12 @@ module.exports = {
 					await nuevoPedido.setStatus(estadoPedido);
 
 					await Cliente.update(
-						{ biciEnvios: numeroDeBiciEnvios },
+						{
+							biciEnvios: numeroDeBiciEnvios,
+							kilometros: kilometrosAsignados,
+							CO2Ahorrado: CO2Asignados,
+							ruido: ruidoAsignados,
+						},
 						{
 							where: { id: clienteAsignado.id },
 						}
