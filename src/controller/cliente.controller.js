@@ -1,11 +1,14 @@
 const db = require("../models/index");
 const Cliente = db.cliente;
 const Distrito = db.distrito;
+const Mobiker = db.mobiker;
 const Comprobante = db.comprobante;
 const RolCliente = db.rolCliente;
 const Carga = db.carga;
 const Envio = db.envio;
 const FormaDePago = db.formaDePago;
+const Modalidad = db.modalidad;
+const Status = db.status;
 
 const Op = db.Sequelize.Op;
 
@@ -156,12 +159,35 @@ module.exports = {
 			const id = req.params.id;
 
 			let pedidosDelCliente = await Pedido.findAll({
+				order: [["id", "DESC"]],
 				where: {
 					[Op.and]: [
 						{ clienteId: id },
 						{ statusId: { [Op.between]: [1, 16] } },
 					],
 				},
+				include: [
+					{
+						model: Distrito,
+					},
+					{
+						model: Mobiker,
+						attributes: ["fullName"],
+					},
+					{
+						model: Cliente,
+						attributes: ["contacto", "empresa"],
+					},
+					{
+						model: Envio,
+					},
+					{
+						model: Modalidad,
+					},
+					{
+						model: Status,
+					},
+				],
 			});
 
 			res.json(pedidosDelCliente);

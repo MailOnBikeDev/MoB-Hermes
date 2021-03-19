@@ -3,6 +3,10 @@ const Mobiker = db.mobiker;
 const Distrito = db.distrito;
 const Rango = db.rango;
 const Pedido = db.pedido;
+const Cliente = db.cliente;
+const Envio = db.envio;
+const Modalidad = db.modalidad;
+const Status = db.status;
 
 const Op = db.Sequelize.Op;
 
@@ -116,12 +120,35 @@ module.exports = {
 			const id = req.params.id;
 
 			let pedidosDelMobiker = await Pedido.findAll({
+				order: [["id", "DESC"]],
 				where: {
 					[Op.and]: [
 						{ mobikerId: id },
 						{ statusId: { [Op.between]: [4, 16] } },
 					],
 				},
+				include: [
+					{
+						model: Distrito,
+					},
+					{
+						model: Mobiker,
+						attributes: ["fullName"],
+					},
+					{
+						model: Cliente,
+						attributes: ["contacto", "empresa"],
+					},
+					{
+						model: Envio,
+					},
+					{
+						model: Modalidad,
+					},
+					{
+						model: Status,
+					},
+				],
 			});
 
 			res.json(pedidosDelMobiker);

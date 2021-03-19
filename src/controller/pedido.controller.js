@@ -139,6 +139,7 @@ module.exports = {
 	// Mostrar todos los Pedidos
 	indexPedidos: async (req, res) => {
 		const pedidos = await Pedido.findAll({
+			order: [["id", "DESC"]],
 			include: [
 				{
 					model: Distrito,
