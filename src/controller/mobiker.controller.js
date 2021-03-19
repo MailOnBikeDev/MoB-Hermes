@@ -2,6 +2,7 @@ const db = require("../models/index");
 const Mobiker = db.mobiker;
 const Distrito = db.distrito;
 const Rango = db.rango;
+const Pedido = db.pedido;
 
 const Op = db.Sequelize.Op;
 
@@ -77,6 +78,7 @@ module.exports = {
 					},
 				],
 			});
+
 			res.json(mobikers);
 		} catch (err) {
 			res.status(500).send({ message: err.message });
@@ -89,8 +91,6 @@ module.exports = {
 			const id = req.params.id;
 
 			let mobiker = await Mobiker.findByPk(id, {
-				raw: true,
-				nest: true,
 				include: [
 					{
 						model: Distrito,
@@ -106,6 +106,25 @@ module.exports = {
 			} else {
 				res.json(mobiker);
 			}
+		} catch (err) {
+			res.status(500).send({ message: err.message });
+		}
+	},
+
+	getPedidosDelMobiker: async (req, res) => {
+		try {
+			const id = req.params.id;
+
+			let pedidosDelMobiker = await Pedido.findAll({
+				where: {
+					[Op.and]: [
+						{ mobikerId: id },
+						{ statusId: { [Op.between]: [4, 16] } },
+					],
+				},
+			});
+
+			res.json(pedidosDelMobiker);
 		} catch (err) {
 			res.status(500).send({ message: err.message });
 		}

@@ -79,6 +79,22 @@ module.exports = {
 			let CO2Asignados = clienteAsignado.CO2Ahorrado + req.body.CO2Ahorrado;
 			let ruidoAsignados = clienteAsignado.ruido + req.body.ruido;
 
+			let cantidadPedidos = await Pedido.count({
+				where: {
+					[Op.and]: [
+						{ mobikerId: mobiker.id },
+						{ statusId: { [Op.between]: [4, 16] } },
+					],
+				},
+			});
+
+			let mobikerActualizado = await Mobiker.update(
+				{ biciEnvios: cantidadPedidos },
+				{
+					where: { id: mobiker.id },
+				}
+			);
+
 			if (
 				distritoPedido &&
 				mobiker &&
@@ -254,26 +270,21 @@ module.exports = {
 				where: { id: id },
 			});
 
-			if (
-				req.body.status !== 1 ||
-				req.body.status !== 2 ||
-				req.body.status !== 3 ||
-				req.body.status !== 17 ||
-				req.body.status !== 18 ||
-				req.body.status !== 19
-			) {
-				const cantidadPedidos = await Pedido.count({
-					where: {
-						mobikerId: mobiker.id,
-					},
-				});
-				let mobikerActualizado = await Mobiker.update(
-					{ biciEnvios: cantidadPedidos },
-					{
-						where: { id: mobiker.id },
-					}
-				);
-			}
+			let cantidadPedidos = await Pedido.count({
+				where: {
+					[Op.and]: [
+						{ mobikerId: mobiker.id },
+						{ statusId: { [Op.between]: [4, 16] } },
+					],
+				},
+			});
+
+			let mobikerActualizado = await Mobiker.update(
+				{ biciEnvios: cantidadPedidos },
+				{
+					where: { id: mobiker.id },
+				}
+			);
 
 			if (pedidoActualizado) {
 				res.json({ message: "¡Se ha actualizado el Pedido con éxito!" });

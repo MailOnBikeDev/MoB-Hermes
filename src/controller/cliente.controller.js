@@ -151,6 +151,25 @@ module.exports = {
 		}
 	},
 
+	getPedidosDelCliente: async (req, res) => {
+		try {
+			const id = req.params.id;
+
+			let pedidosDelCliente = await Pedido.findAll({
+				where: {
+					[Op.and]: [
+						{ clienteId: id },
+						{ statusId: { [Op.between]: [1, 16] } },
+					],
+				},
+			});
+
+			res.json(pedidosDelCliente);
+		} catch (err) {
+			res.status(500).send({ message: err.message });
+		}
+	},
+
 	updateCliente: async (req, res) => {
 		try {
 			const id = req.params.id;
