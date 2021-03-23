@@ -103,8 +103,40 @@ module.exports = {
 						},
 					});
 
+					let kilometrosAsignadosMobiker = await Pedido.sum("distancia", {
+						where: {
+							[Op.and]: [
+								{ mobikerId: mobiker.id },
+								{ statusId: { [Op.between]: [4, 16] } },
+							],
+						},
+					});
+
+					let CO2AsignadosMobiker = await Pedido.sum("CO2Ahorrado", {
+						where: {
+							[Op.and]: [
+								{ mobikerId: mobiker.id },
+								{ statusId: { [Op.between]: [4, 16] } },
+							],
+						},
+					});
+
+					let ruidoAsignadosMobiker = await Pedido.sum("ruido", {
+						where: {
+							[Op.and]: [
+								{ mobikerId: mobiker.id },
+								{ statusId: { [Op.between]: [4, 16] } },
+							],
+						},
+					});
+
 					await Mobiker.update(
-						{ biciEnvios: cantidadPedidosDelMoBiker },
+						{
+							biciEnvios: cantidadPedidosDelMoBiker,
+							kilometros: kilometrosAsignadosMobiker,
+							CO2Ahorrado: CO2AsignadosMobiker,
+							ruido: ruidoAsignadosMobiker,
+						},
 						{
 							where: { id: mobiker.id },
 						}
@@ -317,8 +349,40 @@ module.exports = {
 					},
 				});
 
+				let kilometrosAsignadosMobiker = await Pedido.sum("distancia", {
+					where: {
+						[Op.and]: [
+							{ mobikerId: mobiker.id },
+							{ statusId: { [Op.between]: [4, 16] } },
+						],
+					},
+				});
+
+				let CO2AsignadosMobiker = await Pedido.sum("CO2Ahorrado", {
+					where: {
+						[Op.and]: [
+							{ mobikerId: mobiker.id },
+							{ statusId: { [Op.between]: [4, 16] } },
+						],
+					},
+				});
+
+				let ruidoAsignadosMobiker = await Pedido.sum("ruido", {
+					where: {
+						[Op.and]: [
+							{ mobikerId: mobiker.id },
+							{ statusId: { [Op.between]: [4, 16] } },
+						],
+					},
+				});
+
 				await Mobiker.update(
-					{ biciEnvios: cantidadPedidos },
+					{
+						biciEnvios: cantidadPedidosDelMoBiker,
+						kilometros: kilometrosAsignadosMobiker,
+						CO2Ahorrado: CO2AsignadosMobiker,
+						ruido: ruidoAsignadosMobiker,
+					},
 					{
 						where: { id: mobiker.id },
 					}
