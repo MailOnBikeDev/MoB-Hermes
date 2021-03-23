@@ -33,10 +33,9 @@ module.exports = {
 				status: req.body.status,
 			};
 
-			let separaNombres = req.body.nombres.split(" ");
-			let separaApellidos = req.body.apellidos.split(" ");
-
-			mobiker.fullName = separaNombres[0] + " " + separaApellidos[0];
+			mobiker.fullName = `${req.body.nombres.split(" ")[0]} ${
+				req.body.apellidos.split(" ")[0]
+			}`;
 
 			let distrito = await Distrito.findOne({
 				where: {
@@ -196,10 +195,9 @@ module.exports = {
 				status: req.body.status,
 			};
 
-			let separaNombres = req.body.nombres.split(" ");
-			let separaApellidos = req.body.apellidos.split(" ");
-
-			mobiker.fullName = separaNombres[0] + " " + separaApellidos[0];
+			mobiker.fullName = `${req.body.nombres.split(" ")[0]} ${
+				req.body.apellidos.split(" ")[0]
+			}`;
 
 			let mobikerActualizado = await Mobiker.update(mobiker, {
 				where: {

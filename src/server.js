@@ -8,7 +8,7 @@ const app = express();
 
 // Settings
 const corsOptions = {
-	origin: ["http://localhost:8081", "http://localhost:8082"],
+	origin: "http://localhost:8081",
 };
 
 // Creating the sync to DB

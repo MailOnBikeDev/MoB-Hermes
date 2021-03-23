@@ -74,27 +74,6 @@ module.exports = {
 				},
 			});
 
-			let numeroDeBiciEnvios = clienteAsignado.biciEnvios + 1;
-			let kilometrosAsignados = clienteAsignado.kilometros + req.body.distancia;
-			let CO2Asignados = clienteAsignado.CO2Ahorrado + req.body.CO2Ahorrado;
-			let ruidoAsignados = clienteAsignado.ruido + req.body.ruido;
-
-			let cantidadPedidos = await Pedido.count({
-				where: {
-					[Op.and]: [
-						{ mobikerId: mobiker.id },
-						{ statusId: { [Op.between]: [4, 16] } },
-					],
-				},
-			});
-
-			let mobikerActualizado = await Mobiker.update(
-				{ biciEnvios: cantidadPedidos },
-				{
-					where: { id: mobiker.id },
-				}
-			);
-
 			if (
 				distritoPedido &&
 				mobiker &&
@@ -112,9 +91,65 @@ module.exports = {
 					await nuevoPedido.setCliente(clienteAsignado);
 					await nuevoPedido.setStatus(estadoPedido);
 
+					res.json({ message: "¡Se ha creado el Pedido con éxito!" });
+
+					// Asignar al MoBiker
+					let cantidadPedidosDelMoBiker = await Pedido.count({
+						where: {
+							[Op.and]: [
+								{ mobikerId: mobiker.id },
+								{ statusId: { [Op.between]: [4, 16] } },
+							],
+						},
+					});
+
+					await Mobiker.update(
+						{ biciEnvios: cantidadPedidosDelMoBiker },
+						{
+							where: { id: mobiker.id },
+						}
+					);
+
+					// Asignar al Cliente
+					let cantidadPedidosDelCliente = await Pedido.count({
+						where: {
+							[Op.and]: [
+								{ clienteId: clienteAsignado.id },
+								{ statusId: { [Op.between]: [1, 16] } },
+							],
+						},
+					});
+
+					let kilometrosAsignados = await Pedido.sum("distancia", {
+						where: {
+							[Op.and]: [
+								{ clienteId: clienteAsignado.id },
+								{ statusId: { [Op.between]: [1, 16] } },
+							],
+						},
+					});
+
+					let CO2Asignados = await Pedido.sum("CO2Ahorrado", {
+						where: {
+							[Op.and]: [
+								{ clienteId: clienteAsignado.id },
+								{ statusId: { [Op.between]: [1, 16] } },
+							],
+						},
+					});
+
+					let ruidoAsignados = await Pedido.sum("ruido", {
+						where: {
+							[Op.and]: [
+								{ clienteId: clienteAsignado.id },
+								{ statusId: { [Op.between]: [1, 16] } },
+							],
+						},
+					});
+
 					await Cliente.update(
 						{
-							biciEnvios: numeroDeBiciEnvios,
+							biciEnvios: cantidadPedidosDelCliente,
 							kilometros: kilometrosAsignados,
 							CO2Ahorrado: CO2Asignados,
 							ruido: ruidoAsignados,
@@ -123,8 +158,6 @@ module.exports = {
 							where: { id: clienteAsignado.id },
 						}
 					);
-
-					res.json({ message: "¡Se ha creado el Pedido con éxito!" });
 				} catch (err) {
 					res.status(500).send({ message: err.message });
 				}
@@ -271,24 +304,80 @@ module.exports = {
 				where: { id: id },
 			});
 
-			let cantidadPedidos = await Pedido.count({
-				where: {
-					[Op.and]: [
-						{ mobikerId: mobiker.id },
-						{ statusId: { [Op.between]: [4, 16] } },
-					],
-				},
-			});
-
-			let mobikerActualizado = await Mobiker.update(
-				{ biciEnvios: cantidadPedidos },
-				{
-					where: { id: mobiker.id },
-				}
-			);
-
 			if (pedidoActualizado) {
 				res.json({ message: "¡Se ha actualizado el Pedido con éxito!" });
+
+				// Asignar al MoBiker
+				let cantidadPedidos = await Pedido.count({
+					where: {
+						[Op.and]: [
+							{ mobikerId: mobiker.id },
+							{ statusId: { [Op.between]: [4, 16] } },
+						],
+					},
+				});
+
+				await Mobiker.update(
+					{ biciEnvios: cantidadPedidos },
+					{
+						where: { id: mobiker.id },
+					}
+				);
+
+				// Asignar al Cliente
+				let clienteAsignado = await Cliente.findOne({
+					where: {
+						contacto: req.body.contactoRemitente,
+					},
+				});
+
+				let cantidadPedidosDelCliente = await Pedido.count({
+					where: {
+						[Op.and]: [
+							{ clienteId: clienteAsignado.id },
+							{ statusId: { [Op.between]: [1, 16] } },
+						],
+					},
+				});
+
+				let kilometrosAsignados = await Pedido.sum("distancia", {
+					where: {
+						[Op.and]: [
+							{ clienteId: clienteAsignado.id },
+							{ statusId: { [Op.between]: [1, 16] } },
+						],
+					},
+				});
+
+				let CO2Asignados = await Pedido.sum("CO2Ahorrado", {
+					where: {
+						[Op.and]: [
+							{ clienteId: clienteAsignado.id },
+							{ statusId: { [Op.between]: [1, 16] } },
+						],
+					},
+				});
+
+				let ruidoAsignados = await Pedido.sum("ruido", {
+					where: {
+						[Op.and]: [
+							{ clienteId: clienteAsignado.id },
+							{ statusId: { [Op.between]: [1, 16] } },
+						],
+					},
+				});
+
+				await Cliente.update(
+					{
+						biciEnvios: cantidadPedidosDelCliente,
+						kilometros: kilometrosAsignados,
+						CO2Ahorrado: CO2Asignados,
+						ruido: ruidoAsignados,
+					},
+					{
+						where: { id: clienteAsignado.id },
+					}
+				);
 			} else {
 				res.json({
 					message: "¡Error! No se ha podido actualizar el Pedido...",

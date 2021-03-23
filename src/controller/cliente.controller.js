@@ -2,6 +2,7 @@ const db = require("../models/index");
 const Cliente = db.cliente;
 const Distrito = db.distrito;
 const Mobiker = db.mobiker;
+const Pedido = db.pedido;
 const Comprobante = db.comprobante;
 const RolCliente = db.rolCliente;
 const Carga = db.carga;
