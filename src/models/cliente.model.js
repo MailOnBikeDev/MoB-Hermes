@@ -40,15 +40,15 @@ module.exports = (sequelize, Sequelize) => {
 				defaultValue: 0,
 			},
 			kilometros: {
-				type: Sequelize.FLOAT(5),
+				type: Sequelize.FLOAT(8),
 				defaultValue: 0,
 			},
 			CO2Ahorrado: {
-				type: Sequelize.FLOAT(4),
+				type: Sequelize.FLOAT(6),
 				defaultValue: 0,
 			},
 			ruido: {
-				type: Sequelize.FLOAT(3),
+				type: Sequelize.FLOAT(5),
 				defaultValue: 0,
 			},
 		},

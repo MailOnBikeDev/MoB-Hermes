@@ -340,7 +340,7 @@ module.exports = {
 				res.json({ message: "¡Se ha actualizado el Pedido con éxito!" });
 
 				// Asignar al MoBiker
-				let cantidadPedidos = await Pedido.count({
+				let cantidadPedidosDelMoBiker = await Pedido.count({
 					where: {
 						[Op.and]: [
 							{ mobikerId: mobiker.id },
@@ -442,6 +442,38 @@ module.exports = {
 						where: { id: clienteAsignado.id },
 					}
 				);
+			} else {
+				res.json({
+					message: "¡Error! No se ha podido actualizar el Pedido...",
+				});
+			}
+		} catch (error) {
+			res.status(500).send({ message: error.message });
+		}
+	},
+
+	// Cambiar la asignacion de un MoBiker y el estado del pedido
+	asignacionPedido: async (req, res) => {
+		try {
+			const id = req.params.id;
+
+			let mobiker = await Mobiker.findOne({
+				where: {
+					fullName: req.body.mobiker,
+				},
+			});
+
+			let pedidoAsignado = {
+				mobikerId: mobiker.id,
+				statusId: req.body.status,
+			};
+
+			let pedidoActualizado = await Pedido.update(pedidoAsignado, {
+				where: { id: id },
+			});
+
+			if (pedidoActualizado) {
+				res.json({ message: "¡Se ha actualizado el Pedido con éxito!" });
 			} else {
 				res.json({
 					message: "¡Error! No se ha podido actualizar el Pedido...",

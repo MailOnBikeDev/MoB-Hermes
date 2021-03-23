@@ -76,7 +76,7 @@ module.exports = (sequelize, Sequelize) => {
 				allowNull: false,
 			},
 			distancia: {
-				type: Sequelize.FLOAT(5),
+				type: Sequelize.FLOAT(6),
 				allowNull: false,
 			},
 			CO2Ahorrado: {

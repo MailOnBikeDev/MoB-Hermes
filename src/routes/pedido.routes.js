@@ -26,4 +26,7 @@ module.exports = (app) => {
 
 	// Ruta para buscar Pedidos por el status 1 = programado
 	app.get("/pedidos-programados", controller.searchPedidoProgramados);
+
+	// Ruta asignar pedidos programados
+	app.put("/pedidos-programados/:id", controller.asignacionPedido);
 };
