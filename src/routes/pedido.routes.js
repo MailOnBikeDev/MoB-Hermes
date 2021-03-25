@@ -29,4 +29,7 @@ module.exports = (app) => {
 
 	// Ruta asignar pedidos programados
 	app.put("/pedidos-programados/:id", controller.asignacionPedido);
+
+	// Ruta para obtener los Pedidos por rango de fechas
+	app.get("/historial-pedidos", controller.getHistorialPedidos);
 };

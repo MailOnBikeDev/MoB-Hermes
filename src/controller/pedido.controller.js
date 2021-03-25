@@ -201,35 +201,43 @@ module.exports = {
 		}
 	},
 
-	// Mostrar todos los Pedidos
+	// Mostrar todos los Pedidos por la fecha
 	indexPedidos: async (req, res) => {
-		const pedidos = await Pedido.findAll({
-			order: [["id", "DESC"]],
-			include: [
-				{
-					model: Distrito,
-				},
-				{
-					model: Mobiker,
-					attributes: ["fullName"],
-				},
-				{
-					model: Cliente,
-					attributes: ["contacto", "empresa"],
-				},
-				{
-					model: Envio,
-				},
-				{
-					model: Modalidad,
-				},
-				{
-					model: Status,
-				},
-			],
-		});
+		try {
+			const fecha = req.query.q;
+			let condition = fecha ? { fecha: { [Op.like]: `%${fecha}%` } } : null;
 
-		res.json(pedidos);
+			const pedidos = await Pedido.findAll({
+				where: condition,
+				order: [["id", "DESC"]],
+				include: [
+					{
+						model: Distrito,
+					},
+					{
+						model: Mobiker,
+						attributes: ["fullName"],
+					},
+					{
+						model: Cliente,
+						attributes: ["contacto", "empresa"],
+					},
+					{
+						model: Envio,
+					},
+					{
+						model: Modalidad,
+					},
+					{
+						model: Status,
+					},
+				],
+			});
+
+			res.json(pedidos);
+		} catch (error) {
+			res.status(500).send({ message: error.message });
+		}
 	},
 
 	// Mostrar 1 Pedido por id
@@ -531,10 +539,8 @@ module.exports = {
 
 	searchPedidoProgramados: async (req, res) => {
 		try {
-			const query = req.query.q;
-
 			let pedido = await Pedido.findAll({
-				where: { statusId: { [Op.like]: `%${query}%` } },
+				where: { statusId: 1 },
 				include: [
 					{
 						model: Distrito,
@@ -560,6 +566,44 @@ module.exports = {
 			});
 
 			res.json(pedido);
+		} catch (error) {
+			res.status(500).send({ message: error.message });
+		}
+	},
+
+	getHistorialPedidos: async (req, res) => {
+		try {
+			let { desde, hasta } = req.query;
+			let condition = { fecha: { [Op.between]: [desde, hasta] } };
+
+			const pedidos = await Pedido.findAll({
+				where: condition,
+				order: [["id", "DESC"]],
+				include: [
+					{
+						model: Distrito,
+					},
+					{
+						model: Mobiker,
+						attributes: ["fullName"],
+					},
+					{
+						model: Cliente,
+						attributes: ["contacto", "empresa"],
+					},
+					{
+						model: Envio,
+					},
+					{
+						model: Modalidad,
+					},
+					{
+						model: Status,
+					},
+				],
+			});
+
+			res.json(pedidos);
 		} catch (error) {
 			res.status(500).send({ message: error.message });
 		}

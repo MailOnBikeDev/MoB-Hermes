@@ -5,7 +5,15 @@ module.exports = (sequelize, Sequelize) => {
 			fecha: {
 				type: Sequelize.DATE,
 				allowNull: false,
-				defaultValue: Sequelize.NOW,
+				get() {
+					return new Date(this.getDataValue("fecha"));
+				},
+				set(fecha) {
+					this.setDataValue(
+						"fecha",
+						new Date(fecha).toISOString().split("T")[0]
+					);
+				},
 			},
 			contactoRemitente: {
 				type: Sequelize.STRING(50),
