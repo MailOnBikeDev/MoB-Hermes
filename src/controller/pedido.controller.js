@@ -9,6 +9,20 @@ const Status = db.status;
 
 const Op = db.Sequelize.Op;
 
+const getPagination = (page, size) => {
+	const limit = size ? +size : 150;
+	const offset = page ? page * limit : 0;
+
+	return { limit, offset };
+};
+const getPagingData = (data, page, limit) => {
+	const { count: totalPedidos, rows: pedidos } = data;
+	const currentPage = page ? +page : 0;
+	const totalPages = Math.ceil(totalPedidos / limit);
+
+	return { totalPedidos, pedidos, totalPages, currentPage };
+};
+
 module.exports = {
 	storagePedido: async (req, res) => {
 		try {
@@ -204,11 +218,14 @@ module.exports = {
 	// Mostrar todos los Pedidos por la fecha
 	indexPedidos: async (req, res) => {
 		try {
-			const fecha = req.query.q;
+			const { page, size, fecha } = req.query;
 			let condition = fecha ? { fecha: { [Op.like]: `%${fecha}%` } } : null;
+			const { limit, offset } = getPagination(page, size);
 
-			const pedidos = await Pedido.findAll({
+			const data = await Pedido.findAndCountAll({
 				where: condition,
+				limit,
+				offset,
 				order: [["id", "DESC"]],
 				include: [
 					{
@@ -234,7 +251,9 @@ module.exports = {
 				],
 			});
 
-			res.json(pedidos);
+			const pedidos = getPagingData(data, page, limit);
+
+			res.send(pedidos);
 		} catch (error) {
 			res.status(500).send({ message: error.message });
 		}

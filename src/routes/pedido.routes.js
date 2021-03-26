@@ -12,7 +12,7 @@ module.exports = (app) => {
 	// Ruta para crear nuevo Pedido
 	app.post("/pedidos/crear-nuevo-pedido", controller.storagePedido);
 
-	// Ruta para mostrar todos los Pedidos
+	// Ruta para mostrar todos los Pedidos, filtrados por fecha
 	app.get("/pedidos/tablero-pedidos", controller.indexPedidos);
 
 	// Ruta para mostrar UN Pedido
