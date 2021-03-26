@@ -35,6 +35,22 @@ module.exports = (sequelize, Sequelize) => {
 				type: Sequelize.BIGINT(11),
 				allowNull: true,
 			},
+			biciEnvios: {
+				type: Sequelize.INTEGER(6),
+				defaultValue: 0,
+			},
+			kilometros: {
+				type: Sequelize.FLOAT(8),
+				defaultValue: 0,
+			},
+			CO2Ahorrado: {
+				type: Sequelize.FLOAT(6),
+				defaultValue: 0,
+			},
+			ruido: {
+				type: Sequelize.FLOAT(5),
+				defaultValue: 0,
+			},
 		},
 		{
 			tableName: "clientes",

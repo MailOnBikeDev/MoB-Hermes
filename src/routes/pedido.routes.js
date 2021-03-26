@@ -12,7 +12,7 @@ module.exports = (app) => {
 	// Ruta para crear nuevo Pedido
 	app.post("/pedidos/crear-nuevo-pedido", controller.storagePedido);
 
-	// Ruta para mostrar todos los Pedidos
+	// Ruta para mostrar todos los Pedidos, filtrados por fecha
 	app.get("/pedidos/tablero-pedidos", controller.indexPedidos);
 
 	// Ruta para mostrar UN Pedido
@@ -26,4 +26,10 @@ module.exports = (app) => {
 
 	// Ruta para buscar Pedidos por el status 1 = programado
 	app.get("/pedidos-programados", controller.searchPedidoProgramados);
+
+	// Ruta asignar pedidos programados
+	app.put("/pedidos-programados/:id", controller.asignacionPedido);
+
+	// Ruta para obtener los Pedidos por rango de fechas
+	app.get("/historial-pedidos", controller.getHistorialPedidos);
 };

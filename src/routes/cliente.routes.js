@@ -18,6 +18,9 @@ module.exports = (app) => {
 	// Ruta para mostrar un Cliente por su id
 	app.get("/clientes/tablero-clientes/:id", controller.getClienteById);
 
+	// Ruta para mostrar los Pedidos Asignados al MoBiker
+	app.get("/clientes/pedidos/:id", controller.getPedidosDelCliente);
+
 	// Ruta para actualizar un Cliente por su id
 	app.put("/clientes/tablero-clientes/:id", controller.updateCliente);
 

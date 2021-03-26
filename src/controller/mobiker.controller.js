@@ -2,6 +2,11 @@ const db = require("../models/index");
 const Mobiker = db.mobiker;
 const Distrito = db.distrito;
 const Rango = db.rango;
+const Pedido = db.pedido;
+const Cliente = db.cliente;
+const Envio = db.envio;
+const Modalidad = db.modalidad;
+const Status = db.status;
 
 const Op = db.Sequelize.Op;
 
@@ -28,10 +33,9 @@ module.exports = {
 				status: req.body.status,
 			};
 
-			let separaNombres = req.body.nombres.split(" ");
-			let separaApellidos = req.body.apellidos.split(" ");
-
-			mobiker.fullName = separaNombres[0] + " " + separaApellidos[0];
+			mobiker.fullName = `${req.body.nombres.split(" ")[0]} ${
+				req.body.apellidos.split(" ")[0]
+			}`;
 
 			let distrito = await Distrito.findOne({
 				where: {
@@ -77,6 +81,7 @@ module.exports = {
 					},
 				],
 			});
+
 			res.json(mobikers);
 		} catch (err) {
 			res.status(500).send({ message: err.message });
@@ -104,6 +109,48 @@ module.exports = {
 			} else {
 				res.json(mobiker);
 			}
+		} catch (err) {
+			res.status(500).send({ message: err.message });
+		}
+	},
+
+	getPedidosDelMobiker: async (req, res) => {
+		try {
+			const id = req.params.id;
+
+			let pedidosDelMobiker = await Pedido.findAll({
+				order: [["id", "DESC"]],
+				where: {
+					[Op.and]: [
+						{ mobikerId: id },
+						{ statusId: { [Op.between]: [4, 16] } },
+					],
+				},
+				include: [
+					{
+						model: Distrito,
+					},
+					{
+						model: Mobiker,
+						attributes: ["fullName"],
+					},
+					{
+						model: Cliente,
+						attributes: ["contacto", "empresa"],
+					},
+					{
+						model: Envio,
+					},
+					{
+						model: Modalidad,
+					},
+					{
+						model: Status,
+					},
+				],
+			});
+
+			res.json(pedidosDelMobiker);
 		} catch (err) {
 			res.status(500).send({ message: err.message });
 		}
@@ -148,10 +195,9 @@ module.exports = {
 				status: req.body.status,
 			};
 
-			let separaNombres = req.body.nombres.split(" ");
-			let separaApellidos = req.body.apellidos.split(" ");
-
-			mobiker.fullName = separaNombres[0] + " " + separaApellidos[0];
+			mobiker.fullName = `${req.body.nombres.split(" ")[0]} ${
+				req.body.apellidos.split(" ")[0]
+			}`;
 
 			let mobikerActualizado = await Mobiker.update(mobiker, {
 				where: {

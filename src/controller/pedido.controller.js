@@ -9,6 +9,20 @@ const Status = db.status;
 
 const Op = db.Sequelize.Op;
 
+const getPagination = (page, size) => {
+	const limit = size ? +size : 150;
+	const offset = page ? page * limit : 0;
+
+	return { limit, offset };
+};
+const getPagingData = (data, page, limit) => {
+	const { count: totalPedidos, rows: pedidos } = data;
+	const currentPage = page ? +page : 0;
+	const totalPages = Math.ceil(totalPedidos / limit);
+
+	return { totalPedidos, pedidos, totalPages, currentPage };
+};
+
 module.exports = {
 	storagePedido: async (req, res) => {
 		try {
@@ -92,6 +106,104 @@ module.exports = {
 					await nuevoPedido.setStatus(estadoPedido);
 
 					res.json({ message: "¡Se ha creado el Pedido con éxito!" });
+
+					// Asignar al MoBiker
+					let cantidadPedidosDelMoBiker = await Pedido.count({
+						where: {
+							[Op.and]: [
+								{ mobikerId: mobiker.id },
+								{ statusId: { [Op.between]: [4, 16] } },
+							],
+						},
+					});
+
+					let kilometrosAsignadosMobiker = await Pedido.sum("distancia", {
+						where: {
+							[Op.and]: [
+								{ mobikerId: mobiker.id },
+								{ statusId: { [Op.between]: [4, 16] } },
+							],
+						},
+					});
+
+					let CO2AsignadosMobiker = await Pedido.sum("CO2Ahorrado", {
+						where: {
+							[Op.and]: [
+								{ mobikerId: mobiker.id },
+								{ statusId: { [Op.between]: [4, 16] } },
+							],
+						},
+					});
+
+					let ruidoAsignadosMobiker = await Pedido.sum("ruido", {
+						where: {
+							[Op.and]: [
+								{ mobikerId: mobiker.id },
+								{ statusId: { [Op.between]: [4, 16] } },
+							],
+						},
+					});
+
+					await Mobiker.update(
+						{
+							biciEnvios: cantidadPedidosDelMoBiker,
+							kilometros: kilometrosAsignadosMobiker,
+							CO2Ahorrado: CO2AsignadosMobiker,
+							ruido: ruidoAsignadosMobiker,
+						},
+						{
+							where: { id: mobiker.id },
+						}
+					);
+
+					// Asignar al Cliente
+					let cantidadPedidosDelCliente = await Pedido.count({
+						where: {
+							[Op.and]: [
+								{ clienteId: clienteAsignado.id },
+								{ statusId: { [Op.between]: [1, 16] } },
+							],
+						},
+					});
+
+					let kilometrosAsignados = await Pedido.sum("distancia", {
+						where: {
+							[Op.and]: [
+								{ clienteId: clienteAsignado.id },
+								{ statusId: { [Op.between]: [1, 16] } },
+							],
+						},
+					});
+
+					let CO2Asignados = await Pedido.sum("CO2Ahorrado", {
+						where: {
+							[Op.and]: [
+								{ clienteId: clienteAsignado.id },
+								{ statusId: { [Op.between]: [1, 16] } },
+							],
+						},
+					});
+
+					let ruidoAsignados = await Pedido.sum("ruido", {
+						where: {
+							[Op.and]: [
+								{ clienteId: clienteAsignado.id },
+								{ statusId: { [Op.between]: [1, 16] } },
+							],
+						},
+					});
+
+					await Cliente.update(
+						{
+							biciEnvios: cantidadPedidosDelCliente,
+							kilometros: kilometrosAsignados,
+							CO2Ahorrado: CO2Asignados,
+							ruido: ruidoAsignados,
+						},
+						{
+							where: { id: clienteAsignado.id },
+						}
+					);
 				} catch (err) {
 					res.status(500).send({ message: err.message });
 				}
@@ -103,34 +215,48 @@ module.exports = {
 		}
 	},
 
-	// Mostrar todos los Pedidos
+	// Mostrar todos los Pedidos por la fecha
 	indexPedidos: async (req, res) => {
-		const pedidos = await Pedido.findAll({
-			include: [
-				{
-					model: Distrito,
-				},
-				{
-					model: Mobiker,
-					attributes: ["fullName"],
-				},
-				{
-					model: Cliente,
-					attributes: ["contacto", "empresa"],
-				},
-				{
-					model: Envio,
-				},
-				{
-					model: Modalidad,
-				},
-				{
-					model: Status,
-				},
-			],
-		});
+		try {
+			const { page, size, fecha } = req.query;
+			let condition = fecha ? { fecha: { [Op.like]: `%${fecha}%` } } : null;
+			const { limit, offset } = getPagination(page, size);
 
-		res.json(pedidos);
+			const data = await Pedido.findAndCountAll({
+				where: condition,
+				limit,
+				offset,
+				order: [["id", "DESC"]],
+				include: [
+					{
+						model: Distrito,
+					},
+					{
+						model: Mobiker,
+						attributes: ["fullName"],
+					},
+					{
+						model: Cliente,
+						attributes: ["contacto", "empresa"],
+					},
+					{
+						model: Envio,
+					},
+					{
+						model: Modalidad,
+					},
+					{
+						model: Status,
+					},
+				],
+			});
+
+			const pedidos = getPagingData(data, page, limit);
+
+			res.send(pedidos);
+		} catch (error) {
+			res.status(500).send({ message: error.message });
+		}
 	},
 
 	// Mostrar 1 Pedido por id
@@ -239,6 +365,142 @@ module.exports = {
 
 			if (pedidoActualizado) {
 				res.json({ message: "¡Se ha actualizado el Pedido con éxito!" });
+
+				// Asignar al MoBiker
+				let cantidadPedidosDelMoBiker = await Pedido.count({
+					where: {
+						[Op.and]: [
+							{ mobikerId: mobiker.id },
+							{ statusId: { [Op.between]: [4, 16] } },
+						],
+					},
+				});
+
+				let kilometrosAsignadosMobiker = await Pedido.sum("distancia", {
+					where: {
+						[Op.and]: [
+							{ mobikerId: mobiker.id },
+							{ statusId: { [Op.between]: [4, 16] } },
+						],
+					},
+				});
+
+				let CO2AsignadosMobiker = await Pedido.sum("CO2Ahorrado", {
+					where: {
+						[Op.and]: [
+							{ mobikerId: mobiker.id },
+							{ statusId: { [Op.between]: [4, 16] } },
+						],
+					},
+				});
+
+				let ruidoAsignadosMobiker = await Pedido.sum("ruido", {
+					where: {
+						[Op.and]: [
+							{ mobikerId: mobiker.id },
+							{ statusId: { [Op.between]: [4, 16] } },
+						],
+					},
+				});
+
+				await Mobiker.update(
+					{
+						biciEnvios: cantidadPedidosDelMoBiker,
+						kilometros: kilometrosAsignadosMobiker,
+						CO2Ahorrado: CO2AsignadosMobiker,
+						ruido: ruidoAsignadosMobiker,
+					},
+					{
+						where: { id: mobiker.id },
+					}
+				);
+
+				// Asignar al Cliente
+				let clienteAsignado = await Cliente.findOne({
+					where: {
+						contacto: req.body.contactoRemitente,
+					},
+				});
+
+				let cantidadPedidosDelCliente = await Pedido.count({
+					where: {
+						[Op.and]: [
+							{ clienteId: clienteAsignado.id },
+							{ statusId: { [Op.between]: [1, 16] } },
+						],
+					},
+				});
+
+				let kilometrosAsignados = await Pedido.sum("distancia", {
+					where: {
+						[Op.and]: [
+							{ clienteId: clienteAsignado.id },
+							{ statusId: { [Op.between]: [1, 16] } },
+						],
+					},
+				});
+
+				let CO2Asignados = await Pedido.sum("CO2Ahorrado", {
+					where: {
+						[Op.and]: [
+							{ clienteId: clienteAsignado.id },
+							{ statusId: { [Op.between]: [1, 16] } },
+						],
+					},
+				});
+
+				let ruidoAsignados = await Pedido.sum("ruido", {
+					where: {
+						[Op.and]: [
+							{ clienteId: clienteAsignado.id },
+							{ statusId: { [Op.between]: [1, 16] } },
+						],
+					},
+				});
+
+				await Cliente.update(
+					{
+						biciEnvios: cantidadPedidosDelCliente,
+						kilometros: kilometrosAsignados,
+						CO2Ahorrado: CO2Asignados,
+						ruido: ruidoAsignados,
+					},
+					{
+						where: { id: clienteAsignado.id },
+					}
+				);
+			} else {
+				res.json({
+					message: "¡Error! No se ha podido actualizar el Pedido...",
+				});
+			}
+		} catch (error) {
+			res.status(500).send({ message: error.message });
+		}
+	},
+
+	// Cambiar la asignacion de un MoBiker y el estado del pedido
+	asignacionPedido: async (req, res) => {
+		try {
+			const id = req.params.id;
+
+			let mobiker = await Mobiker.findOne({
+				where: {
+					fullName: req.body.mobiker,
+				},
+			});
+
+			let pedidoAsignado = {
+				mobikerId: mobiker.id,
+				statusId: req.body.status,
+			};
+
+			let pedidoActualizado = await Pedido.update(pedidoAsignado, {
+				where: { id: id },
+			});
+
+			if (pedidoActualizado) {
+				res.json({ message: "¡Se ha actualizado el Pedido con éxito!" });
 			} else {
 				res.json({
 					message: "¡Error! No se ha podido actualizar el Pedido...",
@@ -296,10 +558,8 @@ module.exports = {
 
 	searchPedidoProgramados: async (req, res) => {
 		try {
-			const query = req.query.q;
-
 			let pedido = await Pedido.findAll({
-				where: { statusId: { [Op.like]: `%${query}%` } },
+				where: { statusId: 1 },
 				include: [
 					{
 						model: Distrito,
@@ -325,6 +585,44 @@ module.exports = {
 			});
 
 			res.json(pedido);
+		} catch (error) {
+			res.status(500).send({ message: error.message });
+		}
+	},
+
+	getHistorialPedidos: async (req, res) => {
+		try {
+			let { desde, hasta } = req.query;
+			let condition = { fecha: { [Op.between]: [desde, hasta] } };
+
+			const pedidos = await Pedido.findAll({
+				where: condition,
+				order: [["id", "DESC"]],
+				include: [
+					{
+						model: Distrito,
+					},
+					{
+						model: Mobiker,
+						attributes: ["fullName"],
+					},
+					{
+						model: Cliente,
+						attributes: ["contacto", "empresa"],
+					},
+					{
+						model: Envio,
+					},
+					{
+						model: Modalidad,
+					},
+					{
+						model: Status,
+					},
+				],
+			});
+
+			res.json(pedidos);
 		} catch (error) {
 			res.status(500).send({ message: error.message });
 		}
