@@ -9,13 +9,17 @@ module.exports = function (app) {
 		);
 		next();
 	});
+
 	app.get("/api/all", controller.allAccess);
+
 	app.get("/api/user", [authJwt.verifyToken], controller.userBoard);
+
 	app.get(
 		"/api/operador",
 		[authJwt.verifyToken, authJwt.isOperador],
 		controller.operadorBoard
 	);
+
 	app.get(
 		"/api/admin",
 		[authJwt.verifyToken, authJwt.isAdmin],

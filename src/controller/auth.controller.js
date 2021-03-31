@@ -1,5 +1,5 @@
 const db = require("../models/index");
-config = require("../config/auth.config");
+const config = require("../config/auth.config");
 const User = db.user;
 const Role = db.role;
 
@@ -60,11 +60,10 @@ module.exports = {
 						message: "¡Contraseña inválida!",
 					});
 				}
-				let token = jwt.sign(
-					{ id: user.id },
-					config.secret,
-					{ expiresIn: config.expires } // 24 hours
-				);
+				let token = jwt.sign({ id: user.id }, config.secret, {
+					expiresIn: 43200, // 12 hours
+				});
+
 				let authorities = [];
 				user.getRoles().then((roles) => {
 					for (let i = 0; i < roles.length; i++) {
