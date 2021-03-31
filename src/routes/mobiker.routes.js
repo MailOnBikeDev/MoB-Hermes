@@ -1,3 +1,4 @@
+const { authJwt } = require("../middleware/index");
 const controller = require("../controller/mobiker.controller");
 
 module.exports = (app) => {
@@ -10,20 +11,44 @@ module.exports = (app) => {
 	});
 
 	// Ruta para crear nuevo MoBiker
-	app.post("/mobikers/crear-nuevo-mobiker", controller.storageMobiker);
+	app.post(
+		"/mobikers/crear-nuevo-mobiker",
+		[authJwt.verifyToken, authJwt.isAdmin],
+		controller.storageMobiker
+	);
 
 	// Ruta para mostrar todos los MoBikers
-	app.get("/mobikers/equipo-mobiker", controller.equipoMobiker);
+	app.get(
+		"/mobikers/equipo-mobiker",
+		[authJwt.verifyToken, authJwt.isAdmin],
+		controller.equipoMobiker
+	);
 
 	// Ruta para mostrar UN MoBiker
-	app.get("/mobikers/equipo-mobiker/:id", controller.getMobikerById);
+	app.get(
+		"/mobikers/equipo-mobiker/:id",
+		[authJwt.verifyToken, authJwt.isAdmin],
+		controller.getMobikerById
+	);
 
 	// Ruta para mostrar los Pedidos Asignados al MoBiker
-	app.get("/mobikers/pedidos/:id", controller.getPedidosDelMobiker);
+	app.get(
+		"/mobikers/pedidos",
+		[authJwt.verifyToken, authJwt.isAdmin],
+		controller.getPedidosDelMobiker
+	);
 
 	// Ruta para editar un MoBiker
-	app.put("/mobikers/equipo-mobiker/:id", controller.updateMobiker);
+	app.put(
+		"/mobikers/equipo-mobiker/:id",
+		[authJwt.verifyToken, authJwt.isAdmin],
+		controller.updateMobiker
+	);
 
 	// Ruta para buscar mobikers por su nombre
-	app.get("/mobikers", controller.searchMobiker);
+	app.get(
+		"/mobikers",
+		[authJwt.verifyToken, authJwt.isAdmin],
+		controller.searchMobiker
+	);
 };

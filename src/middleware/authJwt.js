@@ -1,62 +1,121 @@
 const jwt = require("jsonwebtoken");
 const config = require("../config/auth.config");
-db = require("../models/index");
+const db = require("../models/index");
 const User = db.user;
 
-verifyToken = (req, res, next) => {
-	let token = req.headers["x-access-token"];
-	if (!token) {
-		return res.status(403).send({
-			message: "¡Falta el token!",
-		});
-	}
-	jwt.verify(token, config.secret, (err, decoded) => {
-		if (err) {
-			return res.status(401).send({
-				message: "¡No autorizado!",
-			});
-		}
+const verifyToken = async (req, res, next) => {
+	try {
+		const token = req.headers["x-access-token"];
+
+		if (!token) return res.status(403).json({ message: "¡Falta el token!" });
+
+		const decoded = jwt.verify(token, config.secret);
 		req.userId = decoded.id;
+
 		next();
-	});
+	} catch (error) {
+		console.error(error);
+		return res.status(401).json({ message: "No autorizado" });
+	}
 };
 
-isAdmin = (req, res, next) => {
-	User.findByPk(req.userId).then((user) => {
-		user.getRoles().then((roles) => {
-			for (let i = 0; i < roles.length; i++) {
-				if (roles[i].name === "administrador") {
-					next();
-					return;
-				}
+const isAdmin = async (req, res, next) => {
+	try {
+		const user = await User.findByPk(req.userId);
+		const roles = await user.getRoles();
+
+		for (let i = 0; i < roles.length; i++) {
+			if (roles[i].name === "administrador") {
+				next();
+				return;
 			}
-			res.status(403).send({
-				message: "¡Requiere el rol de Administrador!",
-			});
-			return;
-		});
-	});
+		}
+		return res
+			.status(403)
+			.json({ message: "¡Requiere el rol de Administrador!" });
+	} catch (error) {
+		console.error(error, "¡Requiere el rol de Administrador!");
+	}
 };
 
-isOperador = (req, res, next) => {
-	User.findByPk(req.userId).then((user) => {
-		user.getRoles().then((roles) => {
-			for (let i = 0; i < roles.length; i++) {
-				if (roles[i].name === "operador") {
-					next();
-					return;
-				}
+const isOperador = async (req, res, next) => {
+	try {
+		const user = await User.findByPk(req.userId);
+		const roles = await user.getRoles();
+
+		for (let i = 0; i < roles.length; i++) {
+			if (roles[i].name === "operador") {
+				next();
+				return;
 			}
-			res.status(403).send({
-				message: "¡Requiere el rol de Operador",
-			});
-		});
-	});
+		}
+
+		return res.status(403).json({ message: "¡Requiere el rol de Operador!" });
+	} catch (error) {
+		console.error(error, "¡Requiere el rol de Operador!");
+	}
+};
+
+const isAuditor = async (req, res, next) => {
+	try {
+		const user = await User.findByPk(req.userId);
+		const roles = await user.getRoles();
+
+		for (let i = 0; i < roles.length; i++) {
+			if (roles[i].name === "auditor") {
+				next();
+				return;
+			}
+		}
+
+		return res.status(403).json({ message: "¡Requiere el rol de Auditor!" });
+	} catch (error) {
+		console.error(error, "¡Requiere el rol de Auditor!");
+	}
+};
+
+const isCliente = async (req, res, next) => {
+	try {
+		const user = await User.findByPk(req.userId);
+		const roles = await user.getRoles();
+
+		for (let i = 0; i < roles.length; i++) {
+			if (roles[i].name === "cliente") {
+				next();
+				return;
+			}
+		}
+
+		return res.status(403).json({ message: "¡Requiere el rol de Cliente!" });
+	} catch (error) {
+		console.error(error, "¡Requiere el rol de Cliente!");
+	}
+};
+
+const isMobiker = async (req, res, next) => {
+	try {
+		const user = await User.findByPk(req.userId);
+		const roles = await user.getRoles();
+
+		for (let i = 0; i < roles.length; i++) {
+			if (roles[i].name === "mobiker") {
+				next();
+				return;
+			}
+		}
+
+		return res.status(403).json({ message: "¡Requiere el rol de MoBiker!" });
+	} catch (error) {
+		console.error(error, "¡Requiere el rol de MoBiker!");
+	}
 };
 
 const authJwt = {
 	verifyToken: verifyToken,
 	isAdmin: isAdmin,
 	isOperador: isOperador,
+	isAuditor: isAuditor,
+	isCliente: isCliente,
+	isMobiker: isMobiker,
 };
 module.exports = authJwt;

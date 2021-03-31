@@ -1,3 +1,4 @@
+const { authJwt } = require("../middleware/index");
 const controller = require("../controller/cliente.controller");
 
 module.exports = (app) => {
@@ -10,20 +11,40 @@ module.exports = (app) => {
 	});
 
 	// Ruta para crear nuevo Cliente
-	app.post("/clientes/crear-nuevo-cliente", controller.storageCliente);
+	app.post(
+		"/clientes/crear-nuevo-cliente",
+		[authJwt.verifyToken, authJwt.isAdmin],
+		controller.storageCliente
+	);
 
 	// Ruta para mostrar todos los Clientes
-	app.get("/clientes/tablero-clientes", controller.indexClientes);
+	app.get(
+		"/clientes/tablero-clientes",
+		[authJwt.verifyToken],
+		controller.indexClientes
+	);
 
 	// Ruta para mostrar un Cliente por su id
-	app.get("/clientes/tablero-clientes/:id", controller.getClienteById);
+	app.get(
+		"/clientes/tablero-clientes/:id",
+		[authJwt.verifyToken],
+		controller.getClienteById
+	);
 
 	// Ruta para mostrar los Pedidos Asignados al MoBiker
-	app.get("/clientes/pedidos/:id", controller.getPedidosDelCliente);
+	app.get(
+		"/clientes/pedidos/:id",
+		[authJwt.verifyToken],
+		controller.getPedidosDelCliente
+	);
 
 	// Ruta para actualizar un Cliente por su id
-	app.put("/clientes/tablero-clientes/:id", controller.updateCliente);
+	app.put(
+		"/clientes/tablero-clientes/:id",
+		[authJwt.verifyToken],
+		controller.updateCliente
+	);
 
 	// Ruta para buscar clientes por contacto o empresa
-	app.get("/clientes", controller.searchCliente);
+	app.get("/clientes", [authJwt.verifyToken], controller.searchCliente);
 };

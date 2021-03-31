@@ -10,6 +10,20 @@ const Status = db.status;
 
 const Op = db.Sequelize.Op;
 
+const getPagination = (page, size) => {
+	const limit = size ? +size : 50;
+	const offset = page ? page * limit : 0;
+
+	return { limit, offset };
+};
+const getPagingData = (data, page, limit) => {
+	const { count: totalPedidos, rows: pedidos } = data;
+	const currentPage = page ? +page : 0;
+	const totalPages = Math.ceil(totalPedidos / limit);
+
+	return { totalPedidos, pedidos, totalPages, currentPage };
+};
+
 module.exports = {
 	storageMobiker: async (req, res) => {
 		try {
@@ -116,16 +130,21 @@ module.exports = {
 
 	getPedidosDelMobiker: async (req, res) => {
 		try {
-			const id = req.params.id;
+			let { desde, hasta, id, page, size } = req.query;
+			const condition = {
+				[Op.and]: [
+					{ mobikerId: id },
+					{ statusId: { [Op.between]: [4, 16] } },
+					{ fecha: { [Op.between]: [desde, hasta] } },
+				],
+			};
+			const { limit, offset } = getPagination(page, size);
 
-			let pedidosDelMobiker = await Pedido.findAll({
+			let data = await Pedido.findAndCountAll({
 				order: [["id", "DESC"]],
-				where: {
-					[Op.and]: [
-						{ mobikerId: id },
-						{ statusId: { [Op.between]: [4, 16] } },
-					],
-				},
+				where: condition,
+				limit,
+				offset,
 				include: [
 					{
 						model: Distrito,
@@ -149,6 +168,8 @@ module.exports = {
 					},
 				],
 			});
+
+			const pedidosDelMobiker = getPagingData(data, page, limit);
 
 			res.json(pedidosDelMobiker);
 		} catch (err) {

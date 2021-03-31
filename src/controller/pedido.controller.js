@@ -10,7 +10,7 @@ const Status = db.status;
 const Op = db.Sequelize.Op;
 
 const getPagination = (page, size) => {
-	const limit = size ? +size : 150;
+	const limit = size ? +size : 50;
 	const offset = page ? page * limit : 0;
 
 	return { limit, offset };
@@ -592,11 +592,14 @@ module.exports = {
 
 	getHistorialPedidos: async (req, res) => {
 		try {
-			let { desde, hasta } = req.query;
+			let { desde, hasta, page, size } = req.query;
 			let condition = { fecha: { [Op.between]: [desde, hasta] } };
+			const { limit, offset } = getPagination(page, size);
 
-			const pedidos = await Pedido.findAll({
+			const data = await Pedido.findAndCountAll({
 				where: condition,
+				limit,
+				offset,
 				order: [["id", "DESC"]],
 				include: [
 					{
@@ -621,6 +624,8 @@ module.exports = {
 					},
 				],
 			});
+
+			const pedidos = getPagingData(data, page, limit);
 
 			res.json(pedidos);
 		} catch (error) {
