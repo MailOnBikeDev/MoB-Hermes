@@ -103,6 +103,10 @@ module.exports = (sequelize, Sequelize) => {
 				type: Sequelize.STRING(15),
 				allowNull: false,
 			},
+			comentario: {
+				type: Sequelize.STRING(50),
+				allowNull: true,
+			},
 		},
 		{
 			tableName: "pedidos",
