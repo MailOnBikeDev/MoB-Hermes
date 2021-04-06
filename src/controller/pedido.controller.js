@@ -558,8 +558,11 @@ module.exports = {
 
 	searchPedidoProgramados: async (req, res) => {
 		try {
+			let { desde, hasta } = req.query;
+			let condition = { fecha: { [Op.between]: [desde, hasta] } };
+
 			let pedido = await Pedido.findAll({
-				where: { statusId: 1 },
+				where: condition,
 				include: [
 					{
 						model: Distrito,
@@ -593,7 +596,7 @@ module.exports = {
 	getHistorialPedidos: async (req, res) => {
 		try {
 			let { desde, hasta, page, size } = req.query;
-			let condition = { fecha: { [Op.between]: [desde, hasta] } };
+			let condition = { fecha: { [Op.between]: [`%${desde}%`, `%${hasta}%`] } };
 			const { limit, offset } = getPagination(page, size);
 
 			const data = await Pedido.findAndCountAll({
