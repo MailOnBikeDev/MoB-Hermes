@@ -38,6 +38,12 @@ module.exports = (app) => {
 		controller.getPedidosDelMobiker
 	);
 
+	app.get(
+		"/mobikers/cantidad-pedidos",
+		[authJwt.verifyToken],
+		controller.getCantidadPedidosMobiker
+	);
+
 	// Ruta para editar un MoBiker
 	app.put(
 		"/mobikers/equipo-mobiker/:id",

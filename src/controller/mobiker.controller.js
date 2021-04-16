@@ -177,6 +177,25 @@ module.exports = {
 		}
 	},
 
+	getCantidadPedidosMobiker: async (req, res) => {
+		try {
+			let { desde, hasta, mobikerId } = req.query;
+			const condition = {
+				[Op.and]: [
+					{ mobikerId: mobikerId },
+					{ statusId: { [Op.between]: [4, 16] } },
+					{ fecha: { [Op.between]: [desde, hasta] } },
+				],
+			};
+
+			let cantidadPedidos = await Pedido.count({ where: condition });
+
+			res.json(cantidadPedidos);
+		} catch (err) {
+			res.status(500).send({ message: err.message });
+		}
+	},
+
 	// Editar MoBiker
 	updateMobiker: async (req, res) => {
 		try {
