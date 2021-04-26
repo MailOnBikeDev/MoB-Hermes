@@ -40,7 +40,7 @@ checkRolesExisted = (req, res, next) => {
 		for (let i = 0; i < req.body.roles.length; i++) {
 			if (!ROLES.includes(req.body.roles[i])) {
 				res.status(400).send({
-					message: "¡Error! Ese rol no existe = " + req.body.roles[i],
+					message: `¡Error! Ese rol '${req.body.roles[i]}' no existe...`,
 				});
 				return;
 			}

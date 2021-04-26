@@ -13,38 +13,42 @@ module.exports = (app) => {
 	// Ruta para crear nuevo Cliente
 	app.post(
 		"/clientes/crear-nuevo-cliente",
-		[authJwt.verifyToken, authJwt.isAdmin],
+		[authJwt.verifyToken, authJwt.isEquipoAdmin],
 		controller.storageCliente
 	);
 
 	// Ruta para mostrar todos los Clientes
 	app.get(
 		"/clientes/tablero-clientes",
-		[authJwt.verifyToken],
+		[authJwt.verifyToken, authJwt.isEquipoAdmin],
 		controller.indexClientes
 	);
 
 	// Ruta para mostrar un Cliente por su id
 	app.get(
 		"/clientes/tablero-clientes/:id",
-		[authJwt.verifyToken],
+		[authJwt.verifyToken, authJwt.isEquipoAdmin],
 		controller.getClienteById
 	);
 
 	// Ruta para mostrar los Pedidos Asignados al MoBiker
 	app.get(
 		"/clientes/pedidos/:id",
-		[authJwt.verifyToken],
+		[authJwt.verifyToken, authJwt.isEquipoAdmin],
 		controller.getPedidosDelCliente
 	);
 
 	// Ruta para actualizar un Cliente por su id
 	app.put(
 		"/clientes/tablero-clientes/:id",
-		[authJwt.verifyToken],
+		[authJwt.verifyToken, authJwt.isEquipoAdmin],
 		controller.updateCliente
 	);
 
 	// Ruta para buscar clientes por contacto o empresa
-	app.get("/clientes", [authJwt.verifyToken], controller.searchCliente);
+	app.get(
+		"/clientes",
+		[authJwt.verifyToken, authJwt.isEquipoAdmin],
+		controller.searchCliente
+	);
 };
