@@ -9,10 +9,14 @@ const verifyToken = async (req, res, next) => {
 
 		if (!token) return res.status(403).json({ message: "¡Falta el token!" });
 
-		const decoded = jwt.verify(token, config.secret);
-		req.userId = decoded.id;
+		jwt.verify(token, config.secret, (err, decoded) => {
+			if (err) {
+				return res.status(401).json({ message: "Usuario no válido", err });
+			}
 
-		next();
+			req.userId = decoded.data.id;
+			next();
+		});
 	} catch (error) {
 		console.error(error);
 		return res.status(401).json({ message: "No autorizado" });
@@ -74,6 +78,25 @@ const isAuditor = async (req, res, next) => {
 	}
 };
 
+const isEquipoAdmin = async (req, res, next) => {
+	try {
+		const user = await User.findByPk(req.userId);
+		const roles = await user.getRoles();
+
+		for (let i = 0; i < roles.length; i++) {
+			if (roles[i].name === ("administrador" || "operador" || "auditor")) {
+				next();
+				return;
+			}
+		}
+		return res
+			.status(403)
+			.json({ message: "¡Requiere el rol de Administrador!" });
+	} catch (error) {
+		console.error(error, "¡Requiere el rol de Administrador!");
+	}
+};
+
 const isCliente = async (req, res, next) => {
 	try {
 		const user = await User.findByPk(req.userId);
@@ -115,6 +138,7 @@ const authJwt = {
 	isAdmin: isAdmin,
 	isOperador: isOperador,
 	isAuditor: isAuditor,
+	isEquipoAdmin: isEquipoAdmin,
 	isCliente: isCliente,
 	isMobiker: isMobiker,
 };
