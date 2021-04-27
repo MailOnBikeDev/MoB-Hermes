@@ -11,7 +11,7 @@ const verifyToken = async (req, res, next) => {
 
 		jwt.verify(token, config.secret, (err, decoded) => {
 			if (err) {
-				return res.status.json({ message: "Usuario no válido", err });
+				return res.status(401).json({ message: "Usuario no válido", err });
 			}
 
 			req.userId = decoded.data.id;
