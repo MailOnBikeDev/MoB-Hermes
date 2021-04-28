@@ -85,6 +85,7 @@ module.exports = {
 				empresa: user.empresa,
 				roles: authorities,
 				accessToken: token,
+				message: "Inicio de sesión correcto",
 			});
 		} catch (error) {
 			res.status(500).json({ message: error.message });
