@@ -10,7 +10,7 @@ const app = express();
 
 // Settings
 const corsOptions = {
-	origin: "http://localhost:8081",
+	origin: "*",
 };
 
 // Creating the sync to DB
@@ -30,7 +30,7 @@ app.listen(PORT, () => {
 	console.log(`Hermes está en línea en el puerto: ${PORT}`);
 
 	db.sequelize
-		.sync()
+		.authenticate()
 		.then(() => {
 			console.log("Se ha establecido la conexión con la Base de Datos");
 		})

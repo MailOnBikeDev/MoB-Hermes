@@ -2,6 +2,11 @@ module.exports = (sequelize, Sequelize) => {
 	const Mobiker = sequelize.define(
 		"mobikers",
 		{
+			id: {
+				type: Sequelize.UUID,
+				defaultValue: Sequelize.UUIDV4,
+				primaryKey: true,
+			},
 			nombres: {
 				type: Sequelize.STRING(50),
 				allowNull: false,

@@ -2,6 +2,11 @@ module.exports = (sequelize, Sequelize) => {
 	const Cliente = sequelize.define(
 		"clientes",
 		{
+			id: {
+				type: Sequelize.UUID,
+				defaultValue: Sequelize.UUIDV4,
+				primaryKey: true,
+			},
 			contacto: {
 				type: Sequelize.STRING(100),
 				allowNull: false,
