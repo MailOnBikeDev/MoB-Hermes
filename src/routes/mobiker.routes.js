@@ -39,6 +39,12 @@ module.exports = (app) => {
 	);
 
 	app.get(
+		"/mobikers/pedidos-del-mobiker/:id",
+		[authJwt.verifyToken, authJwt.isAdmin],
+		controller.getPedidosDelMobikerById
+	);
+
+	app.get(
 		"/mobikers/cantidad-pedidos",
 		[authJwt.verifyToken],
 		controller.getCantidadPedidosMobiker

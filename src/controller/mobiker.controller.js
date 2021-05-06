@@ -177,6 +177,46 @@ module.exports = {
 		}
 	},
 
+	getPedidosDelMobikerById: async (req, res) => {
+		try {
+			let id = req.params.id;
+			const condition = {
+				mobikerId: id,
+			};
+
+			let pedidosDelMobikerById = await Pedido.findAll({
+				order: [["id", "DESC"]],
+				where: condition,
+				include: [
+					{
+						model: Distrito,
+					},
+					{
+						model: Mobiker,
+						attributes: ["fullName"],
+					},
+					{
+						model: Cliente,
+						attributes: ["contacto", "empresa"],
+					},
+					{
+						model: Envio,
+					},
+					{
+						model: Modalidad,
+					},
+					{
+						model: Status,
+					},
+				],
+			});
+
+			res.json(pedidosDelMobikerById);
+		} catch (err) {
+			res.status(500).send({ message: err.message });
+		}
+	},
+
 	getCantidadPedidosMobiker: async (req, res) => {
 		try {
 			let { desde, hasta, mobikerId } = req.query;
