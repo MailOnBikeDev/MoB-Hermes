@@ -1,6 +1,7 @@
 const db = require("../index");
 const User = db.user;
 const Mobiker = db.mobiker;
+const Cliente = db.cliente;
 const Role = db.role;
 const Distrito = db.distrito;
 const CodigoPostal = db.codigoPostal;
@@ -19,6 +20,9 @@ const users = require("./usuarios.seed");
 
 // MoBiker
 const mobikers = require("./mobikers.seed");
+
+// Clientes
+const clientes = require("./clientes.seed");
 
 // Roles
 const roles = require("./tablas auxiliares/roles.seed");
@@ -126,8 +130,27 @@ db.sequelize
 			});
 		});
 	})
-	.catch((err) => console.log(err))
+	.then(() => {
+		// Creando los clientes
+		clientes.forEach((cliente) => {
+			let distrito = cliente.distrito;
+			let comprobante = cliente.comprobante;
+			let rolDelCliente = cliente.rol;
+			let tipoEnvio = cliente.tipoEnvio;
+			let tipoDeCarga = cliente.carga;
+			let pago = cliente.pago;
+			Cliente.create(cliente).then((nuevoCliente) => {
+				nuevoCliente.setDistrito(distrito);
+				nuevoCliente.setTipoDeComprobante(comprobante);
+				nuevoCliente.setRolCliente(rolDelCliente);
+				nuevoCliente.setTipoDeCarga(tipoDeCarga);
+				nuevoCliente.setFormaDePago(pago);
+				nuevoCliente.setTipoDeEnvio(tipoEnvio);
+			});
+		});
+	})
 	.then(() => {
 		// Creando los Códigos Postales
 		codigosPostales.forEach((codigo) => CodigoPostal.create(codigo));
-	});
+	})
+	.catch((err) => console.log(err));
