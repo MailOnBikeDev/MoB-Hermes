@@ -58,7 +58,7 @@ module.exports = (app) => {
 	// Ruta para obtener los Pedidos por rango de fechas
 	app.get(
 		"/historial-pedidos",
-		[authJwt.verifyToken, authJwt.isAdmin],
+		[authJwt.verifyToken, authJwt.isEquipoAdmin],
 		controller.getHistorialPedidos
 	);
 };
