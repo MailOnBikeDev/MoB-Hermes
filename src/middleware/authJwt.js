@@ -84,7 +84,15 @@ const isEquipoAdmin = async (req, res, next) => {
 		const roles = await user.getRoles();
 
 		for (let i = 0; i < roles.length; i++) {
-			if (roles[i].name === ("administrador" || "operador" || "auditor")) {
+			if (roles[i].name === "administrador") {
+				next();
+				return;
+			}
+			if (roles[i].name === "operador") {
+				next();
+				return;
+			}
+			if (roles[i].name === "auditor") {
 				next();
 				return;
 			}
