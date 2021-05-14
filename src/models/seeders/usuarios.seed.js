@@ -26,8 +26,8 @@ const users = [
 		roles: [1, 5],
 	},
 	{
-		fullName: "Gaby Vilorio",
-		username: "gvilorio",
+		fullName: "Gaby Viloria",
+		username: "gviloria",
 		email: "gvil@dan.com",
 		password: bcrypt.hashSync("123123", 10),
 		empresa: "Mail On Bike",
@@ -42,7 +42,7 @@ const users = [
 		roles: [2, 5],
 	},
 	{
-		fullName: "Angélica Moreno",
+		fullName: "Angelica Moreno",
 		username: "amoreno",
 		email: "amoreno@dan.com",
 		password: bcrypt.hashSync("123123", 10),
