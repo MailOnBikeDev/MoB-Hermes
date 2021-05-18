@@ -60,97 +60,91 @@ const distritos = require("./tablas auxiliares/distritos.seed");
 // Códigos Postales
 const codigosPostales = require("./tablas auxiliares/codigosPostales.seed");
 
-db.sequelize
-	.sync({ force: true })
-	.then(() => {
+const ejecutarSeed = async () => {
+	try {
 		// Crear conexión
-		console.log("Borrando data y creando nuevas tablas...");
-	})
-	.then(() => {
+		await db.sequelize.sync({ force: true });
+		console.log("Borrando la data y creando nuevas tablas...");
+
 		// Creando roles
-		roles.forEach((rol) => Role.create(rol));
-	})
-	.then(() => {
+		roles.forEach(async (rol) => await Role.create(rol));
+
 		// Creando los rangos
-		rangos.forEach((rango) => Rango.create(rango));
-	})
-	.then(() => {
+		rangos.forEach(async (rango) => await Rango.create(rango));
+
 		// Creando los distritos
-		distritos.forEach((distrito) => Distrito.create(distrito));
-	})
-	.then(() => {
+		distritos.forEach(async (distrito) => await Distrito.create(distrito));
+
 		// Creando tabla de comprobante
-		tipoDeComprobante.forEach((comprobante) => Comprobante.create(comprobante));
-	})
-	.then(() => {
+		tipoDeComprobante.forEach(
+			async (comprobante) => await Comprobante.create(comprobante)
+		);
+
 		// Creando tabla de tipo de Carga
-		tipoDeCarga.forEach((carga) => Carga.create(carga));
-	})
-	.then(() => {
+		tipoDeCarga.forEach(async (carga) => await Carga.create(carga));
+
 		// Creando tabla de Modalidad
-		modalidades.forEach((modalidad) => Modalidad.create(modalidad));
-	})
-	.then(() => {
+		modalidades.forEach(async (modalidad) => await Modalidad.create(modalidad));
+
 		// Creando tabla de Forma de Pago
-		formasDePago.forEach((pago) => FormaDePago.create(pago));
-	})
-	.then(() => {
+		formasDePago.forEach(async (pago) => await FormaDePago.create(pago));
+
 		// Creando tabla de Roles del Cliente
-		rolesCliente.forEach((rolCliente) => RolCliente.create(rolCliente));
-	})
-	.then(() => {
+		rolesCliente.forEach(
+			async (rolCliente) => await RolCliente.create(rolCliente)
+		);
+
 		// Creando tabla de Tipo de Envío
-		tipoEnvio.forEach((envio) => Envio.create(envio));
-	})
-	.then(() => {
+		tipoEnvio.forEach(async (envio) => await Envio.create(envio));
+
 		// Creando Tabla Entidades financieras
-		entidadesFinancieras.forEach((banco) => Bancos.create(banco));
-	})
-	.then(() => {
+		entidadesFinancieras.forEach(async (banco) => await Bancos.create(banco));
+
 		// Creando la tabla de status del Pedido
-		estadosPedido.forEach((status) => Status.create(status));
-	})
-	.then(() => {
-		// Creando usuarios
-		users.forEach((user) => {
-			let roles = user.roles;
-			User.create(user).then((usuario) => {
-				usuario.addRoles(roles);
-			});
-		});
-	})
-	.then(() => {
-		// Creando los MoBikers
-		mobikers.forEach((mobiker) => {
-			let distrito = mobiker.distrito;
-			let rangoInicial = 1;
-			Mobiker.create(mobiker).then((nuevoMobiker) => {
-				nuevoMobiker.setDistrito(distrito);
-				nuevoMobiker.setRango(rangoInicial);
-			});
-		});
-	})
-	.then(() => {
-		// Creando los clientes
-		clientes.forEach((cliente) => {
-			let distrito = cliente.distrito;
-			let comprobante = cliente.comprobante;
-			let rolDelCliente = cliente.rol;
-			let tipoEnvio = cliente.tipoEnvio;
-			let tipoDeCarga = cliente.carga;
-			let pago = cliente.pago;
-			Cliente.create(cliente).then((nuevoCliente) => {
-				nuevoCliente.setDistrito(distrito);
-				nuevoCliente.setTipoDeComprobante(comprobante);
-				nuevoCliente.setRolCliente(rolDelCliente);
-				nuevoCliente.setTipoDeCarga(tipoDeCarga);
-				nuevoCliente.setFormaDePago(pago);
-				nuevoCliente.setTipoDeEnvio(tipoEnvio);
-			});
-		});
-	})
-	.then(() => {
+		estadosPedido.forEach(async (status) => await Status.create(status));
+
 		// Creando los Códigos Postales
 		codigosPostales.forEach((codigo) => CodigoPostal.create(codigo));
-	})
-	.catch((err) => console.log(err));
+
+		// Creando usuarios
+		users.forEach(async (user) => {
+			const roles = user.roles;
+
+			const usuario = await User.create(user);
+			await usuario.addRoles(roles);
+		});
+
+		// Creando los MoBikers
+		mobikers.forEach(async (mobiker) => {
+			const distrito = mobiker.distrito;
+			const rangoInicial = 1;
+
+			const nuevoMobiker = await Mobiker.create(mobiker);
+			await nuevoMobiker.setDistrito(distrito);
+			await nuevoMobiker.setRango(rangoInicial);
+		});
+
+		// Creando los clientes
+		clientes.forEach(async (cliente) => {
+			const distrito = cliente.distrito;
+			const comprobante = cliente.comprobante;
+			const rolDelCliente = cliente.rol;
+			const tipoEnvio = cliente.tipoEnvio;
+			const tipoDeCarga = cliente.carga;
+			const pago = cliente.pago;
+
+			const nuevoCliente = await Cliente.create(cliente);
+			await nuevoCliente.setDistrito(distrito);
+			await nuevoCliente.setTipoDeComprobante(comprobante);
+			await nuevoCliente.setRolCliente(rolDelCliente);
+			await nuevoCliente.setTipoDeCarga(tipoDeCarga);
+			await nuevoCliente.setFormaDePago(pago);
+			await nuevoCliente.setTipoDeEnvio(tipoEnvio);
+		});
+	} catch (error) {
+		console.log(`Ha ocurrido un error al ejecutar la Seed: ${error.message}`);
+		console.log(error);
+	}
+};
+
+ejecutarSeed();
