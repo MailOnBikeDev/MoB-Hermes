@@ -11,75 +11,38 @@ module.exports = (app) => {
 	});
 
 	// Ruta para obtener los roles de los usuarios
-	app.get(
-		"/auxiliares/roles-usuarios",
-		[authJwt.verifyToken],
-		controller.sendRolesUsuarios
-	);
+	app.get("/auxiliares/roles-usuarios", controller.sendRolesUsuarios);
 
 	// Ruta para obtener los distritos
-	app.get(
-		"/auxiliares/distritos",
-		[authJwt.verifyToken],
-		controller.sendDistritos
-	);
+	app.get("/auxiliares/distritos", controller.sendDistritos);
 
 	// Ruta para obtener los tipo de carga
-	app.get(
-		"/auxiliares/tipos-de-carga",
-		[authJwt.verifyToken],
-		controller.sendTipoCarga
-	);
+	app.get("/auxiliares/tipos-de-carga", controller.sendTipoCarga);
 
 	// Ruta para obtener los tipo de comprobante
 	app.get(
 		"/auxiliares/tipos-de-comprobantes",
-		[authJwt.verifyToken],
 		controller.sendTiposComprobantes
 	);
 
 	// Ruta para obtener los tipos de envios
-	app.get(
-		"/auxiliares/tipos-de-envios",
-		[authJwt.verifyToken],
-		controller.sendTipoEnvio
-	);
+	app.get("/auxiliares/tipos-de-envios", controller.sendTipoEnvio);
 
 	// Ruta para obtener las formas de pago
-	app.get(
-		"/auxiliares/formas-de-pago",
-		[authJwt.verifyToken],
-		controller.sendFormaPago
-	);
+	app.get("/auxiliares/formas-de-pago", controller.sendFormaPago);
 
 	// Ruta para obtener la modalidad
-	app.get(
-		"/auxiliares/modalidad",
-		[authJwt.verifyToken],
-		controller.sendTipoModalidad
-	);
+	app.get("/auxiliares/modalidad", controller.sendTipoModalidad);
 
 	// Ruta para obtener los rangos de MoBikers
-	app.get(
-		"/auxiliares/rangos-MoBiker",
-		[authJwt.verifyToken],
-		controller.sendRangosMoB
-	);
+	app.get("/auxiliares/rangos-MoBiker", controller.sendRangosMoB);
 
 	// Ruta para obtener los roles de los clientes
-	app.get(
-		"/auxiliares/roles-clientes",
-		[authJwt.verifyToken],
-		controller.sendRolCliente
-	);
+	app.get("/auxiliares/roles-clientes", controller.sendRolCliente);
 
 	// Ruta para obtener las Entidades Bancarias
-	app.get(
-		"/auxiliares/entidades-financieras",
-		[authJwt.verifyToken],
-		controller.sendBancos
-	);
+	app.get("/auxiliares/entidades-financieras", controller.sendBancos);
 
 	// Ruta para obtener los estados del Pedido
-	app.get("/auxiliares/status", [authJwt.verifyToken], controller.sendStatus);
+	app.get("/auxiliares/status", controller.sendStatus);
 };

@@ -73,7 +73,7 @@ module.exports = {
 
 			// Creando el token
 			const token = jwt.sign({ data: user }, config.secret, {
-				expiresIn: 43200, // 12 horas
+				expiresIn: 2592000, // 30 días
 			});
 
 			// Enviando el accessToken
@@ -85,6 +85,7 @@ module.exports = {
 				empresa: user.empresa,
 				roles: authorities,
 				accessToken: token,
+				message: "Inicio de sesión correcto",
 			});
 		} catch (error) {
 			res.status(500).json({ message: error.message });
