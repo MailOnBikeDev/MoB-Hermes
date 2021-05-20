@@ -15,6 +15,8 @@ const Envio = db.envio;
 const Bancos = db.bancos;
 const Status = db.status;
 
+const Op = db.Sequelize.Op;
+
 // Usuarios
 const users = require("./usuarios.seed");
 
@@ -61,90 +63,131 @@ const distritos = require("./tablas auxiliares/distritos.seed");
 const codigosPostales = require("./tablas auxiliares/codigosPostales.seed");
 
 const ejecutarSeed = async () => {
-	try {
-		// Crear conexión
-		await db.sequelize.sync({ force: true });
-		console.log("Borrando la data y creando nuevas tablas...");
+  try {
+    // Crear conexión
+    await db.sequelize.sync({ force: true });
+    console.log("Borrando la data y creando nuevas tablas...");
 
-		// Creando roles
-		roles.forEach(async (rol) => await Role.create(rol));
+    // Creando roles
+    roles.forEach(async (rol) => await Role.create(rol));
 
-		// Creando los rangos
-		rangos.forEach(async (rango) => await Rango.create(rango));
+    // Creando los rangos
+    rangos.forEach(async (rango) => await Rango.create(rango));
 
-		// Creando los distritos
-		distritos.forEach(async (distrito) => await Distrito.create(distrito));
+    // Creando los distritos
+    distritos.forEach(async (distrito) => await Distrito.create(distrito));
 
-		// Creando tabla de comprobante
-		tipoDeComprobante.forEach(
-			async (comprobante) => await Comprobante.create(comprobante)
-		);
+    // Creando tabla de comprobante
+    tipoDeComprobante.forEach(
+      async (comprobante) => await Comprobante.create(comprobante)
+    );
 
-		// Creando tabla de tipo de Carga
-		tipoDeCarga.forEach(async (carga) => await Carga.create(carga));
+    // Creando tabla de tipo de Carga
+    tipoDeCarga.forEach(async (carga) => await Carga.create(carga));
 
-		// Creando tabla de Modalidad
-		modalidades.forEach(async (modalidad) => await Modalidad.create(modalidad));
+    // Creando tabla de Modalidad
+    modalidades.forEach(async (modalidad) => await Modalidad.create(modalidad));
 
-		// Creando tabla de Forma de Pago
-		formasDePago.forEach(async (pago) => await FormaDePago.create(pago));
+    // Creando tabla de Forma de Pago
+    formasDePago.forEach(async (pago) => await FormaDePago.create(pago));
 
-		// Creando tabla de Roles del Cliente
-		rolesCliente.forEach(
-			async (rolCliente) => await RolCliente.create(rolCliente)
-		);
+    // Creando tabla de Roles del Cliente
+    rolesCliente.forEach(
+      async (rolCliente) => await RolCliente.create(rolCliente)
+    );
 
-		// Creando tabla de Tipo de Envío
-		tipoEnvio.forEach(async (envio) => await Envio.create(envio));
+    // Creando tabla de Tipo de Envío
+    tipoEnvio.forEach(async (envio) => await Envio.create(envio));
 
-		// Creando Tabla Entidades financieras
-		entidadesFinancieras.forEach(async (banco) => await Bancos.create(banco));
+    // Creando Tabla Entidades financieras
+    entidadesFinancieras.forEach(async (banco) => await Bancos.create(banco));
 
-		// Creando la tabla de status del Pedido
-		estadosPedido.forEach(async (status) => await Status.create(status));
+    // Creando la tabla de status del Pedido
+    estadosPedido.forEach(async (status) => await Status.create(status));
 
-		// Creando los Códigos Postales
-		codigosPostales.forEach((codigo) => CodigoPostal.create(codigo));
+    // Creando los Códigos Postales
+    codigosPostales.forEach((codigo) => CodigoPostal.create(codigo));
 
-		// Creando usuarios
-		users.forEach(async (user) => {
-			const roles = user.roles;
+    // Creando usuarios
+    users.forEach(async (user) => {
+      const roles = user.roles;
 
-			const usuario = await User.create(user);
-			await usuario.addRoles(roles);
-		});
+      const usuario = await User.create(user);
+      await usuario.addRoles(roles);
+    });
 
-		// Creando los MoBikers
-		mobikers.forEach(async (mobiker) => {
-			const distrito = mobiker.distrito;
-			const rangoInicial = 1;
+    // Creando los MoBikers
+    mobikers.forEach(async (mobiker) => {
+      const distrito = mobiker.distrito;
+      const rangoInicial = 1;
 
-			const nuevoMobiker = await Mobiker.create(mobiker);
-			await nuevoMobiker.setDistrito(distrito);
-			await nuevoMobiker.setRango(rangoInicial);
-		});
+      const nuevoMobiker = await Mobiker.create(mobiker);
+      await nuevoMobiker.setDistrito(distrito);
+      await nuevoMobiker.setRango(rangoInicial);
+    });
+  } catch (error) {
+    console.log(`Ha ocurrido un error al ejecutar la Seed: ${error.message}`);
+    console.log(error);
+  }
+};
 
-		// Creando los clientes
-		clientes.forEach(async (cliente) => {
-			const distrito = cliente.distrito;
-			const comprobante = cliente.comprobante;
-			const rolDelCliente = cliente.rol;
-			const tipoEnvio = cliente.tipoEnvio;
-			const tipoDeCarga = cliente.carga;
-			const pago = cliente.pago;
+const creadorClientes = async () => {
+  try {
+    // Creando los clientes
+    clientes.forEach(async (cliente) => {
+      try {
+        const distritoCliente = await Distrito.findOne({
+          where: {
+            distrito: cliente.distrito,
+          },
+        });
 
-			const nuevoCliente = await Cliente.create(cliente);
-			await nuevoCliente.setDistrito(distrito);
-			await nuevoCliente.setTipoDeComprobante(comprobante);
-			await nuevoCliente.setRolCliente(rolDelCliente);
-			await nuevoCliente.setTipoDeCarga(tipoDeCarga);
-			await nuevoCliente.setFormaDePago(pago);
-			await nuevoCliente.setTipoDeEnvio(tipoEnvio);
-		});
-	} catch (error) {
-		console.log(`Ha ocurrido un error al ejecutar la Seed: ${error.message}`);
-		console.log(error);
-	}
+        const comprobanteCliente = await Comprobante.findOne({
+          where: {
+            tipo: cliente.comprobante,
+          },
+        });
+
+        const rolDelCliente = await RolCliente.findOne({
+          where: {
+            rol: cliente.rol,
+          },
+        });
+
+        const tipoEnvioCliente = await Envio.findOne({
+          where: {
+            tipo: cliente.tipoEnvio,
+          },
+        });
+
+        const tipoDeCargaCliente = await Carga.findOne({
+          where: {
+            tipo: cliente.carga,
+          },
+        });
+
+        const pagoCliente = await FormaDePago.findOne({
+          where: {
+            pago: cliente.pago,
+          },
+        });
+        const nuevoCliente = await Cliente.create(cliente);
+
+        await nuevoCliente.setDistrito(distritoCliente);
+        await nuevoCliente.setTipoDeComprobante(comprobanteCliente);
+        await nuevoCliente.setRolCliente(rolDelCliente);
+        await nuevoCliente.setTipoDeCarga(tipoDeCargaCliente);
+        await nuevoCliente.setTipoDeEnvio(tipoEnvioCliente);
+        await nuevoCliente.setFormaDePago(pagoCliente);
+      } catch (error) {
+        console.log(`Error en la creación de Clientes: ${error.message}`);
+      }
+    });
+  } catch (error) {
+    console.log(`Ha ocurrido un error al ejecutar la Seed: ${error.message}`);
+    console.log(error);
+  }
 };
 
 ejecutarSeed();
+creadorClientes();
