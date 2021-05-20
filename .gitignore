@@ -3,4 +3,4 @@ node_modules
 .env
 requests
 
-src/models/seeders/
+seeders/
