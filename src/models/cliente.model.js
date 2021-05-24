@@ -11,7 +11,12 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING(100),
         allowNull: false,
       },
-      empresa: {
+      razonSocial: {
+        type: Sequelize.STRING(75),
+        allowNull: false,
+      },
+      razonComercial: {
+        // Empresa
         type: Sequelize.STRING(75),
         allowNull: false,
       },

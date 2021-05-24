@@ -18,7 +18,8 @@ module.exports = {
     try {
       let cliente = {
         contacto: req.body.contacto,
-        empresa: req.body.empresa,
+        razonSocial: req.body.razonSocial,
+        razonComercial: req.body.razonComercial,
         direccion: req.body.direccion,
         telefono: req.body.telefono,
         otroDato: req.body.otroDato,
@@ -239,7 +240,8 @@ module.exports = {
 
       let cliente = {
         contacto: req.body.contacto,
-        empresa: req.body.empresa,
+        razonSocial: req.body.razonSocial,
+        razonComercial: req.body.razonComercial,
         direccion: req.body.direccion,
         telefono: req.body.telefono,
         otroDato: req.body.otroDato,
