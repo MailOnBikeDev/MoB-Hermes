@@ -178,7 +178,7 @@ module.exports = {
           },
           {
             model: Cliente,
-            attributes: ["contacto", "empresa"],
+            attributes: ["contacto", "razonComercial"],
           },
           {
             model: Envio,
@@ -280,7 +280,7 @@ module.exports = {
         where: {
           [Op.or]: [
             { contacto: { [Op.like]: `%${query}%` } },
-            { empresa: { [Op.like]: `%${query}%` } },
+            { razonComercial: { [Op.like]: `%${query}%` } },
           ],
         },
         include: [
