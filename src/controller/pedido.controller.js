@@ -10,629 +10,632 @@ const Status = db.status;
 const Op = db.Sequelize.Op;
 
 const getPagination = (page, size) => {
-	const limit = size ? +size : 50;
-	const offset = page ? page * limit : 0;
+  const limit = size ? +size : 50;
+  const offset = page ? page * limit : 0;
 
-	return { limit, offset };
+  return { limit, offset };
 };
 const getPagingData = (data, page, limit) => {
-	const { count: totalPedidos, rows: pedidos } = data;
-	const currentPage = page ? +page : 0;
-	const totalPages = Math.ceil(totalPedidos / limit);
+  const { count: totalPedidos, rows: pedidos } = data;
+  const currentPage = page ? +page : 0;
+  const totalPages = Math.ceil(totalPedidos / limit);
 
-	return { totalPedidos, pedidos, totalPages, currentPage };
+  return { totalPedidos, pedidos, totalPages, currentPage };
 };
 
 module.exports = {
-	storagePedido: async (req, res) => {
-		try {
-			let pedido = {
-				fecha: req.body.fecha,
-				contactoRemitente: req.body.contactoRemitente,
-				empresaRemitente: req.body.empresaRemitente,
-				direccionRemitente: req.body.direccionRemitente,
-				distritoRemitente: req.body.distritoRemitente,
-				telefonoRemitente: req.body.telefonoRemitente,
-				otroDatoRemitente: req.body.otroDatoRemitente,
-				contactoConsignado: req.body.contactoConsignado,
-				empresaConsignado: req.body.empresaConsignado,
-				direccionConsignado: req.body.direccionConsignado,
-				telefonoConsignado: req.body.telefonoConsignado,
-				otroDatoConsignado: req.body.otroDatoConsignado,
-				tipoCarga: req.body.tipoCarga,
-				formaPago: req.body.formaPago,
-				tarifa: req.body.tarifa,
-				recaudo: req.body.recaudo,
-				tramite: req.body.tramite,
-				comision: req.body.comision,
-				distancia: req.body.distancia,
-				CO2Ahorrado: req.body.CO2Ahorrado,
-				ruido: req.body.ruido,
-				status: req.body.status,
-				statusFinanciero: req.body.statusFinanciero,
-				rolCliente: req.body.rolCliente,
-			};
+  storagePedido: async (req, res) => {
+    try {
+      let pedido = {
+        fecha: req.body.fecha,
+        contactoRemitente: req.body.contactoRemitente,
+        empresaRemitente: req.body.empresaRemitente,
+        direccionRemitente: req.body.direccionRemitente,
+        distritoRemitente: req.body.distritoRemitente,
+        telefonoRemitente: req.body.telefonoRemitente,
+        otroDatoRemitente: req.body.otroDatoRemitente,
+        contactoConsignado: req.body.contactoConsignado,
+        empresaConsignado: req.body.empresaConsignado,
+        direccionConsignado: req.body.direccionConsignado,
+        telefonoConsignado: req.body.telefonoConsignado,
+        otroDatoConsignado: req.body.otroDatoConsignado,
+        tipoCarga: req.body.tipoCarga,
+        formaPago: req.body.formaPago,
+        tarifa: req.body.tarifa,
+        recaudo: req.body.recaudo,
+        tramite: req.body.tramite,
+        comision: req.body.comision,
+        distancia: req.body.distancia,
+        CO2Ahorrado: req.body.CO2Ahorrado,
+        ruido: req.body.ruido,
+        status: req.body.status,
+        statusFinanciero: req.body.statusFinanciero,
+        rolCliente: req.body.rolCliente,
+      };
 
-			let distritoPedido = await Distrito.findOne({
-				where: {
-					distrito: req.body.distritoConsignado,
-				},
-			});
+      let distritoPedido = await Distrito.findOne({
+        where: {
+          distrito: req.body.distritoConsignado,
+        },
+      });
 
-			let mobiker = await Mobiker.findOne({
-				where: {
-					fullName: req.body.mobiker,
-				},
-			});
-			let tipoEnvio = await Envio.findOne({
-				where: {
-					tipo: req.body.tipoEnvio,
-				},
-			});
+      let mobiker = await Mobiker.findOne({
+        where: {
+          fullName: req.body.mobiker,
+        },
+      });
+      let tipoEnvio = await Envio.findOne({
+        where: {
+          tipo: req.body.tipoEnvio,
+        },
+      });
 
-			let modalidadPedido = await Modalidad.findOne({
-				where: {
-					tipo: req.body.modalidad,
-				},
-			});
+      let modalidadPedido = await Modalidad.findOne({
+        where: {
+          tipo: req.body.modalidad,
+        },
+      });
 
-			let clienteAsignado = await Cliente.findOne({
-				where: {
-					contacto: req.body.contactoRemitente,
-				},
-			});
+      let clienteAsignado = await Cliente.findOne({
+        where: {
+          contacto: req.body.contactoRemitente,
+        },
+      });
 
-			let estadoPedido = await Status.findOne({
-				where: {
-					id: req.body.status,
-				},
-			});
+      let estadoPedido = await Status.findOne({
+        where: {
+          id: req.body.status,
+        },
+      });
 
-			if (
-				distritoPedido &&
-				mobiker &&
-				tipoEnvio &&
-				modalidadPedido &&
-				clienteAsignado
-			) {
-				try {
-					let nuevoPedido = await Pedido.create(pedido);
+      if (
+        distritoPedido &&
+        mobiker &&
+        tipoEnvio &&
+        modalidadPedido &&
+        clienteAsignado
+      ) {
+        try {
+          let nuevoPedido = await Pedido.create(pedido);
 
-					await nuevoPedido.setDistrito(distritoPedido);
-					await nuevoPedido.setMobiker(mobiker);
-					await nuevoPedido.setTipoDeEnvio(tipoEnvio);
-					await nuevoPedido.setModalidad(modalidadPedido);
-					await nuevoPedido.setCliente(clienteAsignado);
-					await nuevoPedido.setStatus(estadoPedido);
+          await nuevoPedido.setDistrito(distritoPedido);
+          await nuevoPedido.setMobiker(mobiker);
+          await nuevoPedido.setTipoDeEnvio(tipoEnvio);
+          await nuevoPedido.setModalidad(modalidadPedido);
+          await nuevoPedido.setCliente(clienteAsignado);
+          await nuevoPedido.setStatus(estadoPedido);
 
-					res.json({ message: "¡Se ha creado el Pedido con éxito!" });
+          res.json({ message: "¡Se ha creado el Pedido con éxito!" });
 
-					// Asignar al MoBiker
-					let cantidadPedidosDelMoBiker = await Pedido.count({
-						where: {
-							[Op.and]: [
-								{ mobikerId: mobiker.id },
-								{ statusId: { [Op.between]: [4, 16] } },
-							],
-						},
-					});
+          // Asignar al MoBiker
+          let cantidadPedidosDelMoBiker = await Pedido.count({
+            where: {
+              [Op.and]: [
+                { mobikerId: mobiker.id },
+                { statusId: { [Op.between]: [4, 16] } },
+              ],
+            },
+          });
 
-					let kilometrosAsignadosMobiker = await Pedido.sum("distancia", {
-						where: {
-							[Op.and]: [
-								{ mobikerId: mobiker.id },
-								{ statusId: { [Op.between]: [4, 16] } },
-							],
-						},
-					});
+          let kilometrosAsignadosMobiker = await Pedido.sum("distancia", {
+            where: {
+              [Op.and]: [
+                { mobikerId: mobiker.id },
+                { statusId: { [Op.between]: [4, 16] } },
+              ],
+            },
+          });
 
-					let CO2AsignadosMobiker = await Pedido.sum("CO2Ahorrado", {
-						where: {
-							[Op.and]: [
-								{ mobikerId: mobiker.id },
-								{ statusId: { [Op.between]: [4, 16] } },
-							],
-						},
-					});
+          let CO2AsignadosMobiker = await Pedido.sum("CO2Ahorrado", {
+            where: {
+              [Op.and]: [
+                { mobikerId: mobiker.id },
+                { statusId: { [Op.between]: [4, 16] } },
+              ],
+            },
+          });
 
-					let ruidoAsignadosMobiker = await Pedido.sum("ruido", {
-						where: {
-							[Op.and]: [
-								{ mobikerId: mobiker.id },
-								{ statusId: { [Op.between]: [4, 16] } },
-							],
-						},
-					});
+          let ruidoAsignadosMobiker = await Pedido.sum("ruido", {
+            where: {
+              [Op.and]: [
+                { mobikerId: mobiker.id },
+                { statusId: { [Op.between]: [4, 16] } },
+              ],
+            },
+          });
 
-					await Mobiker.update(
-						{
-							biciEnvios: cantidadPedidosDelMoBiker,
-							kilometros: kilometrosAsignadosMobiker,
-							CO2Ahorrado: CO2AsignadosMobiker,
-							ruido: ruidoAsignadosMobiker,
-						},
-						{
-							where: { id: mobiker.id },
-						}
-					);
+          await Mobiker.update(
+            {
+              biciEnvios: cantidadPedidosDelMoBiker,
+              kilometros: kilometrosAsignadosMobiker,
+              CO2Ahorrado: CO2AsignadosMobiker,
+              ruido: ruidoAsignadosMobiker,
+            },
+            {
+              where: { id: mobiker.id },
+            }
+          );
 
-					// Asignar al Cliente
-					let cantidadPedidosDelCliente = await Pedido.count({
-						where: {
-							[Op.and]: [
-								{ clienteId: clienteAsignado.id },
-								{ statusId: { [Op.between]: [1, 16] } },
-							],
-						},
-					});
+          // Asignar al Cliente
+          let cantidadPedidosDelCliente = await Pedido.count({
+            where: {
+              [Op.and]: [
+                { clienteId: clienteAsignado.id },
+                { statusId: { [Op.between]: [1, 16] } },
+              ],
+            },
+          });
 
-					let kilometrosAsignados = await Pedido.sum("distancia", {
-						where: {
-							[Op.and]: [
-								{ clienteId: clienteAsignado.id },
-								{ statusId: { [Op.between]: [1, 16] } },
-							],
-						},
-					});
+          let kilometrosAsignados = await Pedido.sum("distancia", {
+            where: {
+              [Op.and]: [
+                { clienteId: clienteAsignado.id },
+                { statusId: { [Op.between]: [1, 16] } },
+              ],
+            },
+          });
 
-					let CO2Asignados = await Pedido.sum("CO2Ahorrado", {
-						where: {
-							[Op.and]: [
-								{ clienteId: clienteAsignado.id },
-								{ statusId: { [Op.between]: [1, 16] } },
-							],
-						},
-					});
+          let CO2Asignados = await Pedido.sum("CO2Ahorrado", {
+            where: {
+              [Op.and]: [
+                { clienteId: clienteAsignado.id },
+                { statusId: { [Op.between]: [1, 16] } },
+              ],
+            },
+          });
 
-					let ruidoAsignados = await Pedido.sum("ruido", {
-						where: {
-							[Op.and]: [
-								{ clienteId: clienteAsignado.id },
-								{ statusId: { [Op.between]: [1, 16] } },
-							],
-						},
-					});
+          let ruidoAsignados = await Pedido.sum("ruido", {
+            where: {
+              [Op.and]: [
+                { clienteId: clienteAsignado.id },
+                { statusId: { [Op.between]: [1, 16] } },
+              ],
+            },
+          });
 
-					await Cliente.update(
-						{
-							biciEnvios: cantidadPedidosDelCliente,
-							kilometros: kilometrosAsignados,
-							CO2Ahorrado: CO2Asignados,
-							ruido: ruidoAsignados,
-						},
-						{
-							where: { id: clienteAsignado.id },
-						}
-					);
-				} catch (err) {
-					res.status(500).send({ message: err.message });
-				}
-			} else {
-				res.json({ message: "¡Error! No se ha podido crear el pedido..." });
-			}
-		} catch (err) {
-			res.status(500).send({ message: err.message });
-		}
-	},
+          await Cliente.update(
+            {
+              biciEnvios: cantidadPedidosDelCliente,
+              kilometros: kilometrosAsignados,
+              CO2Ahorrado: CO2Asignados,
+              ruido: ruidoAsignados,
+            },
+            {
+              where: { id: clienteAsignado.id },
+            }
+          );
+        } catch (err) {
+          res.status(500).send({ message: err.message });
+        }
+      } else {
+        res.json({ message: "¡Error! No se ha podido crear el pedido..." });
+      }
+    } catch (err) {
+      res.status(500).send({ message: err.message });
+    }
+  },
 
-	// Mostrar todos los Pedidos por la fecha
-	indexPedidos: async (req, res) => {
-		try {
-			const { page, size, fecha } = req.query;
-			let condition = fecha ? { fecha: { [Op.like]: `%${fecha}%` } } : null;
-			const { limit, offset } = getPagination(page, size);
+  // Mostrar todos los Pedidos por la fecha
+  indexPedidos: async (req, res) => {
+    try {
+      const { page, size, fecha } = req.query;
+      let condition = fecha ? { fecha: { [Op.like]: `%${fecha}%` } } : null;
+      const { limit, offset } = getPagination(page, size);
 
-			const data = await Pedido.findAndCountAll({
-				where: condition,
-				limit,
-				offset,
-				order: [["id", "DESC"]],
-				include: [
-					{
-						model: Distrito,
-					},
-					{
-						model: Mobiker,
-						attributes: ["fullName"],
-					},
-					{
-						model: Cliente,
-						attributes: ["contacto", "empresa"],
-					},
-					{
-						model: Envio,
-					},
-					{
-						model: Modalidad,
-					},
-					{
-						model: Status,
-					},
-				],
-			});
+      const data = await Pedido.findAndCountAll({
+        where: condition,
+        limit,
+        offset,
+        order: [["id", "DESC"]],
+        include: [
+          {
+            model: Distrito,
+          },
+          {
+            model: Mobiker,
+            attributes: ["fullName"],
+          },
+          {
+            model: Cliente,
+            attributes: ["contacto", "razonComercial"],
+          },
+          {
+            model: Envio,
+          },
+          {
+            model: Modalidad,
+          },
+          {
+            model: Status,
+          },
+        ],
+      });
 
-			const pedidos = getPagingData(data, page, limit);
+      const pedidos = getPagingData(data, page, limit);
 
-			res.send(pedidos);
-		} catch (error) {
-			res.status(500).send({ message: error.message });
-		}
-	},
+      res.send(pedidos);
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+      console.log(
+        `Error al llamar los pedidos por rangos de Fechas: ${error.message}`
+      );
+    }
+  },
 
-	// Mostrar 1 Pedido por id
-	getPedidoById: async (req, res) => {
-		try {
-			const id = req.params.id;
+  // Mostrar 1 Pedido por id
+  getPedidoById: async (req, res) => {
+    try {
+      const id = req.params.id;
 
-			let pedido = await Pedido.findByPk(id, {
-				include: [
-					{
-						model: Distrito,
-					},
-					{
-						model: Mobiker,
-						attributes: ["fullName"],
-					},
-					{
-						model: Cliente,
-						attributes: ["contacto", "empresa"],
-					},
-					{
-						model: Envio,
-					},
-					{
-						model: Modalidad,
-					},
-					{
-						model: Status,
-					},
-				],
-			});
+      let pedido = await Pedido.findByPk(id, {
+        include: [
+          {
+            model: Distrito,
+          },
+          {
+            model: Mobiker,
+            attributes: ["fullName"],
+          },
+          {
+            model: Cliente,
+            attributes: ["contacto", "razonComercial"],
+          },
+          {
+            model: Envio,
+          },
+          {
+            model: Modalidad,
+          },
+          {
+            model: Status,
+          },
+        ],
+      });
 
-			if (!pedido) {
-				res.status(404).json({ msg: "No se ha encontrado el Pedido" });
-			} else {
-				res.json(pedido);
-			}
-		} catch (err) {
-			res.status(500).send({ message: err.message });
-		}
-	},
+      if (!pedido) {
+        res.status(404).json({ msg: "No se ha encontrado el Pedido" });
+      } else {
+        res.json(pedido);
+      }
+    } catch (err) {
+      res.status(500).send({ message: err.message });
+    }
+  },
 
-	// Editar Pedido
-	updatePedido: async (req, res) => {
-		try {
-			const id = req.params.id;
+  // Editar Pedido
+  updatePedido: async (req, res) => {
+    try {
+      const id = req.params.id;
 
-			let distritoPedido = await Distrito.findOne({
-				where: {
-					distrito: req.body.distritoConsignado,
-				},
-			});
+      let distritoPedido = await Distrito.findOne({
+        where: {
+          distrito: req.body.distritoConsignado,
+        },
+      });
 
-			let mobiker = await Mobiker.findOne({
-				where: {
-					fullName: req.body.mobiker,
-				},
-			});
+      let mobiker = await Mobiker.findOne({
+        where: {
+          fullName: req.body.mobiker,
+        },
+      });
 
-			let tipoEnvio = await Envio.findOne({
-				where: {
-					tipo: req.body.tipoEnvio,
-				},
-			});
+      let tipoEnvio = await Envio.findOne({
+        where: {
+          tipo: req.body.tipoEnvio,
+        },
+      });
 
-			let modalidadPedido = await Modalidad.findOne({
-				where: {
-					tipo: req.body.modalidad,
-				},
-			});
+      let modalidadPedido = await Modalidad.findOne({
+        where: {
+          tipo: req.body.modalidad,
+        },
+      });
 
-			let pedido = {
-				fecha: req.body.fecha,
-				contactoRemitente: req.body.contactoRemitente,
-				empresaRemitente: req.body.empresaRemitente,
-				direccionRemitente: req.body.direccionRemitente,
-				distritoRemitente: req.body.distritoRemitente,
-				telefonoRemitente: req.body.telefonoRemitente,
-				otroDatoRemitente: req.body.otroDatoRemitente,
-				contactoConsignado: req.body.contactoConsignado,
-				empresaConsignado: req.body.empresaConsignado,
-				direccionConsignado: req.body.direccionConsignado,
-				telefonoConsignado: req.body.telefonoConsignado,
-				otroDatoConsignado: req.body.otroDatoConsignado,
-				tipoCarga: req.body.tipoCarga,
-				formaPago: req.body.formaPago,
-				tarifa: req.body.tarifa,
-				recaudo: req.body.recaudo,
-				tramite: req.body.tramite,
-				comision: req.body.comision,
-				distancia: req.body.distancia,
-				CO2Ahorrado: req.body.CO2Ahorrado,
-				ruido: req.body.ruido,
-				statusId: req.body.status,
-				statusFinanciero: req.body.statusFinanciero,
-				distritoId: distritoPedido.id,
-				mobikerId: mobiker.id,
-				tipoDeEnvioId: tipoEnvio.id,
-				modalidadId: modalidadPedido.id,
-				rolCliente: req.body.rolCliente,
-			};
+      let pedido = {
+        fecha: req.body.fecha,
+        contactoRemitente: req.body.contactoRemitente,
+        empresaRemitente: req.body.empresaRemitente,
+        direccionRemitente: req.body.direccionRemitente,
+        distritoRemitente: req.body.distritoRemitente,
+        telefonoRemitente: req.body.telefonoRemitente,
+        otroDatoRemitente: req.body.otroDatoRemitente,
+        contactoConsignado: req.body.contactoConsignado,
+        empresaConsignado: req.body.empresaConsignado,
+        direccionConsignado: req.body.direccionConsignado,
+        telefonoConsignado: req.body.telefonoConsignado,
+        otroDatoConsignado: req.body.otroDatoConsignado,
+        tipoCarga: req.body.tipoCarga,
+        formaPago: req.body.formaPago,
+        tarifa: req.body.tarifa,
+        recaudo: req.body.recaudo,
+        tramite: req.body.tramite,
+        comision: req.body.comision,
+        distancia: req.body.distancia,
+        CO2Ahorrado: req.body.CO2Ahorrado,
+        ruido: req.body.ruido,
+        statusId: req.body.status,
+        statusFinanciero: req.body.statusFinanciero,
+        distritoId: distritoPedido.id,
+        mobikerId: mobiker.id,
+        tipoDeEnvioId: tipoEnvio.id,
+        modalidadId: modalidadPedido.id,
+        rolCliente: req.body.rolCliente,
+      };
 
-			let pedidoActualizado = await Pedido.update(pedido, {
-				where: { id: id },
-			});
+      let pedidoActualizado = await Pedido.update(pedido, {
+        where: { id: id },
+      });
 
-			if (pedidoActualizado) {
-				res.json({ message: "¡Se ha actualizado el Pedido con éxito!" });
+      if (pedidoActualizado) {
+        res.json({ message: "¡Se ha actualizado el Pedido con éxito!" });
 
-				// Asignar al MoBiker
-				let cantidadPedidosDelMoBiker = await Pedido.count({
-					where: {
-						[Op.and]: [
-							{ mobikerId: mobiker.id },
-							{ statusId: { [Op.between]: [4, 16] } },
-						],
-					},
-				});
+        // Asignar al MoBiker
+        let cantidadPedidosDelMoBiker = await Pedido.count({
+          where: {
+            [Op.and]: [
+              { mobikerId: mobiker.id },
+              { statusId: { [Op.between]: [4, 16] } },
+            ],
+          },
+        });
 
-				let kilometrosAsignadosMobiker = await Pedido.sum("distancia", {
-					where: {
-						[Op.and]: [
-							{ mobikerId: mobiker.id },
-							{ statusId: { [Op.between]: [4, 16] } },
-						],
-					},
-				});
+        let kilometrosAsignadosMobiker = await Pedido.sum("distancia", {
+          where: {
+            [Op.and]: [
+              { mobikerId: mobiker.id },
+              { statusId: { [Op.between]: [4, 16] } },
+            ],
+          },
+        });
 
-				let CO2AsignadosMobiker = await Pedido.sum("CO2Ahorrado", {
-					where: {
-						[Op.and]: [
-							{ mobikerId: mobiker.id },
-							{ statusId: { [Op.between]: [4, 16] } },
-						],
-					},
-				});
+        let CO2AsignadosMobiker = await Pedido.sum("CO2Ahorrado", {
+          where: {
+            [Op.and]: [
+              { mobikerId: mobiker.id },
+              { statusId: { [Op.between]: [4, 16] } },
+            ],
+          },
+        });
 
-				let ruidoAsignadosMobiker = await Pedido.sum("ruido", {
-					where: {
-						[Op.and]: [
-							{ mobikerId: mobiker.id },
-							{ statusId: { [Op.between]: [4, 16] } },
-						],
-					},
-				});
+        let ruidoAsignadosMobiker = await Pedido.sum("ruido", {
+          where: {
+            [Op.and]: [
+              { mobikerId: mobiker.id },
+              { statusId: { [Op.between]: [4, 16] } },
+            ],
+          },
+        });
 
-				await Mobiker.update(
-					{
-						biciEnvios: cantidadPedidosDelMoBiker,
-						kilometros: kilometrosAsignadosMobiker,
-						CO2Ahorrado: CO2AsignadosMobiker,
-						ruido: ruidoAsignadosMobiker,
-					},
-					{
-						where: { id: mobiker.id },
-					}
-				);
+        await Mobiker.update(
+          {
+            biciEnvios: cantidadPedidosDelMoBiker,
+            kilometros: kilometrosAsignadosMobiker,
+            CO2Ahorrado: CO2AsignadosMobiker,
+            ruido: ruidoAsignadosMobiker,
+          },
+          {
+            where: { id: mobiker.id },
+          }
+        );
 
-				// Asignar al Cliente
-				let clienteAsignado = await Cliente.findOne({
-					where: {
-						contacto: req.body.contactoRemitente,
-					},
-				});
+        // Asignar al Cliente
+        let clienteAsignado = await Cliente.findOne({
+          where: {
+            contacto: req.body.contactoRemitente,
+          },
+        });
 
-				let cantidadPedidosDelCliente = await Pedido.count({
-					where: {
-						[Op.and]: [
-							{ clienteId: clienteAsignado.id },
-							{ statusId: { [Op.between]: [1, 16] } },
-						],
-					},
-				});
+        let cantidadPedidosDelCliente = await Pedido.count({
+          where: {
+            [Op.and]: [
+              { clienteId: clienteAsignado.id },
+              { statusId: { [Op.between]: [1, 16] } },
+            ],
+          },
+        });
 
-				let kilometrosAsignados = await Pedido.sum("distancia", {
-					where: {
-						[Op.and]: [
-							{ clienteId: clienteAsignado.id },
-							{ statusId: { [Op.between]: [1, 16] } },
-						],
-					},
-				});
+        let kilometrosAsignados = await Pedido.sum("distancia", {
+          where: {
+            [Op.and]: [
+              { clienteId: clienteAsignado.id },
+              { statusId: { [Op.between]: [1, 16] } },
+            ],
+          },
+        });
 
-				let CO2Asignados = await Pedido.sum("CO2Ahorrado", {
-					where: {
-						[Op.and]: [
-							{ clienteId: clienteAsignado.id },
-							{ statusId: { [Op.between]: [1, 16] } },
-						],
-					},
-				});
+        let CO2Asignados = await Pedido.sum("CO2Ahorrado", {
+          where: {
+            [Op.and]: [
+              { clienteId: clienteAsignado.id },
+              { statusId: { [Op.between]: [1, 16] } },
+            ],
+          },
+        });
 
-				let ruidoAsignados = await Pedido.sum("ruido", {
-					where: {
-						[Op.and]: [
-							{ clienteId: clienteAsignado.id },
-							{ statusId: { [Op.between]: [1, 16] } },
-						],
-					},
-				});
+        let ruidoAsignados = await Pedido.sum("ruido", {
+          where: {
+            [Op.and]: [
+              { clienteId: clienteAsignado.id },
+              { statusId: { [Op.between]: [1, 16] } },
+            ],
+          },
+        });
 
-				await Cliente.update(
-					{
-						biciEnvios: cantidadPedidosDelCliente,
-						kilometros: kilometrosAsignados,
-						CO2Ahorrado: CO2Asignados,
-						ruido: ruidoAsignados,
-					},
-					{
-						where: { id: clienteAsignado.id },
-					}
-				);
-			} else {
-				res.json({
-					message: "¡Error! No se ha podido actualizar el Pedido...",
-				});
-			}
-		} catch (error) {
-			res.status(500).send({ message: error.message });
-		}
-	},
+        await Cliente.update(
+          {
+            biciEnvios: cantidadPedidosDelCliente,
+            kilometros: kilometrosAsignados,
+            CO2Ahorrado: CO2Asignados,
+            ruido: ruidoAsignados,
+          },
+          {
+            where: { id: clienteAsignado.id },
+          }
+        );
+      } else {
+        res.json({
+          message: "¡Error! No se ha podido actualizar el Pedido...",
+        });
+      }
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  },
 
-	// Cambiar la asignacion de un MoBiker y el estado del pedido
-	asignacionPedido: async (req, res) => {
-		try {
-			const id = req.params.id;
+  // Cambiar la asignacion de un MoBiker y el estado del pedido
+  asignacionPedido: async (req, res) => {
+    try {
+      const id = req.params.id;
 
-			let mobiker = await Mobiker.findOne({
-				where: {
-					fullName: req.body.mobiker,
-				},
-			});
+      let mobiker = await Mobiker.findOne({
+        where: {
+          fullName: req.body.mobiker,
+        },
+      });
 
-			let pedidoAsignado = {
-				mobikerId: mobiker.id,
-				statusId: req.body.status,
-			};
+      let pedidoAsignado = {
+        mobikerId: mobiker.id,
+        statusId: req.body.status,
+      };
 
-			let pedidoActualizado = await Pedido.update(pedidoAsignado, {
-				where: { id: id },
-			});
+      let pedidoActualizado = await Pedido.update(pedidoAsignado, {
+        where: { id: id },
+      });
 
-			if (pedidoActualizado) {
-				res.json({ message: "¡Se ha actualizado el Pedido con éxito!" });
-			} else {
-				res.json({
-					message: "¡Error! No se ha podido actualizar el Pedido...",
-				});
-			}
-		} catch (error) {
-			res.status(500).send({ message: error.message });
-		}
-	},
+      if (pedidoActualizado) {
+        res.json({ message: "¡Se ha actualizado el Pedido con éxito!" });
+      } else {
+        res.json({
+          message: "¡Error! No se ha podido actualizar el Pedido...",
+        });
+      }
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  },
 
-	// Buscar pedido por id, cliente, etc
-	searchPedido: async (req, res) => {
-		try {
-			const query = req.query.q;
+  // Buscar pedido por id, cliente, etc
+  searchPedido: async (req, res) => {
+    try {
+      const query = req.query.q;
 
-			let pedido = await Pedido.findAll({
-				where: {
-					[Op.or]: [
-						{ id: { [Op.like]: `%${query}%` } },
-						{ contactoConsignado: { [Op.like]: `%${query}%` } },
-						{ empresaConsignado: { [Op.like]: `%${query}%` } },
-						{ distritoRemitente: { [Op.like]: `%${query}%` } },
-						{ fecha: { [Op.like]: `%${query}%` } },
-					],
-				},
-				include: [
-					{
-						model: Distrito,
-					},
-					{
-						model: Mobiker,
-						attributes: ["fullName"],
-					},
-					{
-						model: Cliente,
-						attributes: ["contacto", "empresa"],
-					},
-					{
-						model: Envio,
-					},
-					{
-						model: Modalidad,
-					},
-					{
-						model: Status,
-					},
-				],
-			});
+      let pedido = await Pedido.findAll({
+        where: {
+          [Op.or]: [
+            { id: { [Op.like]: `%${query}%` } },
+            { contactoConsignado: { [Op.like]: `%${query}%` } },
+            { empresaConsignado: { [Op.like]: `%${query}%` } },
+            { distritoRemitente: { [Op.like]: `%${query}%` } },
+            { fecha: { [Op.like]: `%${query}%` } },
+          ],
+        },
+        include: [
+          {
+            model: Distrito,
+          },
+          {
+            model: Mobiker,
+            attributes: ["fullName"],
+          },
+          {
+            model: Cliente,
+            attributes: ["contacto", "razonComercial"],
+          },
+          {
+            model: Envio,
+          },
+          {
+            model: Modalidad,
+          },
+          {
+            model: Status,
+          },
+        ],
+      });
 
-			res.json(pedido);
-		} catch (error) {
-			res.status(500).send({ message: error.message });
-		}
-	},
+      res.json(pedido);
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  },
 
-	searchPedidoProgramados: async (req, res) => {
-		try {
-			let { desde, hasta } = req.query;
-			let condition = { fecha: { [Op.between]: [desde, hasta] } };
+  searchPedidoProgramados: async (req, res) => {
+    try {
+      let { desde, hasta } = req.query;
+      let condition = { fecha: { [Op.between]: [desde, hasta] } };
 
-			let pedido = await Pedido.findAll({
-				where: condition,
-				include: [
-					{
-						model: Distrito,
-					},
-					{
-						model: Mobiker,
-						attributes: ["fullName"],
-					},
-					{
-						model: Cliente,
-						attributes: ["contacto", "empresa"],
-					},
-					{
-						model: Envio,
-					},
-					{
-						model: Modalidad,
-					},
-					{
-						model: Status,
-					},
-				],
-			});
+      let pedido = await Pedido.findAll({
+        where: condition,
+        include: [
+          {
+            model: Distrito,
+          },
+          {
+            model: Mobiker,
+            attributes: ["fullName"],
+          },
+          {
+            model: Cliente,
+            attributes: ["contacto", "razonComercial"],
+          },
+          {
+            model: Envio,
+          },
+          {
+            model: Modalidad,
+          },
+          {
+            model: Status,
+          },
+        ],
+      });
 
-			res.json(pedido);
-		} catch (error) {
-			res.status(500).send({ message: error.message });
-		}
-	},
+      res.json(pedido);
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  },
 
-	getHistorialPedidos: async (req, res) => {
-		try {
-			let { desde, hasta, page, size } = req.query;
-			let condition = { fecha: { [Op.between]: [`%${desde}%`, `%${hasta}%`] } };
-			const { limit, offset } = getPagination(page, size);
+  getHistorialPedidos: async (req, res) => {
+    try {
+      let { desde, hasta, page, size } = req.query;
+      let condition = { fecha: { [Op.between]: [`%${desde}%`, `%${hasta}%`] } };
+      const { limit, offset } = getPagination(page, size);
 
-			const data = await Pedido.findAndCountAll({
-				where: condition,
-				limit,
-				offset,
-				order: [["id", "DESC"]],
-				include: [
-					{
-						model: Distrito,
-					},
-					{
-						model: Mobiker,
-						attributes: ["fullName"],
-					},
-					{
-						model: Cliente,
-						attributes: ["contacto", "empresa"],
-					},
-					{
-						model: Envio,
-					},
-					{
-						model: Modalidad,
-					},
-					{
-						model: Status,
-					},
-				],
-			});
+      const data = await Pedido.findAndCountAll({
+        where: condition,
+        limit,
+        offset,
+        order: [["id", "DESC"]],
+        include: [
+          {
+            model: Distrito,
+          },
+          {
+            model: Mobiker,
+            attributes: ["fullName"],
+          },
+          {
+            model: Cliente,
+            attributes: ["contacto", "razonComercial"],
+          },
+          {
+            model: Envio,
+          },
+          {
+            model: Modalidad,
+          },
+          {
+            model: Status,
+          },
+        ],
+      });
 
-			const pedidos = getPagingData(data, page, limit);
+      const pedidos = getPagingData(data, page, limit);
 
-			res.json(pedidos);
-		} catch (error) {
-			res.status(500).send({ message: error.message });
-		}
-	},
+      res.json(pedidos);
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  },
 };
