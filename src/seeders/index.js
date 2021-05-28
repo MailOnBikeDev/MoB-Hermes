@@ -24,6 +24,9 @@ const mobikers = require("./mobikers.seed");
 // Clientes
 const clientes = require("./clientes.seed");
 
+// Pedidos
+const pedidos = require("./pedidos.seed");
+
 // Roles del Usuario
 const roles = require("./tablas auxiliares/roles.seed");
 
@@ -118,6 +121,9 @@ const ejecutarSeed = async () => {
     await crearClientes();
 
     // Creando los Destinos Recurrentes
+
+    // Creando los Pedidos
+    await crearPedidos();
   } catch (error) {
     console.log(
       `Ha ocurrido un error en la ejecución de la Seed: ${error.message}`
@@ -143,7 +149,7 @@ const crearMobikers = async () => {
   try {
     mobikers.forEach(async (mobiker) => {
       const distrito = mobiker.distrito;
-      const rangoInicial = 1;
+      const rangoInicial = mobiker.rango;
 
       const nuevoMobiker = await Mobiker.create(mobiker);
       await nuevoMobiker.setDistrito(distrito);
@@ -180,6 +186,16 @@ const crearClientes = async () => {
     });
   } catch (error) {
     console.log(`Ocurrió un error al crear Usuarios: ${error.message}`);
+  }
+};
+
+const crearPedidos = async () => {
+  try {
+    pedidos.forEach(async () => {
+      console.log(pedido.id);
+    });
+  } catch (error) {
+    console.log(`Ocurrió un error al crear Pedidos: ${error.message}`);
   }
 };
 
