@@ -163,10 +163,7 @@ module.exports = {
       let pedidosDelCliente = await Pedido.findAll({
         order: [["id", "DESC"]],
         where: {
-          [Op.and]: [
-            { clienteId: id },
-            { statusId: { [Op.between]: [1, 16] } },
-          ],
+          [Op.and]: [{ clienteId: id }, { statusId: { [Op.between]: [1, 6] } }],
         },
         include: [
           {

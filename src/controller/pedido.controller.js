@@ -112,7 +112,7 @@ module.exports = {
             where: {
               [Op.and]: [
                 { mobikerId: mobiker.id },
-                { statusId: { [Op.between]: [4, 16] } },
+                { statusId: { [Op.between]: [4, 5] } },
               ],
             },
           });
@@ -121,7 +121,7 @@ module.exports = {
             where: {
               [Op.and]: [
                 { mobikerId: mobiker.id },
-                { statusId: { [Op.between]: [4, 16] } },
+                { statusId: { [Op.between]: [4, 5] } },
               ],
             },
           });
@@ -130,7 +130,7 @@ module.exports = {
             where: {
               [Op.and]: [
                 { mobikerId: mobiker.id },
-                { statusId: { [Op.between]: [4, 16] } },
+                { statusId: { [Op.between]: [4, 5] } },
               ],
             },
           });
@@ -139,7 +139,7 @@ module.exports = {
             where: {
               [Op.and]: [
                 { mobikerId: mobiker.id },
-                { statusId: { [Op.between]: [4, 16] } },
+                { statusId: { [Op.between]: [4, 5] } },
               ],
             },
           });
@@ -161,7 +161,7 @@ module.exports = {
             where: {
               [Op.and]: [
                 { clienteId: clienteAsignado.id },
-                { statusId: { [Op.between]: [1, 16] } },
+                { statusId: { [Op.between]: [1, 5] } },
               ],
             },
           });
@@ -170,7 +170,7 @@ module.exports = {
             where: {
               [Op.and]: [
                 { clienteId: clienteAsignado.id },
-                { statusId: { [Op.between]: [1, 16] } },
+                { statusId: { [Op.between]: [1, 5] } },
               ],
             },
           });
@@ -179,7 +179,7 @@ module.exports = {
             where: {
               [Op.and]: [
                 { clienteId: clienteAsignado.id },
-                { statusId: { [Op.between]: [1, 16] } },
+                { statusId: { [Op.between]: [1, 5] } },
               ],
             },
           });
@@ -188,7 +188,7 @@ module.exports = {
             where: {
               [Op.and]: [
                 { clienteId: clienteAsignado.id },
-                { statusId: { [Op.between]: [1, 16] } },
+                { statusId: { [Op.between]: [1, 5] } },
               ],
             },
           });
@@ -374,7 +374,7 @@ module.exports = {
           where: {
             [Op.and]: [
               { mobikerId: mobiker.id },
-              { statusId: { [Op.between]: [4, 16] } },
+              { statusId: { [Op.between]: [4, 5] } },
             ],
           },
         });
@@ -383,7 +383,7 @@ module.exports = {
           where: {
             [Op.and]: [
               { mobikerId: mobiker.id },
-              { statusId: { [Op.between]: [4, 16] } },
+              { statusId: { [Op.between]: [4, 5] } },
             ],
           },
         });
@@ -392,7 +392,7 @@ module.exports = {
           where: {
             [Op.and]: [
               { mobikerId: mobiker.id },
-              { statusId: { [Op.between]: [4, 16] } },
+              { statusId: { [Op.between]: [4, 5] } },
             ],
           },
         });
@@ -401,7 +401,7 @@ module.exports = {
           where: {
             [Op.and]: [
               { mobikerId: mobiker.id },
-              { statusId: { [Op.between]: [4, 16] } },
+              { statusId: { [Op.between]: [4, 5] } },
             ],
           },
         });
@@ -429,7 +429,7 @@ module.exports = {
           where: {
             [Op.and]: [
               { clienteId: clienteAsignado.id },
-              { statusId: { [Op.between]: [1, 16] } },
+              { statusId: { [Op.between]: [1, 5] } },
             ],
           },
         });
@@ -438,7 +438,7 @@ module.exports = {
           where: {
             [Op.and]: [
               { clienteId: clienteAsignado.id },
-              { statusId: { [Op.between]: [1, 16] } },
+              { statusId: { [Op.between]: [1, 5] } },
             ],
           },
         });
@@ -447,7 +447,7 @@ module.exports = {
           where: {
             [Op.and]: [
               { clienteId: clienteAsignado.id },
-              { statusId: { [Op.between]: [1, 16] } },
+              { statusId: { [Op.between]: [1, 5] } },
             ],
           },
         });
@@ -456,7 +456,7 @@ module.exports = {
           where: {
             [Op.and]: [
               { clienteId: clienteAsignado.id },
-              { statusId: { [Op.between]: [1, 16] } },
+              { statusId: { [Op.between]: [1, 5] } },
             ],
           },
         });

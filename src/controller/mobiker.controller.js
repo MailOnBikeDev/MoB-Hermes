@@ -134,7 +134,7 @@ module.exports = {
       const condition = {
         [Op.and]: [
           { mobikerId: id },
-          { statusId: { [Op.between]: [4, 16] } },
+          { statusId: { [Op.between]: [4, 5] } },
           { fecha: { [Op.between]: [desde, hasta] } },
         ],
       };
@@ -223,7 +223,7 @@ module.exports = {
       const condition = {
         [Op.and]: [
           { mobikerId: mobikerId },
-          { statusId: { [Op.between]: [4, 16] } },
+          { statusId: { [Op.between]: [4, 5] } },
           { fecha: { [Op.between]: [desde, hasta] } },
         ],
       };
