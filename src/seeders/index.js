@@ -123,7 +123,7 @@ const ejecutarSeed = async () => {
     // Creando los Destinos Recurrentes
 
     // Creando los Pedidos
-    await crearPedidos();
+    // await crearPedidos();
   } catch (error) {
     console.log(
       `Ha ocurrido un error en la ejecución de la Seed: ${error.message}`
@@ -189,15 +189,15 @@ const crearClientes = async () => {
   }
 };
 
-const crearPedidos = async () => {
-  try {
-    pedidos.forEach(async () => {
-      console.log(pedido.id);
-    });
-  } catch (error) {
-    console.log(`Ocurrió un error al crear Pedidos: ${error.message}`);
-  }
-};
+// const crearPedidos = async () => {
+//   try {
+//     pedidos.forEach(async () => {
+//       console.log(pedido.id);
+//     });
+//   } catch (error) {
+//     console.log(`Ocurrió un error al crear Pedidos: ${error.message}`);
+//   }
+// };
 
 // Funciones
 ejecutarSeed();
