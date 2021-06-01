@@ -65,6 +65,14 @@ const usuarios = [
     empresa: "Mail On Bike",
     roles: [2, 5],
   },
+  {
+    fullName: "Ilen Moya",
+    username: "imoya",
+    email: "imoya@dan.com",
+    password: bcrypt.hashSync("123123", 10),
+    empresa: "Mail On Bike",
+    roles: [2, 5],
+  },
 ];
 
 module.exports = usuarios;

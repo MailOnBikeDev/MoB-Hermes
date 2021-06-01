@@ -3,15 +3,15 @@ const config = require("../config/db.config");
 const Sequelize = require("sequelize");
 // Conexión a la Base de Datos
 const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
-	host: config.HOST,
-	dialect: config.dialect,
-	port: 3306,
-	pool: {
-		max: 5,
-		min: 0,
-		acquire: 30000,
-		idle: 10000,
-	},
+  host: config.HOST,
+  dialect: config.dialect,
+  port: 3306,
+  pool: {
+    max: 5,
+    min: 0,
+    acquire: 30000,
+    idle: 10000,
+  },
 });
 
 const db = {};
@@ -28,30 +28,30 @@ db.cliente = require("./cliente.model")(sequelize, Sequelize);
 
 // Tablas Auxiliares
 db.distrito = require("./tablas auxiliares/distrito.model")(
-	sequelize,
-	Sequelize
+  sequelize,
+  Sequelize
 );
 db.codigoPostal = require("./tablas auxiliares/codigoPostal.model")(
-	sequelize,
-	Sequelize
+  sequelize,
+  Sequelize
 );
 db.rango = require("./tablas auxiliares/rango.model")(sequelize, Sequelize);
 db.carga = require("./tablas auxiliares/carga.model")(sequelize, Sequelize);
 db.comprobante = require("./tablas auxiliares/comprobante.model")(
-	sequelize,
-	Sequelize
+  sequelize,
+  Sequelize
 );
 db.modalidad = require("./tablas auxiliares/modalidad.model")(
-	sequelize,
-	Sequelize
+  sequelize,
+  Sequelize
 );
 db.formaDePago = require("./tablas auxiliares/formaDePago.model")(
-	sequelize,
-	Sequelize
+  sequelize,
+  Sequelize
 );
 db.rolCliente = require("./tablas auxiliares/rolCliente.model")(
-	sequelize,
-	Sequelize
+  sequelize,
+  Sequelize
 );
 db.envio = require("./tablas auxiliares/envio.model")(sequelize, Sequelize);
 db.bancos = require("./tablas auxiliares/bancos.model")(sequelize, Sequelize);
@@ -59,14 +59,14 @@ db.status = require("./tablas auxiliares/status.model")(sequelize, Sequelize);
 
 // Associations
 db.role.belongsToMany(db.user, {
-	through: "user_roles",
-	foreignKey: "roleId",
-	otherKey: "userId",
+  through: "user_roles",
+  foreignKey: "roleId",
+  otherKey: "userId",
 });
 db.user.belongsToMany(db.role, {
-	through: "user_roles",
-	foreignKey: "userId",
-	otherKey: "roleId",
+  through: "user_roles",
+  foreignKey: "userId",
+  otherKey: "roleId",
 });
 
 // Relaciones Auxiliares
@@ -91,6 +91,9 @@ db.cliente.belongsTo(db.formaDePago);
 
 db.envio.hasOne(db.cliente);
 db.cliente.belongsTo(db.envio);
+
+db.user.hasOne(db.cliente, { through: "Operador", foreignKey: "userId" });
+db.cliente.belongsTo(db.user);
 // Fin relaciones de Clientes
 
 // Relaciones de MoBikers
@@ -119,6 +122,9 @@ db.pedido.belongsTo(db.envio);
 
 db.status.hasOne(db.pedido);
 db.pedido.belongsTo(db.status);
+
+db.user.hasOne(db.pedido, { through: "Operador", foreignKey: "userId" });
+db.pedido.belongsTo(db.user);
 // Fin relaciones de Pedidos
 
 db.ROLES = ["administrador", "operador", "auditor", "cliente", "mobiker"];

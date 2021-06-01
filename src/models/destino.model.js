@@ -27,5 +27,5 @@ module.exports = (sequelize, Sequelize) => {
       tableName: "destinos_Recurrentes",
     }
   );
-  return Destinos;
+  return Destino;
 };

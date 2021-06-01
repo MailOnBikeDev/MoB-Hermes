@@ -61,6 +61,18 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.FLOAT(5),
         defaultValue: 0,
       },
+      banco: {
+        type: Sequelize.STRING(45),
+        allowNull: true,
+      },
+      tipoCuenta: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+      },
+      numeroCuentaBancaria: {
+        type: Sequelize.BIGINT(14),
+        allowNull: true,
+      },
     },
     {
       tableName: "clientes",

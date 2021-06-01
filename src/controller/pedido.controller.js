@@ -49,7 +49,6 @@ module.exports = {
         CO2Ahorrado: req.body.CO2Ahorrado,
         ruido: req.body.ruido,
         status: req.body.status,
-        statusFinanciero: req.body.statusFinanciero,
         rolCliente: req.body.rolCliente,
       };
 
@@ -88,6 +87,12 @@ module.exports = {
         },
       });
 
+      let operador = await User.findOne({
+        where: {
+          username: req.body.operador,
+        },
+      });
+
       if (
         distritoPedido &&
         mobiker &&
@@ -104,6 +109,7 @@ module.exports = {
           await nuevoPedido.setModalidad(modalidadPedido);
           await nuevoPedido.setCliente(clienteAsignado);
           await nuevoPedido.setStatus(estadoPedido);
+          await nuevoPedido.setUser(operador);
 
           res.json({ message: "¡Se ha creado el Pedido con éxito!" });
 
