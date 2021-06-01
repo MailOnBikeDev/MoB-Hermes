@@ -533,7 +533,6 @@ module.exports = {
             { contactoConsignado: { [Op.like]: `%${query}%` } },
             { empresaConsignado: { [Op.like]: `%${query}%` } },
             { distritoRemitente: { [Op.like]: `%${query}%` } },
-            { fecha: { [Op.like]: `%${query}%` } },
           ],
         },
         include: [
