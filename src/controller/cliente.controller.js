@@ -13,6 +13,20 @@ const Status = db.status;
 
 const Op = db.Sequelize.Op;
 
+const getPagination = (page, size) => {
+  const limit = size ? +size : 50;
+  const offset = page ? page * limit : 0;
+
+  return { limit, offset };
+};
+const getPagingData = (data, page, limit) => {
+  const { count: totalPedidos, rows: pedidos } = data;
+  const currentPage = page ? +page : 0;
+  const totalPages = Math.ceil(totalPedidos / limit);
+
+  return { totalPedidos, pedidos, totalPages, currentPage };
+};
+
 module.exports = {
   storageCliente: async (req, res) => {
     try {
@@ -151,19 +165,68 @@ module.exports = {
       }
     } catch (error) {
       res.status(500).send({
-        message: `Error, no se encontró el cliente con el id: ${this.id}`,
+        message: `Error, no se encontró el cliente con el id: ${id}`,
       });
     }
   },
 
   getPedidosDelCliente: async (req, res) => {
     try {
+      let { desde, hasta, id, page, size } = req.query;
+      const condition = {
+        [Op.and]: [
+          { clienteId: id },
+          { statusId: { [Op.between]: [1, 5] } },
+          { fecha: { [Op.between]: [desde, hasta] } },
+        ],
+      };
+      const { limit, offset } = getPagination(page, size);
+
+      let data = await Pedido.findAndCountAll({
+        order: [["id", "DESC"]],
+        where: condition,
+        limit,
+        offset,
+        include: [
+          {
+            model: Distrito,
+          },
+          {
+            model: Mobiker,
+            attributes: ["fullName"],
+          },
+          {
+            model: Cliente,
+            attributes: ["contacto", "razonComercial"],
+          },
+          {
+            model: Envio,
+          },
+          {
+            model: Modalidad,
+          },
+          {
+            model: Status,
+          },
+        ],
+      });
+
+      const pedidosDelMobiker = getPagingData(data, page, limit);
+
+      res.json(pedidosDelMobiker);
+    } catch (err) {
+      res.status(500).send({ message: err.message });
+    }
+  },
+
+  getPedidosDelClienteById: async (req, res) => {
+    try {
       const id = req.params.id;
 
       let pedidosDelCliente = await Pedido.findAll({
         order: [["id", "DESC"]],
         where: {
-          [Op.and]: [{ clienteId: id }, { statusId: { [Op.between]: [1, 6] } }],
+          [Op.and]: [{ clienteId: id }, { statusId: { [Op.between]: [1, 5] } }],
         },
         include: [
           {
