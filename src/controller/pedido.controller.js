@@ -6,6 +6,7 @@ const Cliente = db.cliente;
 const Envio = db.envio;
 const Modalidad = db.modalidad;
 const Status = db.status;
+const User = db.user;
 
 const Op = db.Sequelize.Op;
 

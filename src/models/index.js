@@ -92,7 +92,7 @@ db.cliente.belongsTo(db.formaDePago);
 db.envio.hasOne(db.cliente);
 db.cliente.belongsTo(db.envio);
 
-db.user.hasOne(db.cliente, { through: "Operador", foreignKey: "userId" });
+db.user.hasMany(db.cliente);
 db.cliente.belongsTo(db.user);
 // Fin relaciones de Clientes
 
@@ -123,7 +123,7 @@ db.pedido.belongsTo(db.envio);
 db.status.hasOne(db.pedido);
 db.pedido.belongsTo(db.status);
 
-db.user.hasOne(db.pedido, { through: "Operador", foreignKey: "userId" });
+db.user.hasMany(db.pedido);
 db.pedido.belongsTo(db.user);
 // Fin relaciones de Pedidos
 
