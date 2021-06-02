@@ -6,11 +6,14 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.DATE,
         allowNull: false,
         get() {
-          return new Date(this.getDataValue("fecha"));
+          return new Date(this.getDataValue("fecha"))
+            .toISOString()
+            .split("T")[0];
         },
         set(fecha) {
           this.setDataValue(
             "fecha",
+            // new Date(fecha).toISOString()
             new Date(fecha).toISOString().split("T")[0]
           );
         },
