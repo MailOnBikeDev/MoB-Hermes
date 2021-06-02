@@ -11,9 +11,14 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING(100),
         allowNull: false,
       },
-      empresa: {
+      razonSocial: {
         type: Sequelize.STRING(75),
-        allowNull: false,
+        allowNull: true,
+      },
+      razonComercial: {
+        // Empresa
+        type: Sequelize.STRING(75),
+        allowNull: true,
       },
       direccion: {
         type: Sequelize.STRING(150),
@@ -55,6 +60,18 @@ module.exports = (sequelize, Sequelize) => {
       ruido: {
         type: Sequelize.FLOAT(5),
         defaultValue: 0,
+      },
+      banco: {
+        type: Sequelize.STRING(45),
+        allowNull: true,
+      },
+      tipoCuenta: {
+        type: Sequelize.STRING(20),
+        allowNull: true,
+      },
+      numeroCuentaBancaria: {
+        type: Sequelize.BIGINT(14),
+        allowNull: true,
       },
     },
     {

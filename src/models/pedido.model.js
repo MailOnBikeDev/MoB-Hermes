@@ -95,9 +95,15 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.FLOAT(3),
         allowNull: false,
       },
-      statusFinanciero: {
-        type: Sequelize.INTEGER(1),
-        allowNull: false,
+      compensado: {
+        type: Sequelize.BOOLEAN,
+        allowNull: true,
+        defaultValue: false,
+      },
+      facturado: {
+        type: Sequelize.BOOLEAN,
+        allowNull: true,
+        defaultValue: false,
       },
       rolCliente: {
         type: Sequelize.STRING(15),
