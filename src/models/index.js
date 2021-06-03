@@ -56,6 +56,7 @@ db.rolCliente = require("./tablas auxiliares/rolCliente.model")(
 db.envio = require("./tablas auxiliares/envio.model")(sequelize, Sequelize);
 db.bancos = require("./tablas auxiliares/bancos.model")(sequelize, Sequelize);
 db.status = require("./tablas auxiliares/status.model")(sequelize, Sequelize);
+db.empresa = require("./empresa.model")(sequelize, Sequelize);
 
 // Associations
 db.role.belongsToMany(db.user, {

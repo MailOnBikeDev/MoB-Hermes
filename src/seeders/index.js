@@ -14,6 +14,7 @@ const RolCliente = db.rolCliente;
 const Envio = db.envio;
 const Bancos = db.bancos;
 const Status = db.status;
+const Empresa = db.empresa;
 
 // Usuarios
 const usuarios = require("./usuarios.seed");
@@ -60,6 +61,9 @@ const estadosPedido = require("./tablas auxiliares/estadosPedido.seed");
 // Distritos
 const distritos = require("./tablas auxiliares/distritos.seed");
 
+// Empresas
+const empresas = require("./empresas.seed");
+
 // Códigos Postales
 const codigosPostales = require("./tablas auxiliares/codigosPostales.seed");
 
@@ -105,6 +109,9 @@ const ejecutarSeed = async () => {
 
     // Creando la tabla de status del Pedido
     estadosPedido.forEach(async (status) => await Status.create(status));
+
+    // Creando la tabla de status del Pedido
+    empresas.forEach(async (empresa) => await Empresa.create(empresa));
 
     // Creando los Códigos Postales
     codigosPostales.forEach(
@@ -177,12 +184,17 @@ const crearClientes = async () => {
 
       const nuevoCliente = await Cliente.create(cliente);
 
+      const operador = await User.findOne({
+        where: { username: cliente.operador },
+      });
+
       await nuevoCliente.setDistrito(distrito);
       await nuevoCliente.setTipoDeComprobante(comprobante);
       await nuevoCliente.setRolCliente(rolDelCliente);
       await nuevoCliente.setTipoDeCarga(tipoDeCarga);
       await nuevoCliente.setFormaDePago(pago);
       await nuevoCliente.setTipoDeEnvio(tipoEnvio);
+      await nuevoCliente.setUser(operador);
     });
   } catch (error) {
     console.log(`Ocurrió un error al crear Usuarios: ${error.message}`);
