@@ -25,7 +25,7 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       telefono: {
-        type: Sequelize.INTEGER(9),
+        type: Sequelize.STRING(35),
         allowNull: false,
       },
       otroDato: {
@@ -42,7 +42,7 @@ module.exports = (sequelize, Sequelize) => {
         },
       },
       ruc: {
-        type: Sequelize.BIGINT(11),
+        type: Sequelize.STRING(11),
         allowNull: true,
       },
       biciEnvios: {

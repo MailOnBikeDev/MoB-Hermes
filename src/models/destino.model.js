@@ -15,7 +15,7 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       telefono: {
-        type: Sequelize.INTEGER(9),
+        type: Sequelize.STRING(12),
         allowNull: true,
       },
       otroDato: {

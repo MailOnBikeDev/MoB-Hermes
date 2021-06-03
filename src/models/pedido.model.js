@@ -35,7 +35,7 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       telefonoRemitente: {
-        type: Sequelize.INTEGER(9),
+        type: Sequelize.STRING(35),
         allowNull: false,
       },
       otroDatoRemitente: {
@@ -55,7 +55,7 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       telefonoConsignado: {
-        type: Sequelize.INTEGER(9),
+        type: Sequelize.STRING(35),
         allowNull: false,
       },
       otroDatoConsignado: {
