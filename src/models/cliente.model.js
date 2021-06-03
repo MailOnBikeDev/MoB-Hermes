@@ -18,7 +18,7 @@ module.exports = (sequelize, Sequelize) => {
       razonComercial: {
         // Empresa
         type: Sequelize.STRING(75),
-        allowNull: true,
+        allowNull: false,
       },
       direccion: {
         type: Sequelize.STRING(150),
