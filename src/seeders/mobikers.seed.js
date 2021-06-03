@@ -664,7 +664,7 @@ const mobikers = [
   {
     nombres: "Joan Manuel",
     apellidos: "Dávila",
-    fullName: "Joan Manuel Dávila",
+    fullName: "Joan Dávila",
     telefono: 946994835,
     telegram: "Mob27",
     direccion: "Street27",

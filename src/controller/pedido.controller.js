@@ -226,13 +226,7 @@ module.exports = {
   indexPedidos: async (req, res) => {
     try {
       const { page, size, fecha } = req.query;
-      let condition = fecha
-        ? {
-            fecha: {
-              [Op.like]: `%${fecha}%`,
-            },
-          }
-        : null;
+      let condition = { fecha: { [Op.startsWith]: `${fecha}` } };
       const { limit, offset } = getPagination(page, size);
 
       const data = await Pedido.findAndCountAll({
