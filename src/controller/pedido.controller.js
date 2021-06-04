@@ -78,7 +78,7 @@ module.exports = {
 
       let clienteAsignado = await Cliente.findOne({
         where: {
-          contacto: req.body.contactoRemitente,
+          contacto: req.body.empresaRemitente,
         },
       });
 

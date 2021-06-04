@@ -2,6 +2,7 @@ const db = require("../models/index");
 const User = db.user;
 const Mobiker = db.mobiker;
 const Cliente = db.cliente;
+const Pedido = db.pedido;
 const Role = db.role;
 const Distrito = db.distrito;
 const CodigoPostal = db.codigoPostal;
@@ -70,7 +71,7 @@ const codigosPostales = require("./tablas auxiliares/codigosPostales.seed");
 //
 const ejecutarSeed = async () => {
   try {
-    await db.sequelize.sync({ force: true });
+    await db.sequelize.sync({ force: false });
     console.log("Borrando data y creando nuevas tablas...");
 
     // Creando roles
@@ -130,7 +131,7 @@ const ejecutarSeed = async () => {
     // Creando los Destinos Recurrentes
 
     // Creando los Pedidos
-    // await crearPedidos();
+    await crearPedidos();
   } catch (error) {
     console.log(
       `Ha ocurrido un error en la ejecución de la Seed: ${error.message}`
@@ -153,37 +154,32 @@ const crearUsuarios = async () => {
 };
 
 const crearMobikers = async () => {
-  try {
-    mobikers.forEach(async (mobiker) => {
+  mobikers.forEach(async (mobiker) => {
+    try {
       const distrito = mobiker.distrito;
       const rangoInicial = mobiker.rango;
 
       const nuevoMobiker = await Mobiker.create(mobiker);
       await nuevoMobiker.setDistrito(distrito);
       await nuevoMobiker.setRango(rangoInicial);
-    });
-  } catch (error) {
-    console.log(`Ocurrió un error al crear Mobikers: ${error.message}`);
-  }
+    } catch (error) {
+      console.log(`Ocurrió un error al crear Mobikers: ${error.message}`);
+      console.log(error);
+    }
+  });
 };
 
 const crearClientes = async () => {
-  try {
-    clientes.forEach(async (cliente) => {
+  orEach(async (cliente) => {
+    try {
       const distrito = cliente.distrito;
-
       const comprobante = cliente.comprobante;
-
       const rolDelCliente = cliente.rol;
-
       const tipoEnvio = cliente.tipoEnvio;
-
       const tipoDeCarga = cliente.carga;
-
       const pago = cliente.pago;
 
       const nuevoCliente = await Cliente.create(cliente);
-
       const operador = await User.findOne({
         where: { username: cliente.operador },
       });
@@ -195,21 +191,50 @@ const crearClientes = async () => {
       await nuevoCliente.setFormaDePago(pago);
       await nuevoCliente.setTipoDeEnvio(tipoEnvio);
       await nuevoCliente.setUser(operador);
-    });
-  } catch (error) {
-    console.log(`Ocurrió un error al crear Usuarios: ${error.message}`);
-  }
+    } catch (error) {
+      console.log(`Ocurrió un error al crear Usuarios: ${error.message}`);
+      console.log(error);
+    }
+  });
 };
 
-// const crearPedidos = async () => {
-//   try {
-//     pedidos.forEach(async () => {
-//       console.log(pedido.id);
-//     });
-//   } catch (error) {
-//     console.log(`Ocurrió un error al crear Pedidos: ${error.message}`);
-//   }
-// };
+const crearPedidos = async () => {
+  pedidos.forEach(async (pedido) => {
+    try {
+      pedido.fecha = new Date(pedido.fecha.split("/").reverse().join("-"))
+        .toISOString()
+        .split("T")[0];
+      const distritoPedido = pedido.distritoId;
+      const tipoEnvio = pedido.tipoDeEnvioId;
+      const modalidadPedido = pedido.modalidadId;
+      const clienteAsignado = pedido.empresaRemitente;
+      const estadoPedido = pedido.statusId;
+
+      const nuevoPedido = await Pedido.create(pedido);
+      const mobiker = await Mobiker.findOne({
+        where: {
+          fullName: pedido.mobiker,
+        },
+      });
+      const operador = await User.findOne({
+        where: {
+          username: pedido.operador,
+        },
+      });
+
+      await nuevoPedido.setMobiker(mobiker);
+      await nuevoPedido.setUser(operador);
+      await nuevoPedido.setDistrito(distritoPedido);
+      await nuevoPedido.setTipoDeEnvio(tipoEnvio);
+      await nuevoPedido.setModalidad(modalidadPedido);
+      await nuevoPedido.setCliente(clienteAsignado);
+      await nuevoPedido.setStatus(estadoPedido);
+    } catch (error) {
+      console.log(`Ocurrió un error al crear Pedidos: ${error.message}`);
+      console.log(error);
+    }
+  });
+};
 
 // Funciones
 ejecutarSeed();
