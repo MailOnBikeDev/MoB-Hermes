@@ -25,6 +25,7 @@ module.exports = (sequelize, Sequelize) => {
       },
       telegram: {
         type: Sequelize.STRING(50),
+        allowNull: false,
       },
       direccion: {
         type: Sequelize.STRING(150),
@@ -32,9 +33,11 @@ module.exports = (sequelize, Sequelize) => {
       },
       tipoDocumento: {
         type: Sequelize.STRING(50),
+        allowNull: true,
       },
       numeroDocumento: {
         type: Sequelize.STRING(10),
+        allowNull: true,
       },
       email: {
         type: Sequelize.STRING(50),
