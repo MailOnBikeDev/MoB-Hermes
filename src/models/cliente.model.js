@@ -18,14 +18,14 @@ module.exports = (sequelize, Sequelize) => {
       razonComercial: {
         // Empresa
         type: Sequelize.STRING(75),
-        allowNull: true,
+        allowNull: false,
       },
       direccion: {
         type: Sequelize.STRING(150),
         allowNull: false,
       },
       telefono: {
-        type: Sequelize.INTEGER(9),
+        type: Sequelize.STRING(35),
         allowNull: false,
       },
       otroDato: {
@@ -42,7 +42,7 @@ module.exports = (sequelize, Sequelize) => {
         },
       },
       ruc: {
-        type: Sequelize.BIGINT(11),
+        type: Sequelize.STRING(11),
         allowNull: true,
       },
       biciEnvios: {

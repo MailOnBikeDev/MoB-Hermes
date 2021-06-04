@@ -20,11 +20,12 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       telefono: {
-        type: Sequelize.INTEGER(9),
+        type: Sequelize.STRING(12),
         allowNull: false,
       },
       telegram: {
         type: Sequelize.STRING(50),
+        allowNull: false,
       },
       direccion: {
         type: Sequelize.STRING(150),
@@ -32,9 +33,11 @@ module.exports = (sequelize, Sequelize) => {
       },
       tipoDocumento: {
         type: Sequelize.STRING(50),
+        allowNull: true,
       },
       numeroDocumento: {
         type: Sequelize.STRING(10),
+        allowNull: true,
       },
       email: {
         type: Sequelize.STRING(50),
