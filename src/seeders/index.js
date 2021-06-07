@@ -132,9 +132,6 @@ const ejecutarSeed = async () => {
 
     // Creando los Pedidos
     await crearPedidos();
-
-    // Asignar al Cliente
-    await contarPedidosCliente();
   } catch (error) {
     console.log(
       `Ha ocurrido un error en la ejecución de la Seed: ${error.message}`
@@ -238,45 +235,6 @@ const crearPedidos = async () => {
       await nuevoPedido.setStatus(estadoPedido);
     } catch (error) {
       console.log(`Ocurrió un error al crear Pedidos: ${error.message}`);
-      console.log(error);
-    }
-  });
-};
-
-const contarPedidosCliente = async () => {
-  clientes.forEach(async (cliente) => {
-    try {
-      let cantidadPedidosDelCliente = await Pedido.count({
-        where: { clienteId: cliente.id },
-      });
-
-      let kilometrosAsignados = await Pedido.sum("distancia", {
-        where: { clienteId: cliente.id },
-      });
-
-      let CO2Asignados = await Pedido.sum("CO2Ahorrado", {
-        where: { clienteId: cliente.id },
-      });
-
-      let ruidoAsignados = await Pedido.sum("ruido", {
-        where: { clienteId: cliente.id },
-      });
-
-      await Cliente.update(
-        {
-          biciEnvios: cantidadPedidosDelCliente,
-          kilometros: kilometrosAsignados,
-          CO2Ahorrado: CO2Asignados,
-          ruido: ruidoAsignados,
-        },
-        {
-          where: { id: cliente.id },
-        }
-      );
-    } catch (error) {
-      console.log(
-        `Ocurrió un error al asignar los Pedidos al Cliente: ${error.message}`
-      );
       console.log(error);
     }
   });
