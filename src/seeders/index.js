@@ -71,7 +71,7 @@ const codigosPostales = require("./tablas auxiliares/codigosPostales.seed");
 //
 const ejecutarSeed = async () => {
   try {
-    await db.sequelize.sync({ force: false });
+    await db.sequelize.sync({ force: true });
     console.log("Borrando data y creando nuevas tablas...");
 
     // Creando roles
@@ -132,6 +132,9 @@ const ejecutarSeed = async () => {
 
     // Creando los Pedidos
     await crearPedidos();
+
+    // Asignar al Cliente
+    await contarPedidosCliente();
   } catch (error) {
     console.log(
       `Ha ocurrido un error en la ejecución de la Seed: ${error.message}`
@@ -170,7 +173,7 @@ const crearMobikers = async () => {
 };
 
 const crearClientes = async () => {
-  orEach(async (cliente) => {
+  clientes.forEach(async (cliente) => {
     try {
       const distrito = cliente.distrito;
       const comprobante = cliente.comprobante;
@@ -207,7 +210,6 @@ const crearPedidos = async () => {
       const distritoPedido = pedido.distritoId;
       const tipoEnvio = pedido.tipoDeEnvioId;
       const modalidadPedido = pedido.modalidadId;
-      const clienteAsignado = pedido.empresaRemitente;
       const estadoPedido = pedido.statusId;
 
       const nuevoPedido = await Pedido.create(pedido);
@@ -221,6 +223,11 @@ const crearPedidos = async () => {
           username: pedido.operador,
         },
       });
+      const clienteAsignado = await Cliente.findOne({
+        where: {
+          razonComercial: pedido.empresaRemitente,
+        },
+      });
 
       await nuevoPedido.setMobiker(mobiker);
       await nuevoPedido.setUser(operador);
@@ -231,6 +238,45 @@ const crearPedidos = async () => {
       await nuevoPedido.setStatus(estadoPedido);
     } catch (error) {
       console.log(`Ocurrió un error al crear Pedidos: ${error.message}`);
+      console.log(error);
+    }
+  });
+};
+
+const contarPedidosCliente = async () => {
+  clientes.forEach(async (cliente) => {
+    try {
+      let cantidadPedidosDelCliente = await Pedido.count({
+        where: { clienteId: cliente.id },
+      });
+
+      let kilometrosAsignados = await Pedido.sum("distancia", {
+        where: { clienteId: cliente.id },
+      });
+
+      let CO2Asignados = await Pedido.sum("CO2Ahorrado", {
+        where: { clienteId: cliente.id },
+      });
+
+      let ruidoAsignados = await Pedido.sum("ruido", {
+        where: { clienteId: cliente.id },
+      });
+
+      await Cliente.update(
+        {
+          biciEnvios: cantidadPedidosDelCliente,
+          kilometros: kilometrosAsignados,
+          CO2Ahorrado: CO2Asignados,
+          ruido: ruidoAsignados,
+        },
+        {
+          where: { id: cliente.id },
+        }
+      );
+    } catch (error) {
+      console.log(
+        `Ocurrió un error al asignar los Pedidos al Cliente: ${error.message}`
+      );
       console.log(error);
     }
   });

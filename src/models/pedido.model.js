@@ -3,7 +3,7 @@ module.exports = (sequelize, Sequelize) => {
     "pedidos",
     {
       fecha: {
-        type: Sequelize.DATE,
+        type: Sequelize.DATEONLY,
         allowNull: false,
         get() {
           return new Date(this.getDataValue("fecha"))
