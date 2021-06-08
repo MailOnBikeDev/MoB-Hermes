@@ -11,8 +11,7 @@ module.exports = (sequelize, Sequelize) => {
         set(fecha) {
           this.setDataValue(
             "fecha",
-            // new Date(fecha).toISOString()
-            new Date(fecha).toDateString()
+            new Date(fecha).toISOString().split("T")[0]
           );
         },
       },

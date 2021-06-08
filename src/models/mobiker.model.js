@@ -93,12 +93,30 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       fechaNacimiento: {
-        type: Sequelize.DATE,
+        type: Sequelize.DATEONLY,
         allowNull: true,
+        get() {
+          return this.getDataValue("fechaNacimiento");
+        },
+        set(fecha) {
+          this.setDataValue(
+            "fechaNacimiento",
+            new Date(fecha).toISOString().split("T")[0]
+          );
+        },
       },
       fechaIngreso: {
-        type: Sequelize.DATE,
+        type: Sequelize.DATEONLY,
         allowNull: true,
+        get() {
+          return this.getDataValue("fechaIngreso");
+        },
+        set(fecha) {
+          this.setDataValue(
+            "fechaIngreso",
+            new Date(fecha).toISOString().split("T")[0]
+          );
+        },
       },
     },
     {
