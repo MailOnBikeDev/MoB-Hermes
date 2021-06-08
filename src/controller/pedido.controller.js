@@ -78,7 +78,7 @@ module.exports = {
 
       let clienteAsignado = await Cliente.findOne({
         where: {
-          contacto: req.body.empresaRemitente,
+          razonComercial: req.body.empresaRemitente,
         },
       });
 
@@ -112,7 +112,9 @@ module.exports = {
           await nuevoPedido.setStatus(estadoPedido);
           await nuevoPedido.setUser(operador);
 
-          res.json({ message: "¡Se ha creado el Pedido con éxito!" });
+          res
+            .status(200)
+            .json({ message: "¡Se ha creado el Pedido con éxito!" });
 
           // Asignar al MoBiker
           let cantidadPedidosDelMoBiker = await Pedido.count({
@@ -215,7 +217,9 @@ module.exports = {
           res.status(500).send({ message: err.message });
         }
       } else {
-        res.json({ message: "¡Error! No se ha podido crear el pedido..." });
+        res
+          .status(500)
+          .json({ message: "¡Error! No se ha podido crear el pedido..." });
       }
     } catch (err) {
       res.status(500).send({ message: err.message });
