@@ -2,10 +2,9 @@ const db = require("../../models/index");
 const Cliente = db.cliente;
 const Pedido = db.pedido;
 
-// Clientes
-const clientes = require("../clientes.seed");
-
 const contarPedidosCliente = async () => {
+  const clientes = await Cliente.findAll();
+
   clientes.forEach(async (cliente) => {
     try {
       let cantidadPedidosDelCliente = await Pedido.count({
