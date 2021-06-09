@@ -515,6 +515,55 @@ module.exports = {
 
       if (pedidoActualizado) {
         res.json({ message: "¡Se ha actualizado el Pedido con éxito!" });
+
+        // Asignar al MoBiker
+        let cantidadPedidosDelMoBiker = await Pedido.count({
+          where: {
+            [Op.and]: [
+              { mobikerId: mobiker.id },
+              { statusId: { [Op.between]: [4, 5] } },
+            ],
+          },
+        });
+
+        let kilometrosAsignadosMobiker = await Pedido.sum("distancia", {
+          where: {
+            [Op.and]: [
+              { mobikerId: mobiker.id },
+              { statusId: { [Op.between]: [4, 5] } },
+            ],
+          },
+        });
+
+        let CO2AsignadosMobiker = await Pedido.sum("CO2Ahorrado", {
+          where: {
+            [Op.and]: [
+              { mobikerId: mobiker.id },
+              { statusId: { [Op.between]: [4, 5] } },
+            ],
+          },
+        });
+
+        let ruidoAsignadosMobiker = await Pedido.sum("ruido", {
+          where: {
+            [Op.and]: [
+              { mobikerId: mobiker.id },
+              { statusId: { [Op.between]: [4, 5] } },
+            ],
+          },
+        });
+
+        await Mobiker.update(
+          {
+            biciEnvios: cantidadPedidosDelMoBiker,
+            kilometros: kilometrosAsignadosMobiker,
+            CO2Ahorrado: CO2AsignadosMobiker,
+            ruido: ruidoAsignadosMobiker,
+          },
+          {
+            where: { id: mobiker.id },
+          }
+        );
       } else {
         res.json({
           message: "¡Error! No se ha podido actualizar el Pedido...",
@@ -530,13 +579,50 @@ module.exports = {
     try {
       const query = req.query.q;
 
-      let pedido = await Pedido.findAll({
+      const mob = await Mobiker.findOne({
+        where: { fullName: { [Op.like]: `%${query}%` } },
+      });
+
+      if (mob) {
+        const pedido = await Pedido.findAll({
+          where: {
+            mobikerId: mob.id,
+          },
+          include: [
+            {
+              model: Distrito,
+            },
+            {
+              model: Mobiker,
+              attributes: ["fullName"],
+            },
+            {
+              model: Cliente,
+              attributes: ["contacto", "razonComercial"],
+            },
+            {
+              model: Envio,
+            },
+            {
+              model: Modalidad,
+            },
+            {
+              model: Status,
+            },
+          ],
+        });
+
+        res.json(pedido);
+      }
+
+      const pedido = await Pedido.findAll({
         where: {
           [Op.or]: [
             { id: { [Op.like]: `%${query}%` } },
+            { contactoRemitente: { [Op.like]: `%${query}%` } },
+            { empresaRemitente: { [Op.like]: `%${query}%` } },
             { contactoConsignado: { [Op.like]: `%${query}%` } },
             { empresaConsignado: { [Op.like]: `%${query}%` } },
-            { distritoRemitente: { [Op.like]: `%${query}%` } },
           ],
         },
         include: [
