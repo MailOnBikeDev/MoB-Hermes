@@ -68,7 +68,7 @@ const empresas = require("./empresas.seed");
 // Códigos Postales
 const codigosPostales = require("./tablas auxiliares/codigosPostales.seed");
 
-//
+// Ejecutar la Seed
 const ejecutarSeed = async () => {
   try {
     await db.sequelize.sync({ force: true });
@@ -240,5 +240,5 @@ const crearPedidos = async () => {
   });
 };
 
-// Funciones
+// Ejectutar Funciones
 ejecutarSeed();

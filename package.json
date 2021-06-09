@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "seed": "node src/seeders/index.js"
+    "seed": "node src/seeders/index.js",
+    "assign": "node src/seeders/asignaciones/index.js"
   },
   "keywords": [
     "node.js",

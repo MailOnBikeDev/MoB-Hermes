@@ -65,5 +65,7 @@ const contarPedidosMoBiker = async () => {
   });
 };
 
-// Asignar al Cliente
-contarPedidosMoBiker();
+// Función local Asignar al MoBiker
+// contarPedidosMoBiker();
+
+module.exports = contarPedidosMoBiker;

@@ -44,4 +44,6 @@ const contarPedidosCliente = async () => {
 };
 
 // Asignar al Cliente
-contarPedidosCliente();
+// contarPedidosCliente();
+
+module.exports = contarPedidosCliente;
