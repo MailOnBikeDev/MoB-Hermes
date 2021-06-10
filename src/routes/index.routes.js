@@ -23,4 +23,6 @@ require("./cliente.routes")(router);
 // Tablas Auxiliares
 require("./auxiliares.routes")(router);
 
+require("./testing.routes")(router);
+
 module.exports = router;
