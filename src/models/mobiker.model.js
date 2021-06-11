@@ -99,10 +99,7 @@ module.exports = (sequelize, Sequelize) => {
           return this.getDataValue("fechaNacimiento");
         },
         set(fecha) {
-          this.setDataValue(
-            "fechaNacimiento",
-            new Date(fecha).toISOString().split("T")[0]
-          );
+          this.setDataValue("fechaNacimiento", fecha);
         },
       },
       fechaIngreso: {
@@ -112,10 +109,7 @@ module.exports = (sequelize, Sequelize) => {
           return this.getDataValue("fechaIngreso");
         },
         set(fecha) {
-          this.setDataValue(
-            "fechaIngreso",
-            new Date(fecha).toISOString().split("T")[0]
-          );
+          this.setDataValue("fechaIngreso", fecha);
         },
       },
     },
