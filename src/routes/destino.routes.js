@@ -10,6 +10,13 @@ module.exports = (app) => {
     next();
   });
 
+  // Ruta para obtener todos los Destinos Recurrentes
+  app.get(
+    "/destinos-recurrentes",
+    [authJwt.verifyToken, authJwt.isEquipoAdmin],
+    controller.indexDestino
+  );
+
   // Ruta para buscar Destinos recurrentes por su nombre o empresa
   app.get(
     "/destinos",
