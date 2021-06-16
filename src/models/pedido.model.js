@@ -9,10 +9,7 @@ module.exports = (sequelize, Sequelize) => {
           return this.getDataValue("fecha");
         },
         set(fecha) {
-          this.setDataValue(
-            "fecha",
-            new Date(fecha).toISOString().split("T")[0]
-          );
+          this.setDataValue("fecha", fecha);
         },
       },
       contactoRemitente: {

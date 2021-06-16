@@ -506,6 +506,7 @@ module.exports = {
 
       let pedidoAsignado = {
         mobikerId: mobiker.id,
+        comision: req.body.comision,
         statusId: req.body.status,
       };
 
@@ -514,7 +515,7 @@ module.exports = {
       });
 
       if (pedidoActualizado) {
-        res.json({ message: "¡Se ha actualizado el Pedido con éxito!" });
+        res.json({ message: "¡Se ha asignado el Pedido con éxito!" });
 
         // Asignar al MoBiker
         let cantidadPedidosDelMoBiker = await Pedido.count({
