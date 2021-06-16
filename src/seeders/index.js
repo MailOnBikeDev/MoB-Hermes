@@ -27,8 +27,8 @@ const mobikers = require("./mobikers.seed");
 // Clientes
 const clientes = require("./clientes.seed");
 
-// Pedidos
-const pedidos = require("./pedidos.seed");
+// // Pedidos
+// const pedidos = require("./pedidos.seed");
 
 // Roles del Usuario
 const roles = require("./tablas auxiliares/roles.seed");
@@ -135,8 +135,7 @@ const ejecutarSeed = async () => {
     // Creando los Destinos Recurrentes
     crearDestinos();
 
-    // Creando los Pedidos
-    await crearPedidos();
+    
   } catch (error) {
     console.log(
       `Ha ocurrido un error en la ejecución de la Seed: ${error.message}`
@@ -198,48 +197,6 @@ const crearClientes = async () => {
       await nuevoCliente.setUser(operador);
     } catch (error) {
       console.log(`Ocurrió un error al crear Usuarios: ${error.message}`);
-      console.log(error);
-    }
-  });
-};
-
-const crearPedidos = async () => {
-  pedidos.forEach(async (pedido) => {
-    try {
-      pedido.fecha = new Date(pedido.fecha.split("/").reverse().join("-"))
-        .toISOString()
-        .split("T")[0];
-      const distritoPedido = pedido.distritoId;
-      const tipoEnvio = pedido.tipoDeEnvioId;
-      const modalidadPedido = pedido.modalidadId;
-      const estadoPedido = pedido.statusId;
-
-      const nuevoPedido = await Pedido.create(pedido);
-      const mobiker = await Mobiker.findOne({
-        where: {
-          fullName: pedido.mobiker,
-        },
-      });
-      const operador = await User.findOne({
-        where: {
-          username: pedido.operador,
-        },
-      });
-      const clienteAsignado = await Cliente.findOne({
-        where: {
-          razonComercial: pedido.empresaRemitente,
-        },
-      });
-
-      await nuevoPedido.setMobiker(mobiker);
-      await nuevoPedido.setUser(operador);
-      await nuevoPedido.setDistrito(distritoPedido);
-      await nuevoPedido.setTipoDeEnvio(tipoEnvio);
-      await nuevoPedido.setModalidad(modalidadPedido);
-      await nuevoPedido.setCliente(clienteAsignado);
-      await nuevoPedido.setStatus(estadoPedido);
-    } catch (error) {
-      console.log(`Ocurrió un error al crear Pedidos: ${error.message}`);
       console.log(error);
     }
   });
