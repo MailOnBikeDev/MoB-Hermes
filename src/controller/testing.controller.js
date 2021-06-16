@@ -3,7 +3,7 @@ module.exports = {
 		try {
 			const fs = require('fs'); // filesystem
 			const csv = require('csv-parse');// Encargado de parsear
-			const filas = [];
+			const pedidos = [];
 
 			const parseador = csv({
 				delimiter: ',',//Delimitador, por defecto es la coma ,
@@ -13,15 +13,20 @@ module.exports = {
 
 			parseador.on('readable', function () {
 				let fila;
+				let i = 0;
 				while (fila = parseador.read()) {
-					let a = {
-						nombre: fila[0],
-						email: fila[1],
-						telefono: fila[2],
+					if( i != 0 ) {
+						let pedido = {
+							contactoConsignado: fila[0],
+							empresaConsignado: fila[1],
+							telefonoConsignado: fila[2],
+							direccionConsignado: fila[3],
+							distritoConsignado: fila[4],
+							otroDatoConsignado: fila[5],
+						}
+						pedidos.push(pedido);
 					}
-					console.log("Tenemos una fila:", fila);
-					filas.push(a);
-					console.log(filas)
+					i++;
 				}
 			});
 
@@ -34,7 +39,7 @@ module.exports = {
 				.on("end", function () {// Y al finalizar, terminar lo necesario
 					console.log("Se ha terminado de leer el archivo");
 					parseador.end();
-					res.json({ data: filas});
+					res.json({data: filas});
 				});				
 		} catch (err) {
 			res.status(500).send({ message: err.message });
