@@ -25,6 +25,7 @@ db.role = require("./role.model")(sequelize, Sequelize);
 db.pedido = require("./pedido.model")(sequelize, Sequelize);
 db.mobiker = require("./mobiker.model")(sequelize, Sequelize);
 db.cliente = require("./cliente.model")(sequelize, Sequelize);
+db.destino = require("./destino.model")(sequelize, Sequelize);
 
 // Tablas Auxiliares
 db.distrito = require("./tablas auxiliares/distrito.model")(
@@ -73,6 +74,10 @@ db.user.belongsToMany(db.role, {
 // Relaciones Auxiliares
 db.distrito.hasMany(db.codigoPostal, { as: "Código Postal" });
 db.codigoPostal.belongsTo(db.distrito);
+
+// Relaciones Destino con Distrito
+db.distrito.hasOne(db.destino);
+db.destino.belongsTo(db.distrito);
 
 // Relaciones con la Tabla Clientes
 db.distrito.hasOne(db.cliente);

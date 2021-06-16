@@ -626,6 +626,7 @@ module.exports = {
             { empresaConsignado: { [Op.like]: `%${query}%` } },
           ],
         },
+        limit: 20,
         include: [
           {
             model: Distrito,
