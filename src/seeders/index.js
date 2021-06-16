@@ -16,6 +16,7 @@ const Envio = db.envio;
 const Bancos = db.bancos;
 const Status = db.status;
 const Empresa = db.empresa;
+const Destino = db.destino;
 
 // Usuarios
 const usuarios = require("./usuarios.seed");
@@ -64,6 +65,9 @@ const distritos = require("./tablas auxiliares/distritos.seed");
 
 // Empresas
 const empresas = require("./empresas.seed");
+
+// Destinos Recurrentes
+const destinos = require("./destinos.seed");
 
 // Códigos Postales
 const codigosPostales = require("./tablas auxiliares/codigosPostales.seed");
@@ -129,6 +133,7 @@ const ejecutarSeed = async () => {
     await crearClientes();
 
     // Creando los Destinos Recurrentes
+    crearDestinos();
 
     // Creando los Pedidos
     await crearPedidos();
@@ -235,6 +240,18 @@ const crearPedidos = async () => {
       await nuevoPedido.setStatus(estadoPedido);
     } catch (error) {
       console.log(`Ocurrió un error al crear Pedidos: ${error.message}`);
+      console.log(error);
+    }
+  });
+};
+
+const crearDestinos = () => {
+  destinos.forEach(async (destino) => {
+    const nuevoDestino = await Destino.create(destino);
+    await nuevoDestino.setDistrito(destino.distrito);
+    try {
+    } catch (error) {
+      console.log(`Ocurrió un error al crear Destinos: ${error.message}`);
       console.log(error);
     }
   });
