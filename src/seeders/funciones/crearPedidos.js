@@ -1,11 +1,11 @@
-const db = require('../../models/index')
+const db = require("../../models/index");
 const User = db.user;
 const Mobiker = db.mobiker;
 const Cliente = db.cliente;
 const Pedido = db.pedido;
 
 // Pedidos
-const pedidos = require("../pedidos.seed");
+const pedidos = require("./pedidos-01.seed");
 
 const crearPedidos = async () => {
   pedidos.forEach(async (pedido) => {
@@ -58,3 +58,5 @@ const crearPedidos = async () => {
 
 // Creando los Pedidos
 crearPedidos();
+
+// node src/seeders/funciones/crearPedidos.js

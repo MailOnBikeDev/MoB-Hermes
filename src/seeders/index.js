@@ -27,9 +27,6 @@ const mobikers = require("./mobikers.seed");
 // Clientes
 const clientes = require("./clientes.seed");
 
-// // Pedidos
-// const pedidos = require("./pedidos.seed");
-
 // Roles del Usuario
 const roles = require("./tablas auxiliares/roles.seed");
 
@@ -134,8 +131,6 @@ const ejecutarSeed = async () => {
 
     // Creando los Destinos Recurrentes
     crearDestinos();
-
-    
   } catch (error) {
     console.log(
       `Ha ocurrido un error en la ejecución de la Seed: ${error.message}`
