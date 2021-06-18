@@ -6,10 +6,16 @@ const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
   host: config.HOST,
   dialect: config.dialect,
   port: 3306,
+  define: {
+    charset: "utf8mb4",
+    dialectOptions: {
+      collate: "utf8mb4_unicode_ci",
+    },
+  },
   pool: {
     max: 5,
     min: 0,
-    acquire: 60000,
+    // acquire: 60000,
     idle: 10000,
   },
 });

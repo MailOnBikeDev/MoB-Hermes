@@ -5,7 +5,15 @@ const Cliente = db.cliente;
 const Pedido = db.pedido;
 
 // Pedidos
-const pedidos = require("./pedidos-01.seed");
+// const pedidos = require("./pedidos-01.seed");
+// const pedidos = require("./pedidos-02.seed");
+// const pedidos = require("./pedidos-03.seed");
+// const pedidos = require("./pedidos-04.seed");
+// const pedidos = require("./pedidos-05.seed");
+// const pedidos = require("./pedidos-06.seed");
+// const pedidos = require("./pedidos-07.seed");
+// const pedidos = require("./pedidos-08.seed");
+const pedidos = require("./pedidos-09.seed");
 
 const crearPedidos = async () => {
   pedidos.forEach(async (pedido) => {
