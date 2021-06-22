@@ -2,7 +2,7 @@ const db = require("../models/index");
 const User = db.user;
 const Mobiker = db.mobiker;
 const Cliente = db.cliente;
-const Pedido = db.pedido;
+// const Pedido = db.pedido;
 const Role = db.role;
 const Distrito = db.distrito;
 const CodigoPostal = db.codigoPostal;
@@ -16,6 +16,8 @@ const Envio = db.envio;
 const Bancos = db.bancos;
 const Status = db.status;
 const Empresa = db.empresa;
+const Destino = db.destino;
+const Franquicia = db.franquicia;
 
 // Usuarios
 const usuarios = require("./usuarios.seed");
@@ -25,9 +27,6 @@ const mobikers = require("./mobikers.seed");
 
 // Clientes
 const clientes = require("./clientes.seed");
-
-// Pedidos
-const pedidos = require("./pedidos.seed");
 
 // Roles del Usuario
 const roles = require("./tablas auxiliares/roles.seed");
@@ -62,8 +61,14 @@ const estadosPedido = require("./tablas auxiliares/estadosPedido.seed");
 // Distritos
 const distritos = require("./tablas auxiliares/distritos.seed");
 
+// Franquicias o derviados de Mail On Bike
+const franquicias = require("./tablas auxiliares/franquicias.seed")
+
 // Empresas
 const empresas = require("./empresas.seed");
+
+// Destinos Recurrentes
+const destinos = require("./destinos.seed");
 
 // Códigos Postales
 const codigosPostales = require("./tablas auxiliares/codigosPostales.seed");
@@ -111,8 +116,11 @@ const ejecutarSeed = async () => {
     // Creando la tabla de status del Pedido
     estadosPedido.forEach(async (status) => await Status.create(status));
 
-    // Creando la tabla de status del Pedido
+    // Creando la tabla de empresas
     empresas.forEach(async (empresa) => await Empresa.create(empresa));
+
+    // Creando la tabla de franquicias de Mail On Bike
+    franquicias.forEach(async(franquicia) => await Franquicia.create(franquicia))
 
     // Creando los Códigos Postales
     codigosPostales.forEach(
@@ -129,9 +137,7 @@ const ejecutarSeed = async () => {
     await crearClientes();
 
     // Creando los Destinos Recurrentes
-
-    // Creando los Pedidos
-    await crearPedidos();
+    crearDestinos();
   } catch (error) {
     console.log(
       `Ha ocurrido un error en la ejecución de la Seed: ${error.message}`
@@ -198,43 +204,13 @@ const crearClientes = async () => {
   });
 };
 
-const crearPedidos = async () => {
-  pedidos.forEach(async (pedido) => {
+const crearDestinos = () => {
+  destinos.forEach(async (destino) => {
+    const nuevoDestino = await Destino.create(destino);
+    await nuevoDestino.setDistrito(destino.distrito);
     try {
-      pedido.fecha = new Date(pedido.fecha.split("/").reverse().join("-"))
-        .toISOString()
-        .split("T")[0];
-      const distritoPedido = pedido.distritoId;
-      const tipoEnvio = pedido.tipoDeEnvioId;
-      const modalidadPedido = pedido.modalidadId;
-      const estadoPedido = pedido.statusId;
-
-      const nuevoPedido = await Pedido.create(pedido);
-      const mobiker = await Mobiker.findOne({
-        where: {
-          fullName: pedido.mobiker,
-        },
-      });
-      const operador = await User.findOne({
-        where: {
-          username: pedido.operador,
-        },
-      });
-      const clienteAsignado = await Cliente.findOne({
-        where: {
-          razonComercial: pedido.empresaRemitente,
-        },
-      });
-
-      await nuevoPedido.setMobiker(mobiker);
-      await nuevoPedido.setUser(operador);
-      await nuevoPedido.setDistrito(distritoPedido);
-      await nuevoPedido.setTipoDeEnvio(tipoEnvio);
-      await nuevoPedido.setModalidad(modalidadPedido);
-      await nuevoPedido.setCliente(clienteAsignado);
-      await nuevoPedido.setStatus(estadoPedido);
     } catch (error) {
-      console.log(`Ocurrió un error al crear Pedidos: ${error.message}`);
+      console.log(`Ocurrió un error al crear Destinos: ${error.message}`);
       console.log(error);
     }
   });

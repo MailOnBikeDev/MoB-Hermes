@@ -1,5 +1,22 @@
 const clientes = [
   {
+    contacto: "Cliente único",
+    razonSocial: "Clientes únicos",
+    razonComercial: "CLIENTE ÚNICO",
+    direccion: "Ciudad de Lima",
+    telefono: "Sin teléfono",
+    otroDato: "Clientes únicos no registrados",
+    email: "ejemplo@email.com",
+    ruc: "",
+    distrito: 1,
+    comprobante: 1,
+    rol: 1,
+    tipoEnvio: 1,
+    carga: 1,
+    pago: 6,
+    operador: "dcolmenares",
+  },
+  {
     contacto: "ZINTHYA VILLARÁN",
     razonSocial: "CONSULTORA MARY KAY",
     razonComercial: "CONSULTORA MARY KAY",

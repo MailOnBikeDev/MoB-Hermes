@@ -2,7 +2,7 @@ const router = require("express").Router();
 
 // Home
 router.get("/", (req, res) => {
-	res.json({ bienvenida: "¡Bienvenidos! Soy Hermes" });
+  res.json({ bienvenida: "¡Bienvenidos! Soy Hermes" });
 });
 
 // Auth Route
@@ -24,5 +24,7 @@ require("./cliente.routes")(router);
 require("./auxiliares.routes")(router);
 
 require("./testing.routes")(router);
+// Destinos Recurrentes
+require("./destino.routes")(router);
 
 module.exports = router;

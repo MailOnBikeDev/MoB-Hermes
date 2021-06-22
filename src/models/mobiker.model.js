@@ -92,6 +92,10 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING(10),
         allowNull: false,
       },
+      foto: {
+        type: Sequelize.STRING(50),
+        allowNull: true,
+      },
       fechaNacimiento: {
         type: Sequelize.DATEONLY,
         allowNull: true,

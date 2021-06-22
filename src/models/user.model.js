@@ -1,5 +1,3 @@
-const { hash } = require("bcryptjs");
-
 module.exports = (sequelize, Sequelize) => {
   const User = sequelize.define(
     "users",
@@ -18,7 +16,7 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
         validate: {
           len: {
-            args: [4, 255],
+            args: [4, 25],
             msg: "El usuario tiene que ser al menos 2 caracteres",
           },
         },
