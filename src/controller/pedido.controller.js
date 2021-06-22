@@ -520,7 +520,7 @@ module.exports = {
         res.json({ message: "¡Se ha asignado el Pedido con éxito!" });
 
         // Asignar al MoBiker
-        let cantidadPedidosDelMoBiker = await Pedido.count({
+        let cantidadPedidosDelMoBiker = await Pedido.sum('viajes',{
           where: {
             [Op.and]: [
               { mobikerId: mobiker.id },
