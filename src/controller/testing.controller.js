@@ -38,8 +38,9 @@ module.exports = {
 				.pipe(parseador) // Pasarlo al parseador a través de una tubería
 				.on("end", function () {// Y al finalizar, terminar lo necesario
 					console.log("Se ha terminado de leer el archivo");
+					console.log(pedidos);
 					parseador.end();
-					res.json({data: filas});
+					res.json({data: pedidos});
 				});				
 		} catch (err) {
 			res.status(500).send({ message: err.message });
