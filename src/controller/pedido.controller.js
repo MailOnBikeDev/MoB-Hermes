@@ -118,7 +118,7 @@ module.exports = {
             .json({ message: "¡Se ha creado el Pedido con éxito!" });
 
           // Asignar al MoBiker
-          let cantidadPedidosDelMoBiker = await Pedido.sum('viajes', {
+          let cantidadPedidosDelMoBiker = await Pedido.sum("viajes", {
             where: {
               [Op.and]: [
                 { mobikerId: mobiker.id },
@@ -167,7 +167,7 @@ module.exports = {
           );
 
           // Asignar al Cliente
-          let cantidadPedidosDelCliente = await Pedido.sum('viajes', {
+          let cantidadPedidosDelCliente = await Pedido.sum("viajes", {
             where: {
               [Op.and]: [
                 { clienteId: clienteAsignado.id },
@@ -383,7 +383,7 @@ module.exports = {
         res.json({ message: "¡Se ha actualizado el Pedido con éxito!" });
 
         // Asignar al MoBiker
-        let cantidadPedidosDelMoBiker = await Pedido.sum('viajes', {
+        let cantidadPedidosDelMoBiker = await Pedido.sum("viajes", {
           where: {
             [Op.and]: [
               { mobikerId: mobiker.id },
@@ -438,7 +438,7 @@ module.exports = {
           },
         });
 
-        let cantidadPedidosDelCliente = await Pedido.sum('viajes', {
+        let cantidadPedidosDelCliente = await Pedido.sum("viajes", {
           where: {
             [Op.and]: [
               { clienteId: clienteAsignado.id },
@@ -520,7 +520,7 @@ module.exports = {
         res.json({ message: "¡Se ha asignado el Pedido con éxito!" });
 
         // Asignar al MoBiker
-        let cantidadPedidosDelMoBiker = await Pedido.sum('viajes',{
+        let cantidadPedidosDelMoBiker = await Pedido.sum("viajes", {
           where: {
             [Op.and]: [
               { mobikerId: mobiker.id },
