@@ -16,7 +16,7 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
         validate: {
           len: {
-            args: [4, 10],
+            args: [4, 25],
             msg: "El usuario tiene que ser al menos 2 caracteres",
           },
         },
