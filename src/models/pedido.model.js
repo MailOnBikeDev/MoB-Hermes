@@ -110,6 +110,11 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING(50),
         allowNull: true,
       },
+      viajes: {
+        type: Sequelize.INTEGER(1),
+        allowNull: false,
+        defaultValue: 1
+      }
     },
     {
       tableName: "pedidos",

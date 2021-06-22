@@ -51,6 +51,7 @@ module.exports = {
         ruido: req.body.ruido,
         status: req.body.status,
         rolCliente: req.body.rolCliente,
+        viajes: req.body.viajes,
       };
 
       let distritoPedido = await Distrito.findOne({
@@ -117,7 +118,7 @@ module.exports = {
             .json({ message: "¡Se ha creado el Pedido con éxito!" });
 
           // Asignar al MoBiker
-          let cantidadPedidosDelMoBiker = await Pedido.count({
+          let cantidadPedidosDelMoBiker = await Pedido.sum('viajes', {
             where: {
               [Op.and]: [
                 { mobikerId: mobiker.id },
@@ -166,7 +167,7 @@ module.exports = {
           );
 
           // Asignar al Cliente
-          let cantidadPedidosDelCliente = await Pedido.count({
+          let cantidadPedidosDelCliente = await Pedido.sum('viajes', {
             where: {
               [Op.and]: [
                 { clienteId: clienteAsignado.id },
@@ -371,6 +372,7 @@ module.exports = {
         tipoDeEnvioId: tipoEnvio.id,
         modalidadId: modalidadPedido.id,
         rolCliente: req.body.rolCliente,
+        viajes: req.body.viajes,
       };
 
       let pedidoActualizado = await Pedido.update(pedido, {
@@ -381,7 +383,7 @@ module.exports = {
         res.json({ message: "¡Se ha actualizado el Pedido con éxito!" });
 
         // Asignar al MoBiker
-        let cantidadPedidosDelMoBiker = await Pedido.count({
+        let cantidadPedidosDelMoBiker = await Pedido.sum('viajes', {
           where: {
             [Op.and]: [
               { mobikerId: mobiker.id },
@@ -436,7 +438,7 @@ module.exports = {
           },
         });
 
-        let cantidadPedidosDelCliente = await Pedido.count({
+        let cantidadPedidosDelCliente = await Pedido.sum('viajes', {
           where: {
             [Op.and]: [
               { clienteId: clienteAsignado.id },
