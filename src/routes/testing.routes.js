@@ -1,4 +1,4 @@
-const { authJwt, uploadFiles } = require("../middleware/index");
+const { authJwt } = require("../middleware/index");
 const controller = require("../controller/testing.controller");
 
 module.exports = (app) => {
@@ -9,10 +9,4 @@ module.exports = (app) => {
 		);
 		next();
 	});
-
-	// 
-	app.post(
-		"/testing/file-testing",uploadFiles.single('file'),
-		controller.testFile
-	);
 };

@@ -37,8 +37,6 @@ module.exports = {
 			fs.createReadStream('src/files/file') // Abrir archivo
 				.pipe(parseador) // Pasarlo al parseador a través de una tubería
 				.on("end", function () {// Y al finalizar, terminar lo necesario
-					console.log("Se ha terminado de leer el archivo");
-					console.log(pedidos);
 					parseador.end();
 					res.json({data: pedidos});
 				});				
