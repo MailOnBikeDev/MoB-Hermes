@@ -23,6 +23,7 @@ require("./cliente.routes")(router);
 // Tablas Auxiliares
 require("./auxiliares.routes")(router);
 
+require("./testing.routes")(router);
 // Destinos Recurrentes
 require("./destino.routes")(router);
 
