@@ -9,7 +9,7 @@ const contarPedidosMoBiker = async () => {
 
   mobikers.forEach(async (mobiker) => {
     try {
-      let cantidadPedidosDelMoBiker = await Pedido.count({
+      let cantidadPedidosDelMoBiker = await Pedido.sum("viajes", {
         where: {
           [Op.and]: [
             { mobikerId: mobiker.id },

@@ -7,7 +7,7 @@ const contarPedidosCliente = async () => {
 
   clientes.forEach(async (cliente) => {
     try {
-      let cantidadPedidosDelCliente = await Pedido.count({
+      let cantidadPedidosDelCliente = await Pedido.sum("viajes", {
         where: { empresaRemitente: cliente.razonComercial },
       });
 
