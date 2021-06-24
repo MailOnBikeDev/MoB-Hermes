@@ -13,299 +13,366 @@ const Status = db.status;
 
 const Op = db.Sequelize.Op;
 
+const getPagination = (page, size) => {
+  const limit = size ? +size : 50;
+  const offset = page ? page * limit : 0;
+
+  return { limit, offset };
+};
+const getPagingData = (data, page, limit) => {
+  const { count: totalPedidos, rows: pedidos } = data;
+  const currentPage = page ? +page : 0;
+  const totalPages = Math.ceil(totalPedidos / limit);
+
+  return { totalPedidos, pedidos, totalPages, currentPage };
+};
+
 module.exports = {
-	storageCliente: async (req, res) => {
-		try {
-			let cliente = {
-				contacto: req.body.contacto,
-				empresa: req.body.empresa,
-				direccion: req.body.direccion,
-				telefono: req.body.telefono,
-				otroDato: req.body.otroDato,
-				email: req.body.email,
-				ruc: req.body.ruc,
-			};
+  storageCliente: async (req, res) => {
+    try {
+      let cliente = {
+        contacto: req.body.contacto,
+        razonSocial: req.body.razonSocial,
+        razonComercial: req.body.razonComercial,
+        direccion: req.body.direccion,
+        telefono: req.body.telefono,
+        otroDato: req.body.otroDato,
+        email: req.body.email,
+        ruc: req.body.ruc,
+      };
 
-			let distrito = await Distrito.findOne({
-				where: {
-					distrito: req.body.distrito,
-				},
-			});
+      let distrito = await Distrito.findOne({
+        where: {
+          distrito: req.body.distrito,
+        },
+      });
 
-			let comprobante = await Comprobante.findOne({
-				where: {
-					tipo: req.body.comprobante,
-				},
-			});
+      let comprobante = await Comprobante.findOne({
+        where: {
+          tipo: req.body.comprobante,
+        },
+      });
 
-			let rolDelCliente = await RolCliente.findOne({
-				where: {
-					rol: req.body.rol,
-				},
-			});
+      let rolDelCliente = await RolCliente.findOne({
+        where: {
+          rol: req.body.rol,
+        },
+      });
 
-			let tipoEnvio = await Envio.findOne({
-				where: {
-					tipo: req.body.tipoEnvio,
-				},
-			});
+      let tipoEnvio = await Envio.findOne({
+        where: {
+          tipo: req.body.tipoEnvio,
+        },
+      });
 
-			let tipoDeCarga = await Carga.findOne({
-				where: {
-					tipo: req.body.carga,
-				},
-			});
+      let tipoDeCarga = await Carga.findOne({
+        where: {
+          tipo: req.body.carga,
+        },
+      });
 
-			let pago = await FormaDePago.findOne({
-				where: {
-					pago: req.body.pago,
-				},
-			});
+      let pago = await FormaDePago.findOne({
+        where: {
+          pago: req.body.pago,
+        },
+      });
 
-			if (distrito && comprobante && rolDelCliente && tipoDeCarga && pago) {
-				try {
-					let nuevoCliente = await Cliente.create(cliente);
+      if (distrito && comprobante && rolDelCliente && tipoDeCarga && pago) {
+        try {
+          let nuevoCliente = await Cliente.create(cliente);
 
-					await nuevoCliente.setDistrito(distrito);
-					await nuevoCliente.setTipoDeComprobante(comprobante);
-					await nuevoCliente.setRolCliente(rolDelCliente);
-					await nuevoCliente.setTipoDeCarga(tipoDeCarga);
-					await nuevoCliente.setFormaDePago(pago);
-					await nuevoCliente.setTipoDeEnvio(tipoEnvio);
+          await nuevoCliente.setDistrito(distrito);
+          await nuevoCliente.setTipoDeComprobante(comprobante);
+          await nuevoCliente.setRolCliente(rolDelCliente);
+          await nuevoCliente.setTipoDeCarga(tipoDeCarga);
+          await nuevoCliente.setFormaDePago(pago);
+          await nuevoCliente.setTipoDeEnvio(tipoEnvio);
 
-					res.json({ message: "¡Se ha creado el Cliente con éxito!" });
-				} catch (err) {
-					res.status(500).send({ message: err.message });
-				}
-			} else {
-				res.json({ message: "¡Error! No se ha podido crear el cliente..." });
-			}
-		} catch (err) {
-			res.status(500).send({ message: err.message });
-		}
-	},
+          res.json({ message: "¡Se ha creado el Cliente con éxito!" });
+        } catch (err) {
+          res.status(500).send({ message: err.message });
+        }
+      } else {
+        res.json({ message: "¡Error! No se ha podido crear el cliente..." });
+      }
+    } catch (err) {
+      res.status(500).send({ message: err.message });
+    }
+  },
 
-	// Mostrar todos los Clientes
-	indexClientes: async (req, res) => {
-		try {
-			let clientes = await Cliente.findAll({
-				include: [
-					{
-						model: Distrito,
-					},
-					{
-						model: Comprobante,
-					},
-					{
-						model: RolCliente,
-					},
-					{
-						model: Carga,
-					},
-					{
-						model: FormaDePago,
-					},
-					{
-						model: Envio,
-					},
-				],
-			});
-			res.json(clientes);
-		} catch (err) {
-			res.status(500).send({ message: err.message });
-		}
-	},
+  // Mostrar todos los Clientes
+  indexClientes: async (req, res) => {
+    try {
+      let clientes = await Cliente.findAll({
+        order: [["razonComercial", "ASC"]],
+        limit: 30,
+        include: [
+          {
+            model: Distrito,
+          },
+          {
+            model: Comprobante,
+          },
+          {
+            model: RolCliente,
+          },
+          {
+            model: Carga,
+          },
+          {
+            model: FormaDePago,
+          },
+          {
+            model: Envio,
+          },
+        ],
+      });
+      res.json(clientes);
+    } catch (err) {
+      res.status(500).send({ message: err.message });
+    }
+  },
 
-	getClienteById: async (req, res) => {
-		try {
-			const id = req.params.id;
+  getClienteById: async (req, res) => {
+    try {
+      const id = req.params.id;
 
-			let dataCliente = await Cliente.findByPk(id, {
-				include: [
-					{
-						model: Distrito,
-					},
-					{
-						model: Comprobante,
-					},
-					{
-						model: RolCliente,
-					},
-					{
-						model: Carga,
-					},
-					{
-						model: FormaDePago,
-					},
-					{
-						model: Envio,
-					},
-				],
-			});
+      let dataCliente = await Cliente.findByPk(id, {
+        include: [
+          {
+            model: Distrito,
+          },
+          {
+            model: Comprobante,
+          },
+          {
+            model: RolCliente,
+          },
+          {
+            model: Carga,
+          },
+          {
+            model: FormaDePago,
+          },
+          {
+            model: Envio,
+          },
+        ],
+      });
 
-			if (!dataCliente) {
-				res.status(404).json({ msg: "No se ha encontrado el Cliente" });
-			} else {
-				res.json(dataCliente);
-			}
-		} catch (error) {
-			res.status(500).send({
-				message: `Error, no se encontró el cliente con el id: ${this.id}`,
-			});
-		}
-	},
+      if (!dataCliente) {
+        res.status(404).json({ msg: "No se ha encontrado el Cliente" });
+      } else {
+        res.json(dataCliente);
+      }
+    } catch (error) {
+      res.status(500).send({
+        message: `Error, no se encontró el cliente con el id: ${id}`,
+      });
+    }
+  },
 
-	getPedidosDelCliente: async (req, res) => {
-		try {
-			const id = req.params.id;
+  getPedidosDelCliente: async (req, res) => {
+    try {
+      let { desde, hasta, id, page, size } = req.query;
+      const condition = {
+        [Op.and]: [
+          { clienteId: id },
+          { statusId: { [Op.between]: [1, 5] } },
+          { fecha: { [Op.between]: [desde, hasta] } },
+        ],
+      };
+      const { limit, offset } = getPagination(page, size);
 
-			let pedidosDelCliente = await Pedido.findAll({
-				order: [["id", "DESC"]],
-				where: {
-					[Op.and]: [
-						{ clienteId: id },
-						{ statusId: { [Op.between]: [1, 16] } },
-					],
-				},
-				include: [
-					{
-						model: Distrito,
-					},
-					{
-						model: Mobiker,
-						attributes: ["fullName"],
-					},
-					{
-						model: Cliente,
-						attributes: ["contacto", "empresa"],
-					},
-					{
-						model: Envio,
-					},
-					{
-						model: Modalidad,
-					},
-					{
-						model: Status,
-					},
-				],
-			});
+      let data = await Pedido.findAndCountAll({
+        order: [["id", "DESC"]],
+        where: condition,
+        limit,
+        offset,
+        include: [
+          {
+            model: Distrito,
+          },
+          {
+            model: Mobiker,
+            attributes: ["fullName"],
+          },
+          {
+            model: Cliente,
+            attributes: ["contacto", "razonComercial"],
+          },
+          {
+            model: Envio,
+          },
+          {
+            model: Modalidad,
+          },
+          {
+            model: Status,
+          },
+        ],
+      });
 
-			res.json(pedidosDelCliente);
-		} catch (err) {
-			res.status(500).send({ message: err.message });
-		}
-	},
+      const pedidosDelMobiker = getPagingData(data, page, limit);
 
-	updateCliente: async (req, res) => {
-		try {
-			const id = req.params.id;
+      res.json(pedidosDelMobiker);
+    } catch (err) {
+      res.status(500).send({ message: err.message });
+    }
+  },
 
-			let distrito = await Distrito.findOne({
-				where: {
-					distrito: req.body.distrito,
-				},
-			});
+  getPedidosDelClienteById: async (req, res) => {
+    try {
+      const id = req.params.id;
 
-			let comprobante = await Comprobante.findOne({
-				where: {
-					tipo: req.body.comprobante,
-				},
-			});
+      let pedidosDelCliente = await Pedido.findAll({
+        order: [["id", "DESC"]],
+        where: {
+          [Op.and]: [{ clienteId: id }, { statusId: { [Op.between]: [1, 5] } }],
+        },
+        include: [
+          {
+            model: Distrito,
+          },
+          {
+            model: Mobiker,
+            attributes: ["fullName"],
+          },
+          {
+            model: Cliente,
+            attributes: ["contacto", "razonComercial"],
+          },
+          {
+            model: Envio,
+          },
+          {
+            model: Modalidad,
+          },
+          {
+            model: Status,
+          },
+        ],
+      });
 
-			let rolDelCliente = await RolCliente.findOne({
-				where: {
-					rol: req.body.rol,
-				},
-			});
+      res.json(pedidosDelCliente);
+    } catch (err) {
+      res.status(500).send({ message: err.message });
+    }
+  },
 
-			let tipoEnvio = await Envio.findOne({
-				where: {
-					tipo: req.body.tipoEnvio,
-				},
-			});
+  updateCliente: async (req, res) => {
+    try {
+      const id = req.params.id;
 
-			let tipoDeCarga = await Carga.findOne({
-				where: {
-					tipo: req.body.carga,
-				},
-			});
+      let distrito = await Distrito.findOne({
+        where: {
+          distrito: req.body.distrito,
+        },
+      });
 
-			let pago = await FormaDePago.findOne({
-				where: {
-					pago: req.body.pago,
-				},
-			});
+      let comprobante = await Comprobante.findOne({
+        where: {
+          tipo: req.body.comprobante,
+        },
+      });
 
-			let cliente = {
-				contacto: req.body.contacto,
-				empresa: req.body.empresa,
-				direccion: req.body.direccion,
-				telefono: req.body.telefono,
-				otroDato: req.body.otroDato,
-				email: req.body.email,
-				ruc: req.body.ruc,
-				distritoId: distrito.id,
-				tipoDeComprobanteId: comprobante.id,
-				rolClienteId: rolDelCliente.id,
-				tipoDeCargaId: tipoDeCarga.id,
-				formaDePagoId: pago.id,
-				tipoDeEnvioId: tipoEnvio.id,
-			};
+      let rolDelCliente = await RolCliente.findOne({
+        where: {
+          rol: req.body.rol,
+        },
+      });
 
-			let clienteActualizado = await Cliente.update(cliente, {
-				where: { id: id },
-			});
+      let tipoEnvio = await Envio.findOne({
+        where: {
+          tipo: req.body.tipoEnvio,
+        },
+      });
 
-			if (clienteActualizado) {
-				res.json({ message: "¡Se ha actualizado el Cliente con éxito!" });
-			} else {
-				res.json({
-					message: "¡Error! No se ha podido actualizar el cliente...",
-				});
-			}
-		} catch (error) {
-			res.status(500).send({ message: error.message });
-		}
-	},
+      let tipoDeCarga = await Carga.findOne({
+        where: {
+          tipo: req.body.carga,
+        },
+      });
 
-	// Buscar cliente por nombre o empresa
-	searchCliente: async (req, res) => {
-		try {
-			const query = req.query.q;
+      let pago = await FormaDePago.findOne({
+        where: {
+          pago: req.body.pago,
+        },
+      });
 
-			let cliente = await Cliente.findAll({
-				where: {
-					[Op.or]: [
-						{ contacto: { [Op.like]: `%${query}%` } },
-						{ empresa: { [Op.like]: `%${query}%` } },
-					],
-				},
-				include: [
-					{
-						model: Distrito,
-					},
-					{
-						model: Comprobante,
-					},
-					{
-						model: RolCliente,
-					},
-					{
-						model: Carga,
-					},
-					{
-						model: FormaDePago,
-					},
-					{
-						model: Envio,
-					},
-				],
-			});
+      let cliente = {
+        contacto: req.body.contacto,
+        razonSocial: req.body.razonSocial,
+        razonComercial: req.body.razonComercial,
+        direccion: req.body.direccion,
+        telefono: req.body.telefono,
+        otroDato: req.body.otroDato,
+        email: req.body.email,
+        ruc: req.body.ruc,
+        distritoId: distrito.id,
+        tipoDeComprobanteId: comprobante.id,
+        rolClienteId: rolDelCliente.id,
+        tipoDeCargaId: tipoDeCarga.id,
+        formaDePagoId: pago.id,
+        tipoDeEnvioId: tipoEnvio.id,
+      };
 
-			res.json(cliente);
-		} catch (err) {
-			res.status(500).send({ message: err.message });
-		}
-	},
+      let clienteActualizado = await Cliente.update(cliente, {
+        where: { id: id },
+      });
+
+      if (clienteActualizado) {
+        res.json({ message: "¡Se ha actualizado el Cliente con éxito!" });
+      } else {
+        res.json({
+          message: "¡Error! No se ha podido actualizar el cliente...",
+        });
+      }
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  },
+
+  // Buscar cliente por nombre o empresa
+  searchCliente: async (req, res) => {
+    try {
+      const query = req.query.q;
+
+      let cliente = await Cliente.findAll({
+        order: [["razonComercial", "ASC"]],
+        where: {
+          [Op.or]: [
+            { contacto: { [Op.like]: `%${query}%` } },
+            { razonComercial: { [Op.like]: `%${query}%` } },
+            { razonSocial: { [Op.like]: `%${query}%` } },
+          ],
+        },
+        limit: 10,
+        include: [
+          {
+            model: Distrito,
+          },
+          {
+            model: Comprobante,
+          },
+          {
+            model: RolCliente,
+          },
+          {
+            model: Carga,
+          },
+          {
+            model: FormaDePago,
+          },
+          {
+            model: Envio,
+          },
+        ],
+      });
+
+      res.json(cliente);
+    } catch (err) {
+      res.status(500).send({ message: err.message });
+    }
+  },
 };
