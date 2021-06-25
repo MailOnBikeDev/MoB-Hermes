@@ -86,6 +86,8 @@ module.exports = {
   equipoMobiker: async (req, res) => {
     try {
       let mobikers = await Mobiker.findAll({
+        order: [["fullName", "ASC"]],
+        limit: 100,
         include: [
           {
             model: Distrito,
@@ -302,9 +304,11 @@ module.exports = {
       const query = req.query.q;
 
       let mobiker = await Mobiker.findAll({
+        order: [["fullName", "ASC"]],
         where: {
           fullName: { [Op.like]: `%${query}%` },
         },
+        limit: 100,
         include: [
           {
             model: Distrito,

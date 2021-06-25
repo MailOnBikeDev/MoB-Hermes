@@ -8,6 +8,8 @@ const router = require("./routes/index.routes");
 // Initializations
 const app = express();
 
+
+
 // Settings
 const corsOptions = {
 	origin: process.env.IRIS_URL,

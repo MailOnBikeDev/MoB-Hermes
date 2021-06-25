@@ -1,4 +1,4 @@
-const { authJwt } = require("../middleware/index");
+const { authJwt, uploadFiles } = require("../middleware/index");
 const controller = require("../controller/pedido.controller");
 
 module.exports = (app) => {
@@ -65,4 +65,10 @@ module.exports = (app) => {
     [authJwt.verifyToken, authJwt.isEquipoAdmin],
     controller.getHistorialPedidos
   );
+
+  // Ruta para procesar CSV y retornar un JSON
+  app.post(
+		"/procesar-csv",uploadFiles.single('file'),
+		controller.procesarCSV
+	);
 };

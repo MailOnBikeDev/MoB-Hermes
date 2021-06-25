@@ -2,6 +2,7 @@ const db = require("../models/index");
 const User = db.user;
 const Mobiker = db.mobiker;
 const Cliente = db.cliente;
+// const Pedido = db.pedido;
 const Role = db.role;
 const Distrito = db.distrito;
 const CodigoPostal = db.codigoPostal;
@@ -15,6 +16,8 @@ const Envio = db.envio;
 const Bancos = db.bancos;
 const Status = db.status;
 const Empresa = db.empresa;
+const Destino = db.destino;
+const Franquicia = db.franquicia;
 
 // Usuarios
 const usuarios = require("./usuarios.seed");
@@ -24,9 +27,6 @@ const mobikers = require("./mobikers.seed");
 
 // Clientes
 const clientes = require("./clientes.seed");
-
-// Pedidos
-const pedidos = require("./pedidos.seed");
 
 // Roles del Usuario
 const roles = require("./tablas auxiliares/roles.seed");
@@ -61,13 +61,19 @@ const estadosPedido = require("./tablas auxiliares/estadosPedido.seed");
 // Distritos
 const distritos = require("./tablas auxiliares/distritos.seed");
 
+// Franquicias o derviados de Mail On Bike
+const franquicias = require("./tablas auxiliares/franquicias.seed")
+
 // Empresas
 const empresas = require("./empresas.seed");
+
+// Destinos Recurrentes
+const destinos = require("./destinos.seed");
 
 // Códigos Postales
 const codigosPostales = require("./tablas auxiliares/codigosPostales.seed");
 
-//
+// Ejecutar la Seed
 const ejecutarSeed = async () => {
   try {
     await db.sequelize.sync({ force: true });
@@ -110,8 +116,11 @@ const ejecutarSeed = async () => {
     // Creando la tabla de status del Pedido
     estadosPedido.forEach(async (status) => await Status.create(status));
 
-    // Creando la tabla de status del Pedido
+    // Creando la tabla de empresas
     empresas.forEach(async (empresa) => await Empresa.create(empresa));
+
+    // Creando la tabla de franquicias de Mail On Bike
+    franquicias.forEach(async(franquicia) => await Franquicia.create(franquicia))
 
     // Creando los Códigos Postales
     codigosPostales.forEach(
@@ -128,9 +137,7 @@ const ejecutarSeed = async () => {
     await crearClientes();
 
     // Creando los Destinos Recurrentes
-
-    // Creando los Pedidos
-    // await crearPedidos();
+    crearDestinos();
   } catch (error) {
     console.log(
       `Ha ocurrido un error en la ejecución de la Seed: ${error.message}`
@@ -153,37 +160,32 @@ const crearUsuarios = async () => {
 };
 
 const crearMobikers = async () => {
-  try {
-    mobikers.forEach(async (mobiker) => {
+  mobikers.forEach(async (mobiker) => {
+    try {
       const distrito = mobiker.distrito;
       const rangoInicial = mobiker.rango;
 
       const nuevoMobiker = await Mobiker.create(mobiker);
       await nuevoMobiker.setDistrito(distrito);
       await nuevoMobiker.setRango(rangoInicial);
-    });
-  } catch (error) {
-    console.log(`Ocurrió un error al crear Mobikers: ${error.message}`);
-  }
+    } catch (error) {
+      console.log(`Ocurrió un error al crear Mobikers: ${error.message}`);
+      console.log(error);
+    }
+  });
 };
 
 const crearClientes = async () => {
-  try {
-    clientes.forEach(async (cliente) => {
+  clientes.forEach(async (cliente) => {
+    try {
       const distrito = cliente.distrito;
-
       const comprobante = cliente.comprobante;
-
       const rolDelCliente = cliente.rol;
-
       const tipoEnvio = cliente.tipoEnvio;
-
       const tipoDeCarga = cliente.carga;
-
       const pago = cliente.pago;
 
       const nuevoCliente = await Cliente.create(cliente);
-
       const operador = await User.findOne({
         where: { username: cliente.operador },
       });
@@ -195,21 +197,24 @@ const crearClientes = async () => {
       await nuevoCliente.setFormaDePago(pago);
       await nuevoCliente.setTipoDeEnvio(tipoEnvio);
       await nuevoCliente.setUser(operador);
-    });
-  } catch (error) {
-    console.log(`Ocurrió un error al crear Usuarios: ${error.message}`);
-  }
+    } catch (error) {
+      console.log(`Ocurrió un error al crear Usuarios: ${error.message}`);
+      console.log(error);
+    }
+  });
 };
 
-// const crearPedidos = async () => {
-//   try {
-//     pedidos.forEach(async () => {
-//       console.log(pedido.id);
-//     });
-//   } catch (error) {
-//     console.log(`Ocurrió un error al crear Pedidos: ${error.message}`);
-//   }
-// };
+const crearDestinos = () => {
+  destinos.forEach(async (destino) => {
+    const nuevoDestino = await Destino.create(destino);
+    await nuevoDestino.setDistrito(destino.distrito);
+    try {
+    } catch (error) {
+      console.log(`Ocurrió un error al crear Destinos: ${error.message}`);
+      console.log(error);
+    }
+  });
+};
 
-// Funciones
+// Ejectutar Funciones
 ejecutarSeed();

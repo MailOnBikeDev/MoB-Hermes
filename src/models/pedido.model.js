@@ -3,19 +3,13 @@ module.exports = (sequelize, Sequelize) => {
     "pedidos",
     {
       fecha: {
-        type: Sequelize.DATE,
+        type: Sequelize.DATEONLY,
         allowNull: false,
         get() {
-          return new Date(this.getDataValue("fecha"))
-            .toISOString()
-            .split("T")[0];
+          return this.getDataValue("fecha");
         },
         set(fecha) {
-          this.setDataValue(
-            "fecha",
-            // new Date(fecha).toISOString()
-            new Date(fecha).toISOString().split("T")[0]
-          );
+          this.setDataValue("fecha", fecha);
         },
       },
       contactoRemitente: {
@@ -39,7 +33,7 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       otroDatoRemitente: {
-        type: Sequelize.STRING(150),
+        type: Sequelize.STRING(300),
         allowNull: true,
       },
       contactoConsignado: {
@@ -47,7 +41,7 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       empresaConsignado: {
-        type: Sequelize.STRING(50),
+        type: Sequelize.STRING(75),
         allowNull: true,
       },
       direccionConsignado: {
@@ -59,7 +53,7 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       otroDatoConsignado: {
-        type: Sequelize.STRING(150),
+        type: Sequelize.STRING(300),
         allowNull: true,
       },
       tarifa: {
@@ -116,6 +110,11 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING(50),
         allowNull: true,
       },
+      viajes: {
+        type: Sequelize.INTEGER(1),
+        allowNull: false,
+        defaultValue: 1
+      }
     },
     {
       tableName: "pedidos",

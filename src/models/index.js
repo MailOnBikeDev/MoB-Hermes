@@ -6,10 +6,16 @@ const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
   host: config.HOST,
   dialect: config.dialect,
   port: 3306,
+  define: {
+    charset: "utf8mb4",
+    dialectOptions: {
+      collate: "utf8mb4_unicode_ci",
+    },
+  },
   pool: {
     max: 5,
     min: 0,
-    acquire: 30000,
+    // acquire: 60000,
     idle: 10000,
   },
 });
@@ -25,6 +31,7 @@ db.role = require("./role.model")(sequelize, Sequelize);
 db.pedido = require("./pedido.model")(sequelize, Sequelize);
 db.mobiker = require("./mobiker.model")(sequelize, Sequelize);
 db.cliente = require("./cliente.model")(sequelize, Sequelize);
+db.destino = require("./destino.model")(sequelize, Sequelize);
 
 // Tablas Auxiliares
 db.distrito = require("./tablas auxiliares/distrito.model")(
@@ -57,6 +64,7 @@ db.envio = require("./tablas auxiliares/envio.model")(sequelize, Sequelize);
 db.bancos = require("./tablas auxiliares/bancos.model")(sequelize, Sequelize);
 db.status = require("./tablas auxiliares/status.model")(sequelize, Sequelize);
 db.empresa = require("./empresa.model")(sequelize, Sequelize);
+db.franquicia = require("./tablas auxiliares/franquicia.model")(sequelize, Sequelize);
 
 // Associations
 db.role.belongsToMany(db.user, {
@@ -70,9 +78,15 @@ db.user.belongsToMany(db.role, {
   otherKey: "roleId",
 });
 
+
+
 // Relaciones Auxiliares
 db.distrito.hasMany(db.codigoPostal, { as: "Código Postal" });
 db.codigoPostal.belongsTo(db.distrito);
+
+// Relaciones Destino con Distrito
+db.distrito.hasOne(db.destino);
+db.destino.belongsTo(db.distrito);
 
 // Relaciones con la Tabla Clientes
 db.distrito.hasOne(db.cliente);

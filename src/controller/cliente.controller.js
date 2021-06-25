@@ -104,6 +104,8 @@ module.exports = {
   indexClientes: async (req, res) => {
     try {
       let clientes = await Cliente.findAll({
+        order: [["razonComercial", "ASC"]],
+        limit: 30,
         include: [
           {
             model: Distrito,
@@ -337,12 +339,15 @@ module.exports = {
       const query = req.query.q;
 
       let cliente = await Cliente.findAll({
+        order: [["razonComercial", "ASC"]],
         where: {
           [Op.or]: [
             { contacto: { [Op.like]: `%${query}%` } },
             { razonComercial: { [Op.like]: `%${query}%` } },
+            { razonSocial: { [Op.like]: `%${query}%` } },
           ],
         },
+        limit: 10,
         include: [
           {
             model: Distrito,

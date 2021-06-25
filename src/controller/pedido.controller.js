@@ -51,6 +51,7 @@ module.exports = {
         ruido: req.body.ruido,
         status: req.body.status,
         rolCliente: req.body.rolCliente,
+        viajes: req.body.viajes,
       };
 
       let distritoPedido = await Distrito.findOne({
@@ -78,7 +79,7 @@ module.exports = {
 
       let clienteAsignado = await Cliente.findOne({
         where: {
-          contacto: req.body.contactoRemitente,
+          razonComercial: req.body.empresaRemitente,
         },
       });
 
@@ -112,10 +113,12 @@ module.exports = {
           await nuevoPedido.setStatus(estadoPedido);
           await nuevoPedido.setUser(operador);
 
-          res.json({ message: "¡Se ha creado el Pedido con éxito!" });
+          res
+            .status(200)
+            .json({ message: "¡Se ha creado el Pedido con éxito!" });
 
           // Asignar al MoBiker
-          let cantidadPedidosDelMoBiker = await Pedido.count({
+          let cantidadPedidosDelMoBiker = await Pedido.sum("viajes", {
             where: {
               [Op.and]: [
                 { mobikerId: mobiker.id },
@@ -164,7 +167,7 @@ module.exports = {
           );
 
           // Asignar al Cliente
-          let cantidadPedidosDelCliente = await Pedido.count({
+          let cantidadPedidosDelCliente = await Pedido.sum("viajes", {
             where: {
               [Op.and]: [
                 { clienteId: clienteAsignado.id },
@@ -215,7 +218,9 @@ module.exports = {
           res.status(500).send({ message: err.message });
         }
       } else {
-        res.json({ message: "¡Error! No se ha podido crear el pedido..." });
+        res
+          .status(500)
+          .json({ message: "¡Error! No se ha podido crear el pedido..." });
       }
     } catch (err) {
       res.status(500).send({ message: err.message });
@@ -367,6 +372,7 @@ module.exports = {
         tipoDeEnvioId: tipoEnvio.id,
         modalidadId: modalidadPedido.id,
         rolCliente: req.body.rolCliente,
+        viajes: req.body.viajes,
       };
 
       let pedidoActualizado = await Pedido.update(pedido, {
@@ -377,7 +383,7 @@ module.exports = {
         res.json({ message: "¡Se ha actualizado el Pedido con éxito!" });
 
         // Asignar al MoBiker
-        let cantidadPedidosDelMoBiker = await Pedido.count({
+        let cantidadPedidosDelMoBiker = await Pedido.sum("viajes", {
           where: {
             [Op.and]: [
               { mobikerId: mobiker.id },
@@ -432,7 +438,7 @@ module.exports = {
           },
         });
 
-        let cantidadPedidosDelCliente = await Pedido.count({
+        let cantidadPedidosDelCliente = await Pedido.sum("viajes", {
           where: {
             [Op.and]: [
               { clienteId: clienteAsignado.id },
@@ -502,6 +508,7 @@ module.exports = {
 
       let pedidoAsignado = {
         mobikerId: mobiker.id,
+        comision: req.body.comision,
         statusId: req.body.status,
       };
 
@@ -510,7 +517,56 @@ module.exports = {
       });
 
       if (pedidoActualizado) {
-        res.json({ message: "¡Se ha actualizado el Pedido con éxito!" });
+        res.json({ message: "¡Se ha asignado el Pedido con éxito!" });
+
+        // Asignar al MoBiker
+        let cantidadPedidosDelMoBiker = await Pedido.sum("viajes", {
+          where: {
+            [Op.and]: [
+              { mobikerId: mobiker.id },
+              { statusId: { [Op.between]: [4, 5] } },
+            ],
+          },
+        });
+
+        let kilometrosAsignadosMobiker = await Pedido.sum("distancia", {
+          where: {
+            [Op.and]: [
+              { mobikerId: mobiker.id },
+              { statusId: { [Op.between]: [4, 5] } },
+            ],
+          },
+        });
+
+        let CO2AsignadosMobiker = await Pedido.sum("CO2Ahorrado", {
+          where: {
+            [Op.and]: [
+              { mobikerId: mobiker.id },
+              { statusId: { [Op.between]: [4, 5] } },
+            ],
+          },
+        });
+
+        let ruidoAsignadosMobiker = await Pedido.sum("ruido", {
+          where: {
+            [Op.and]: [
+              { mobikerId: mobiker.id },
+              { statusId: { [Op.between]: [4, 5] } },
+            ],
+          },
+        });
+
+        await Mobiker.update(
+          {
+            biciEnvios: cantidadPedidosDelMoBiker,
+            kilometros: kilometrosAsignadosMobiker,
+            CO2Ahorrado: CO2AsignadosMobiker,
+            ruido: ruidoAsignadosMobiker,
+          },
+          {
+            where: { id: mobiker.id },
+          }
+        );
       } else {
         res.json({
           message: "¡Error! No se ha podido actualizar el Pedido...",
@@ -526,15 +582,53 @@ module.exports = {
     try {
       const query = req.query.q;
 
-      let pedido = await Pedido.findAll({
+      const mob = await Mobiker.findOne({
+        where: { fullName: { [Op.like]: `%${query}%` } },
+      });
+
+      if (mob) {
+        const pedido = await Pedido.findAll({
+          where: {
+            mobikerId: mob.id,
+          },
+          include: [
+            {
+              model: Distrito,
+            },
+            {
+              model: Mobiker,
+              attributes: ["fullName"],
+            },
+            {
+              model: Cliente,
+              attributes: ["contacto", "razonComercial"],
+            },
+            {
+              model: Envio,
+            },
+            {
+              model: Modalidad,
+            },
+            {
+              model: Status,
+            },
+          ],
+        });
+
+        res.json(pedido);
+      }
+
+      const pedido = await Pedido.findAll({
         where: {
           [Op.or]: [
             { id: { [Op.like]: `%${query}%` } },
+            { contactoRemitente: { [Op.like]: `%${query}%` } },
+            { empresaRemitente: { [Op.like]: `%${query}%` } },
             { contactoConsignado: { [Op.like]: `%${query}%` } },
             { empresaConsignado: { [Op.like]: `%${query}%` } },
-            { distritoRemitente: { [Op.like]: `%${query}%` } },
           ],
         },
+        limit: 20,
         include: [
           {
             model: Distrito,
@@ -644,4 +738,51 @@ module.exports = {
       res.status(500).send({ message: error.message });
     }
   },
+
+  // Procesas CSV y retornar un JSON
+  procesarCSV: async (req, res) => {
+		try {
+			const fs = require('fs'); // filesystem
+			const csv = require('csv-parse');// Encargado de parsear
+			const pedidos = [];
+
+			const parseador = csv({
+				delimiter: ',',//Delimitador, por defecto es la coma ,
+				cast: true, // Intentar convertir las cadenas a tipos nativos
+				comment: '#' // El carácter con el que comienzan las líneas de los comentarios, en caso de existir
+			});
+
+			parseador.on('readable', function () {
+				let fila;
+				let i = 0;
+				while (fila = parseador.read()) {
+					if( i != 0 ) {
+						let pedido = {
+							contactoConsignado: fila[0],
+							empresaConsignado: fila[1],
+							telefonoConsignado: fila[2],
+							direccionConsignado: fila[3],
+							distritoConsignado: fila[4],
+							otroDatoConsignado: fila[5],
+						}
+						pedidos.push(pedido);
+					}
+					i++;
+				}
+			});
+
+			parseador.on('error', function (err) {
+				console.error("Error al leer CSV:", err.message);
+			});
+
+			fs.createReadStream('src/files/file') // Abrir archivo
+				.pipe(parseador) // Pasarlo al parseador a través de una tubería
+				.on("end", function () {// Y al finalizar, terminar lo necesario
+					parseador.end();
+					res.json({data: pedidos});
+				});				
+		} catch (err) {
+			res.status(500).send({ message: err.message });
+		}
+	},
 };

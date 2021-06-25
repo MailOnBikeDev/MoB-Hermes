@@ -20,7 +20,7 @@ const mobikers = [
     tipoBicicleta: "Rutera/Fixie",
     fechaIngreso: "2013-04-12 18:10:50",
     status: "Activo",
-    rango: 6,
+    rango: 2,
   },
   {
     id: "zzzzzzzz-0000-0000-0000-000000000000",
@@ -43,7 +43,7 @@ const mobikers = [
     tipoBicicleta: "Rutera/Fixie",
     fechaIngreso: "2013-04-12 18:10:50",
     status: "Inactivo",
-    rango: 6,
+    rango: 4,
   },
   {
     nombres: "Abraham",
