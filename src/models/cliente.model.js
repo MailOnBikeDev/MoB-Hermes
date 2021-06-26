@@ -29,7 +29,7 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       otroDato: {
-        type: Sequelize.STRING(150),
+        type: Sequelize.STRING(250),
         allowNull: true,
       },
       email: {

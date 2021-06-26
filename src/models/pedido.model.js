@@ -33,7 +33,7 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       otroDatoRemitente: {
-        type: Sequelize.STRING(300),
+        type: Sequelize.STRING(250),
         allowNull: true,
       },
       contactoConsignado: {
@@ -53,12 +53,17 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       otroDatoConsignado: {
-        type: Sequelize.STRING(300),
+        type: Sequelize.STRING(250),
         allowNull: true,
       },
       tarifa: {
         type: Sequelize.FLOAT(5),
         allowNull: false,
+      },
+      tarifaSugerida: {
+        type: Sequelize.FLOAT(5),
+        allowNull: false,
+        defaultValue: 0,
       },
       recaudo: {
         type: Sequelize.FLOAT(5),
@@ -113,8 +118,8 @@ module.exports = (sequelize, Sequelize) => {
       viajes: {
         type: Sequelize.INTEGER(1),
         allowNull: false,
-        defaultValue: 1
-      }
+        defaultValue: 1,
+      },
     },
     {
       tableName: "pedidos",
