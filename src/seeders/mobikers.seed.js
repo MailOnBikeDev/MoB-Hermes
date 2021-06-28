@@ -417,7 +417,7 @@ const mobikers = [
     fechaNacimiento: "2013-04-28",
     fechaIngreso: "2013-04-12",
     distrito: 36,
-    rango: 1,
+    rango: 6,
   },
   {
     nombres: "Edinson",
@@ -1121,7 +1121,7 @@ const mobikers = [
     fechaNacimiento: "2013-05-28",
     fechaIngreso: "2013-04-12",
     distrito: 17,
-    rango: 4,
+    rango: 5,
   },
   {
     nombres: "Miguel",
@@ -1517,7 +1517,7 @@ const mobikers = [
     fechaNacimiento: "2013-06-15",
     fechaIngreso: "2013-04-17",
     distrito: 1,
-    rango: 1,
+    rango: 5,
   },
   {
     nombres: "Gustavo",

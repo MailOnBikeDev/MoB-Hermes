@@ -60,10 +60,10 @@ const agregarMoBikers = () => {
         console.log(
           `Creando al nuevo MoBiker: ${mobiker.fullName} que sale del distrito ${distritoDelMoBiker.distrito} con el Rango ${nivelMoB.rangoMoBiker}`
         );
-        // const nuevoMobiker = await Mobiker.create(mobiker);
+        const nuevoMobiker = await Mobiker.create(mobiker);
 
-        // await nuevoMobiker.setDistrito(distritoDelMoBiker);
-        // await nuevoMobiker.setRango(nivelMoB);
+        await nuevoMobiker.setDistrito(distritoDelMoBiker);
+        await nuevoMobiker.setRango(nivelMoB);
       } else {
         console.log(
           `No hagas nada con ${mobiker.fullName} que viene de ${distritoDelMoBiker.distrito} con el Rango ${nivelMoB.rangoMoBiker}`
@@ -74,6 +74,8 @@ const agregarMoBikers = () => {
       console.log(error);
     }
   });
+
+  console.log(mobikersPorAgregar[0]);
 };
 
 // Se ejecuta la función
