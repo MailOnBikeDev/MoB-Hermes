@@ -1363,7 +1363,7 @@ const mobikers = [
     fechaNacimiento: "2013-06-08",
     fechaIngreso: "2013-04-12",
     distrito: 4,
-    rango: 1,
+    rango: 6,
   },
   {
     nombres: "Ronnie bryan",
