@@ -2,7 +2,6 @@ const db = require("../models/index");
 const User = db.user;
 const Mobiker = db.mobiker;
 const Cliente = db.cliente;
-// const Pedido = db.pedido;
 const Role = db.role;
 const Distrito = db.distrito;
 const CodigoPostal = db.codigoPostal;
@@ -62,7 +61,7 @@ const estadosPedido = require("./tablas auxiliares/estadosPedido.seed");
 const distritos = require("./tablas auxiliares/distritos.seed");
 
 // Franquicias o derviados de Mail On Bike
-const franquicias = require("./tablas auxiliares/franquicias.seed")
+const franquicias = require("./tablas auxiliares/franquicias.seed");
 
 // Empresas
 const empresas = require("./empresas.seed");
@@ -120,7 +119,9 @@ const ejecutarSeed = async () => {
     empresas.forEach(async (empresa) => await Empresa.create(empresa));
 
     // Creando la tabla de franquicias de Mail On Bike
-    franquicias.forEach(async(franquicia) => await Franquicia.create(franquicia))
+    franquicias.forEach(
+      async (franquicia) => await Franquicia.create(franquicia)
+    );
 
     // Creando los Códigos Postales
     codigosPostales.forEach(

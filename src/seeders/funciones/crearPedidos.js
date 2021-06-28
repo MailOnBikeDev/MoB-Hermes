@@ -3,35 +3,77 @@ const User = db.user;
 const Mobiker = db.mobiker;
 const Cliente = db.cliente;
 const Pedido = db.pedido;
+const Distrito = db.distrito;
+const Envio = db.envio;
+const Modalidad = db.modalidad;
+const Status = db.status;
+const RolCliente = db.rolCliente;
+const FormaDePago = db.formaDePago;
+
+const Op = db.Sequelize.Op;
 
 // Pedidos
-const pedidos = require("./pedidos-01.seed");
-// const pedidos = require("./pedidos-02.seed");
-// const pedidos = require("./pedidos-03.seed");
-// const pedidos = require("./pedidos-04.seed");
-// const pedidos = require("./pedidos-05.seed");
-// const pedidos = require("./pedidos-06.seed");
-// const pedidos = require("./pedidos-07.seed");
-// const pedidos = require("./pedidos-08.seed");
-// const pedidos = require("./pedidos-09.seed");
+const pedidos = require("./pedidos-seed/pedidos-01.seed");
+// const pedidos = require("./pedidos-seed/pedidos-02.seed");
+// const pedidos = require("./pedidos-seed/pedidos-03.seed");
+// const pedidos = require("./pedidos-seed/pedidos-04.seed");
+// const pedidos = require("./pedidos-seed/pedidos-05.seed");
+// const pedidos = require("./pedidos-seed/pedidos-06.seed");
+// const pedidos = require("./pedidos-seed/pedidos-07.seed");
+// const pedidos = require("./pedidos-seed/pedidos-08.seed");
+// const pedidos = require("./pedidos-seed/pedidos-09.seed");
 
 const crearPedidos = async () => {
   pedidos.forEach(async (pedido) => {
     try {
+      // Formatear Fecha
       pedido.fecha = new Date(pedido.fecha.split("/").reverse().join("-"))
         .toISOString()
         .split("T")[0];
-      const distritoPedido = pedido.distritoId;
-      const tipoEnvio = pedido.tipoDeEnvioId;
-      const modalidadPedido = pedido.modalidadId;
-      const estadoPedido = pedido.statusId;
+
+      // Agregar Rol del Cliente tal cual aparece en la Base de Datos
+      const buscarRolCliente = await RolCliente.findOne({
+        where: { rol: { [Op.like]: `%${pedido.rolCliente}%` } },
+      });
+      pedido.rolCliente = buscarRolCliente.rol;
+
+      // Agregar forma de Pago tal cual aparece en la Base de Datos
+      const buscarFormaPago = await FormaDePago.findOne({
+        where: { pago: { [Op.like]: `%${pedido.formaPago}%` } },
+      });
+      pedido.formaPago = buscarFormaPago.pago;
+
+      // Ajustando el Booleano de Compensado y Facturado
+      pedido.compensado = pedido.compensado === "SI" ? true : false;
+      pedido.facturado = pedido.facturado === "SI" ? true : false;
 
       const nuevoPedido = await Pedido.create(pedido);
-      const mobiker = await Mobiker.findOne({
+
+      const distritoPedido = await Distrito.findOne({
+        where: { distrito: { [Op.like]: `%${pedido.distritoConsignado}%` } },
+      });
+      const tipoEnvio = await Envio.findOne({
+        where: { tipo: { [Op.like]: `%${pedido.tipoDeEnvio}%` } },
+      });
+      const modalidadPedido = await Modalidad.findOne({
+        where: { tipo: { [Op.like]: `%${pedido.modalidad}%` } },
+      });
+      const estadoPedido = await Status.findOne({
+        where: { id: pedido.status },
+      });
+
+      let mobiker = await Mobiker.findOne({
         where: {
-          fullName: pedido.mobiker,
+          fullName: { [Op.like]: `%${pedido.mobiker}%` },
         },
       });
+      if (!mobiker) {
+        mobiker = await Mobiker.findOne({
+          where: {
+            fullName: "zzMoBiker Retirado",
+          },
+        });
+      }
       const operador = await User.findOne({
         where: {
           username: pedido.operador,
@@ -39,7 +81,7 @@ const crearPedidos = async () => {
       });
       let clienteAsignado = await Cliente.findOne({
         where: {
-          razonComercial: pedido.empresaRemitente,
+          razonComercial: { [Op.like]: `%${pedido.empresaRemitente}%` },
         },
       });
       if (!clienteAsignado) {
