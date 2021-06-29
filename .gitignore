@@ -2,3 +2,7 @@ node_modules
 .vscode
 .env
 requests
+
+src/seeders/funciones/
+
+ejemplo.text

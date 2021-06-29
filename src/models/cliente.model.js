@@ -29,7 +29,7 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       otroDato: {
-        type: Sequelize.STRING(150),
+        type: Sequelize.STRING(250),
         allowNull: true,
       },
       email: {
@@ -70,7 +70,7 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: true,
       },
       numeroCuentaBancaria: {
-        type: Sequelize.BIGINT(14),
+        type: Sequelize.STRING(14),
         allowNull: true,
       },
     },

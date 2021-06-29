@@ -61,7 +61,7 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: true,
       },
       numeroCuentaBancaria: {
-        type: Sequelize.BIGINT(14),
+        type: Sequelize.STRING(14),
         allowNull: true,
       },
       equipo: {
