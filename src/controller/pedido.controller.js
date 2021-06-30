@@ -604,7 +604,9 @@ module.exports = {
       });
 
       if (pedidoActualizado) {
-        res.json({ message: "¡Se ha asignado el Pedido con éxito!" });
+        res.json({
+          message: "¡Se ha cambiado el estado del Pedido con éxito!",
+        });
 
         // Asignar al MoBiker
         let cantidadPedidosDelMoBiker = await Pedido.sum("viajes", {

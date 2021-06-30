@@ -63,7 +63,7 @@ module.exports = (app) => {
   app.put(
     "/pedidos/cambiar-estado/:id",
     [authJwt.verifyToken, authJwt.isEquipoAdmin],
-    controller.asignacionPedido
+    controller.cambiarStatusPedido
   );
 
   // Ruta para obtener los Pedidos por rango de fechas
