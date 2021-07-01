@@ -133,6 +133,50 @@ module.exports = {
     }
   },
 
+  getClientesConPedidos: async (req, res) => {
+    try {
+      const { desde, hasta } = req.query;
+
+      const condition = {
+        [Op.and]: [
+          { statusId: { [Op.between]: [1, 5] } },
+          { fecha: { [Op.between]: [desde, hasta] } },
+        ],
+      };
+      let clientesConPedidos = [];
+      let clienteConPedidos = {};
+
+      const clientes = await Cliente.findAll();
+
+      clientes.forEach(async (cliente) => {
+        try {
+          let cantidadPedidos = await Pedido.count({
+            where: { [Op.and]: [{ clienteId: cliente.id }, condition] },
+          });
+
+          if (cantidadPedidos !== 0) {
+            clienteConPedidos = {
+              id: cliente.id,
+              empresa: cliente.razonComercial,
+              cantidadPedidos: cantidadPedidos,
+            };
+
+            clientesConPedidos.push(clienteConPedidos);
+            console.log(clientesConPedidos);
+          }
+        } catch (err) {
+          res.status(500).send({ message: err.message });
+          console.log(err.message);
+        }
+      });
+
+      res.json(clientesConPedidos);
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).send({ message: error.message });
+    }
+  },
+
   getClienteById: async (req, res) => {
     try {
       const id = req.params.id;

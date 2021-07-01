@@ -57,4 +57,10 @@ module.exports = (app) => {
     [authJwt.verifyToken, authJwt.isEquipoAdmin],
     controller.searchCliente
   );
+
+  app.get(
+    "/clientes-con-pedidos",
+    [authJwt.verifyToken, authJwt.isEquipoAdmin],
+    controller.getClientesConPedidos
+  );
 };
