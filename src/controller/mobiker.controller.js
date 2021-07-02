@@ -237,6 +237,52 @@ module.exports = {
       res.status(500).send({ message: err.message });
     }
   },
+  getMobikerConPedidos: async (req, res) => {
+    try {
+      const { desde, hasta } = req.query;
+
+      const condition = {
+        [Op.and]: [
+          { statusId: { [Op.between]: [4, 5] } },
+          { fecha: { [Op.between]: [desde, hasta] } },
+        ],
+      };
+      let mobikersConPedidos = [];
+      let mobikerConPedidos = {};
+
+      const mobikers = await Mobiker.findAll({
+        order: [["fullName", "ASC"]],
+        include: [
+          {
+            model: Distrito,
+          },
+          {
+            model: Rango,
+          },
+        ],
+      });
+
+      for (let mobiker of mobikers) {
+        let cantidadPedidos = await Pedido.count({
+          where: { [Op.and]: [{ mobikerId: mobiker.id }, condition] },
+        });
+
+        if (cantidadPedidos !== 0) {
+          mobikerConPedidos = {
+            mobiker,
+            cantidadPedidos: cantidadPedidos,
+          };
+
+          mobikersConPedidos.push(mobikerConPedidos);
+        }
+      }
+
+      res.json(mobikersConPedidos);
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).send({ message: error.message });
+    }
+  },
 
   // Editar MoBiker
   updateMobiker: async (req, res) => {
