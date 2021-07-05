@@ -12,7 +12,7 @@ const app = express();
 
 // Settings
 const corsOptions = {
-	origin: process.env.IRIS_URL,
+	origin: process.env.IRIS_URL.split(','),
 };
 
 // Creating the sync to DB

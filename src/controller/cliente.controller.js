@@ -104,7 +104,10 @@ module.exports = {
   indexClientes: async (req, res) => {
     try {
       let clientes = await Cliente.findAll({
-        order: [["razonComercial", "ASC"]],
+        order: [
+          ["razonComercial", "ASC"],
+          ["biciEnvios", "ASC"],
+        ],
         limit: 30,
         include: [
           {
@@ -130,6 +133,68 @@ module.exports = {
       res.json(clientes);
     } catch (err) {
       res.status(500).send({ message: err.message });
+    }
+  },
+
+  getClientesConPedidos: async (req, res) => {
+    try {
+      const { desde, hasta } = req.query;
+
+      const condition = {
+        [Op.and]: [
+          { statusId: { [Op.between]: [1, 5] } },
+          { fecha: { [Op.between]: [desde, hasta] } },
+        ],
+      };
+      let clientesConPedidos = [];
+      let clienteConPedidos = {};
+
+      const clientes = await Cliente.findAll({
+        order: [
+          ["razonComercial", "ASC"],
+          ["biciEnvios", "ASC"],
+        ],
+        include: [
+          {
+            model: Distrito,
+          },
+          {
+            model: Comprobante,
+          },
+          {
+            model: RolCliente,
+          },
+          {
+            model: Carga,
+          },
+          {
+            model: FormaDePago,
+          },
+          {
+            model: Envio,
+          },
+        ],
+      });
+
+      for (let cliente of clientes) {
+        let cantidadPedidos = await Pedido.count({
+          where: { [Op.and]: [{ clienteId: cliente.id }, condition] },
+        });
+
+        if (cantidadPedidos !== 0) {
+          clienteConPedidos = {
+            cliente,
+            cantidadPedidos: cantidadPedidos,
+          };
+
+          clientesConPedidos.push(clienteConPedidos);
+        }
+      }
+
+      res.json(clientesConPedidos);
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).send({ message: error.message });
     }
   },
 

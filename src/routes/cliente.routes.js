@@ -57,4 +57,11 @@ module.exports = (app) => {
     [authJwt.verifyToken, authJwt.isEquipoAdmin],
     controller.searchCliente
   );
+
+  // Ruta para obtener clientes con pedidos en las fechas seleccionadas
+  app.get(
+    "/clientes-con-pedidos",
+    [authJwt.verifyToken, authJwt.isEquipoAdmin],
+    controller.getClientesConPedidos
+  );
 };

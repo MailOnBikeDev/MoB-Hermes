@@ -582,6 +582,90 @@ module.exports = {
     }
   },
 
+  // Cambiar el estado de un Pedido
+  cambiarStatusPedido: async (req, res) => {
+    try {
+      const id = req.params.id;
+
+      //Es importante enviar el MoBiker para que actualice sus estadísticas
+      let mobiker = await Mobiker.findOne({
+        where: {
+          fullName: req.body.mobiker,
+        },
+      });
+
+      let estadoCambiado = {
+        comentario: req.body.comentario,
+        statusId: req.body.status,
+      };
+
+      let pedidoActualizado = await Pedido.update(estadoCambiado, {
+        where: { id: id },
+      });
+
+      if (pedidoActualizado) {
+        res.json({
+          message: "¡Se ha cambiado el estado del Pedido con éxito!",
+        });
+
+        // Asignar al MoBiker
+        let cantidadPedidosDelMoBiker = await Pedido.sum("viajes", {
+          where: {
+            [Op.and]: [
+              { mobikerId: mobiker.id },
+              { statusId: { [Op.between]: [4, 5] } },
+            ],
+          },
+        });
+
+        let kilometrosAsignadosMobiker = await Pedido.sum("distancia", {
+          where: {
+            [Op.and]: [
+              { mobikerId: mobiker.id },
+              { statusId: { [Op.between]: [4, 5] } },
+            ],
+          },
+        });
+
+        let CO2AsignadosMobiker = await Pedido.sum("CO2Ahorrado", {
+          where: {
+            [Op.and]: [
+              { mobikerId: mobiker.id },
+              { statusId: { [Op.between]: [4, 5] } },
+            ],
+          },
+        });
+
+        let ruidoAsignadosMobiker = await Pedido.sum("ruido", {
+          where: {
+            [Op.and]: [
+              { mobikerId: mobiker.id },
+              { statusId: { [Op.between]: [4, 5] } },
+            ],
+          },
+        });
+
+        await Mobiker.update(
+          {
+            biciEnvios: cantidadPedidosDelMoBiker,
+            kilometros: kilometrosAsignadosMobiker,
+            CO2Ahorrado: CO2AsignadosMobiker,
+            ruido: ruidoAsignadosMobiker,
+          },
+          {
+            where: { id: mobiker.id },
+          }
+        );
+      } else {
+        res.json({
+          message: "¡Error! No se ha podido actualizar el Pedido...",
+        });
+      }
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  },
+
   // Buscar pedido por id, cliente, etc
   searchPedido: async (req, res) => {
     try {

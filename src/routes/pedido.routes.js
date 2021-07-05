@@ -59,6 +59,13 @@ module.exports = (app) => {
     controller.asignacionPedido
   );
 
+  // Ruta para cambiar el estado de los Pedidos
+  app.put(
+    "/pedidos/cambiar-estado/:id",
+    [authJwt.verifyToken, authJwt.isEquipoAdmin],
+    controller.cambiarStatusPedido
+  );
+
   // Ruta para obtener los Pedidos por rango de fechas
   app.get(
     "/historial-pedidos",
@@ -67,8 +74,5 @@ module.exports = (app) => {
   );
 
   // Ruta para procesar CSV y retornar un JSON
-  app.post(
-		"/procesar-csv",uploadFiles.single('file'),
-		controller.procesarCSV
-	);
+  app.post("/procesar-csv", uploadFiles.single("file"), controller.procesarCSV);
 };
