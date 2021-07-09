@@ -6,7 +6,7 @@ const Rango = db.rango;
 const Op = db.Sequelize.Op;
 
 // Para tener referencia
-const mobikerBase = require("../mobikers.seed");
+// const mobikerBase = require("../mobikers.seed");
 
 // Nuevo csv
 const mobikersPorAgregar = require("./mobikerPorAsignar.seed");

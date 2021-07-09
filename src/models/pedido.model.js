@@ -120,6 +120,10 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
         defaultValue: 1,
       },
+      isRuteo: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
     },
     {
       tableName: "pedidos",
