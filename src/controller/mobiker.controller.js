@@ -251,7 +251,10 @@ module.exports = {
       let mobikerConPedidos = {};
 
       const mobikers = await Mobiker.findAll({
-        order: [["fullName", "ASC"]],
+        order: [
+          ["biciEnvios", "DESC"],
+          ["fullName", "ASC"],
+        ],
         include: [
           {
             model: Distrito,
