@@ -8,6 +8,8 @@ const Modalidad = db.modalidad;
 const Status = db.status;
 const User = db.user;
 
+const Ruteo = db.ruteo;
+
 const Op = db.Sequelize.Op;
 
 const getPagination = (page, size) => {
@@ -26,6 +28,223 @@ const getPagingData = (data, page, limit) => {
 
 module.exports = {
   storagePedido: async (req, res) => {
+    try {
+      let pedido = {
+        fecha: req.body.fecha,
+        contactoRemitente: req.body.contactoRemitente,
+        empresaRemitente: req.body.empresaRemitente,
+        direccionRemitente: req.body.direccionRemitente,
+        distritoRemitente: req.body.distritoRemitente,
+        telefonoRemitente: req.body.telefonoRemitente,
+        otroDatoRemitente: req.body.otroDatoRemitente,
+        contactoConsignado: req.body.contactoConsignado,
+        empresaConsignado: req.body.empresaConsignado,
+        direccionConsignado: req.body.direccionConsignado,
+        telefonoConsignado: req.body.telefonoConsignado,
+        otroDatoConsignado: req.body.otroDatoConsignado,
+        tipoCarga: req.body.tipoCarga,
+        formaPago: req.body.formaPago,
+        tarifa: req.body.tarifa,
+        tarifaSugerida: req.body.tarifaSugerida,
+        recaudo: req.body.recaudo,
+        tramite: req.body.tramite,
+        comision: req.body.comision,
+        distancia: req.body.distancia,
+        CO2Ahorrado: req.body.CO2Ahorrado,
+        ruido: req.body.ruido,
+        status: req.body.status,
+        compensado: req.body.compensado,
+        facturado: req.body.facturado,
+        rolCliente: req.body.rolCliente,
+        viajes: req.body.viajes,
+      };
+
+      let distritoPedido = await Distrito.findOne({
+        where: {
+          distrito: req.body.distritoConsignado,
+        },
+      });
+
+      let mobiker = await Mobiker.findOne({
+        where: {
+          fullName: req.body.mobiker,
+        },
+      });
+      let tipoEnvio = await Envio.findOne({
+        where: {
+          tipo: req.body.tipoEnvio,
+        },
+      });
+
+      let modalidadPedido = await Modalidad.findOne({
+        where: {
+          tipo: req.body.modalidad,
+        },
+      });
+
+      let clienteAsignado = await Cliente.findOne({
+        where: {
+          razonComercial: req.body.empresaRemitente,
+        },
+      });
+
+      let estadoPedido = await Status.findOne({
+        where: {
+          id: req.body.status,
+        },
+      });
+
+      let operador = await User.findOne({
+        where: {
+          username: req.body.operador,
+        },
+      });
+
+      if (
+        distritoPedido &&
+        mobiker &&
+        tipoEnvio &&
+        modalidadPedido &&
+        clienteAsignado
+      ) {
+        try {
+          let nuevoPedido = await Pedido.create(pedido);
+
+          await nuevoPedido.setDistrito(distritoPedido);
+          await nuevoPedido.setMobiker(mobiker);
+          await nuevoPedido.setTipoDeEnvio(tipoEnvio);
+          await nuevoPedido.setModalidad(modalidadPedido);
+          await nuevoPedido.setCliente(clienteAsignado);
+          await nuevoPedido.setStatus(estadoPedido);
+          await nuevoPedido.setUser(operador);
+
+          res
+            .status(200)
+            .json({ message: "¡Se ha creado el Pedido con éxito!" });
+
+          // Asignar al MoBiker
+          let cantidadPedidosDelMoBiker = await Pedido.sum("viajes", {
+            where: {
+              [Op.and]: [
+                { mobikerId: mobiker.id },
+                { statusId: { [Op.between]: [4, 5] } },
+              ],
+            },
+          });
+
+          let kilometrosAsignadosMobiker = await Pedido.sum("distancia", {
+            where: {
+              [Op.and]: [
+                { mobikerId: mobiker.id },
+                { statusId: { [Op.between]: [4, 5] } },
+              ],
+            },
+          });
+
+          let CO2AsignadosMobiker = await Pedido.sum("CO2Ahorrado", {
+            where: {
+              [Op.and]: [
+                { mobikerId: mobiker.id },
+                { statusId: { [Op.between]: [4, 5] } },
+              ],
+            },
+          });
+
+          let ruidoAsignadosMobiker = await Pedido.sum("ruido", {
+            where: {
+              [Op.and]: [
+                { mobikerId: mobiker.id },
+                { statusId: { [Op.between]: [4, 5] } },
+              ],
+            },
+          });
+
+          await Mobiker.update(
+            {
+              biciEnvios: cantidadPedidosDelMoBiker,
+              kilometros: kilometrosAsignadosMobiker,
+              CO2Ahorrado: CO2AsignadosMobiker,
+              ruido: ruidoAsignadosMobiker,
+            },
+            {
+              where: { id: mobiker.id },
+            }
+          );
+
+          // Asignar al Cliente
+          let cantidadPedidosDelCliente = await Pedido.sum("viajes", {
+            where: {
+              [Op.and]: [
+                { clienteId: clienteAsignado.id },
+                { statusId: { [Op.between]: [1, 5] } },
+              ],
+            },
+          });
+
+          let kilometrosAsignados = await Pedido.sum("distancia", {
+            where: {
+              [Op.and]: [
+                { clienteId: clienteAsignado.id },
+                { statusId: { [Op.between]: [1, 5] } },
+              ],
+            },
+          });
+
+          let CO2Asignados = await Pedido.sum("CO2Ahorrado", {
+            where: {
+              [Op.and]: [
+                { clienteId: clienteAsignado.id },
+                { statusId: { [Op.between]: [1, 5] } },
+              ],
+            },
+          });
+
+          let ruidoAsignados = await Pedido.sum("ruido", {
+            where: {
+              [Op.and]: [
+                { clienteId: clienteAsignado.id },
+                { statusId: { [Op.between]: [1, 5] } },
+              ],
+            },
+          });
+
+          await Cliente.update(
+            {
+              biciEnvios: cantidadPedidosDelCliente,
+              kilometros: kilometrosAsignados,
+              CO2Ahorrado: CO2Asignados,
+              ruido: ruidoAsignados,
+            },
+            {
+              where: { id: clienteAsignado.id },
+            }
+          );
+        } catch (err) {
+          res.status(500).send({ message: err.message });
+        }
+      } else {
+        res
+          .status(500)
+          .json({ message: "¡Error! No se ha podido crear el pedido..." });
+      }
+    } catch (err) {
+      res.status(500).send({ message: err.message });
+    }
+  },
+
+  // Creando nuevo Ruteo en la Tabla Ruteo
+  newRuteo: async (req, res) => {
+    try {
+      const ruta = await Ruteo.create();
+
+      res.json(ruta);
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  },
+
+  // Guardar Ruteo
+  storageRuteo: async (req, res) => {
     try {
       let pedido = {
         fecha: req.body.fecha,

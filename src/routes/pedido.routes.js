@@ -17,6 +17,13 @@ module.exports = (app) => {
     controller.storagePedido
   );
 
+  // Ruta para crear nuevo id de Ruta
+  app.post(
+    "/pedidos/nueva-ruta",
+    [authJwt.verifyToken, authJwt.isEquipoAdmin],
+    controller.newRuteo
+  );
+
   // Ruta para mostrar todos los Pedidos, filtrados por fecha
   app.get(
     "/pedidos/tablero-pedidos",
