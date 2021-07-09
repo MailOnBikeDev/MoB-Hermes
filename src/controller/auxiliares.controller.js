@@ -18,7 +18,7 @@ module.exports = {
 	},
 
 	sendDistritos: async (req, res) => {
-		distritos = await Distrito.findAll();
+		distritos = await Distrito.findAll({order:[["distrito", "ASC"]]});
 		res.send(distritos);
 	},
 
