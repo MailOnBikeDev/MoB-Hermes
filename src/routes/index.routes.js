@@ -8,6 +8,9 @@ router.get("/", (req, res) => {
 // Auth Route
 require("./auth.routes")(router);
 
+// Auth Cliente
+require("./auth-clientes.routes")(router);
+
 // User Route
 require("./user.routes")(router);
 
