@@ -85,6 +85,16 @@ db.user.belongsToMany(db.role, {
   otherKey: "roleId",
 });
 
+db.mobiker.hasMany(db.userMobiker);
+db.userMobiker.belongsTo(db.mobiker);
+db.role.hasOne(db.userMobiker);
+db.userMobiker.belongsTo(db.role);
+
+db.cliente.hasMany(db.userCliente);
+db.userCliente.belongsTo(db.cliente);
+db.role.hasOne(db.userCliente);
+db.userCliente.belongsTo(db.role);
+
 // Relaciones Auxiliares
 db.distrito.hasMany(db.codigoPostal, { as: "Código Postal" });
 db.codigoPostal.belongsTo(db.distrito);

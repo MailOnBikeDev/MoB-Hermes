@@ -40,6 +40,10 @@ module.exports = (sequelize, Sequelize) => {
           },
         },
       },
+      status: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: true,
+      },
     },
     {
       tableName: "usuarios-clientes",
