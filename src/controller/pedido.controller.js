@@ -57,6 +57,7 @@ module.exports = {
         facturado: req.body.facturado,
         rolCliente: req.body.rolCliente,
         viajes: req.body.viajes,
+        isRuteo: req.body.isRuteo,
         ruteo: req.body.ruteo,
       };
 
@@ -119,7 +120,7 @@ module.exports = {
           await nuevoPedido.setStatus(estadoPedido);
           await nuevoPedido.setUser(operador);
 
-          if (pedido.ruteo !== "No") {
+          if (pedido.isRuteo === true) {
             await nuevoPedido.setRuteo(pedido.ruteo);
           }
 
@@ -866,12 +867,24 @@ module.exports = {
       };
       const { limit, offset } = getPagination(page, size);
 
-      const data = await Pedido.findAndCountAll({
+      let ruteoConPedidos = [];
+
+      const ruteos = await Ruteos.findAll();
+
+      for (let ruta of ruteos) {
+      }
+
+      Pedido.findAndCountAll({
         where: condition,
         limit,
         offset,
         order: [["id", "DESC"]],
       });
+
+      const data = {
+        count,
+        rows,
+      };
 
       const pedidos = getPagingData(data, page, limit);
 
