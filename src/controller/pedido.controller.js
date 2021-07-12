@@ -860,30 +860,55 @@ module.exports = {
     try {
       let { desde, hasta, page, size } = req.query;
       let condition = {
-        [Op.and]: [
-          { fecha: { [Op.between]: [`%${desde}%`, `%${hasta}%`] } },
-          { ruteoId: { [Op.not]: null } },
-        ],
+        fecha: { [Op.between]: [`%${desde}%`, `%${hasta}%`] },
       };
       const { limit, offset } = getPagination(page, size);
 
       let ruteoConPedidos = [];
+      let rutaConPedido = {};
 
-      const ruteos = await Ruteos.findAll();
+      const ruteos = await Ruteo.findAll();
 
       for (let ruta of ruteos) {
+        let pedidosRuta = await Pedido.findAll({
+          where: { [Op.and]: [{ ruteoId: ruta.id }, condition] },
+          include: [
+            {
+              model: Distrito,
+            },
+            {
+              model: Mobiker,
+              attributes: ["fullName"],
+            },
+            {
+              model: Cliente,
+              attributes: ["contacto", "razonComercial"],
+            },
+            {
+              model: Envio,
+            },
+            {
+              model: Modalidad,
+            },
+            {
+              model: Status,
+            },
+          ],
+        });
+
+        if (pedidosRuta.length > 0) {
+          rutaConPedido = {
+            ruta,
+            pedidosRuta,
+          };
+
+          ruteoConPedidos.push(rutaConPedido);
+        }
       }
 
-      Pedido.findAndCountAll({
-        where: condition,
-        limit,
-        offset,
-        order: [["id", "DESC"]],
-      });
-
       const data = {
-        count,
-        rows,
+        count: ruteoConPedidos.length,
+        rows: ruteoConPedidos,
       };
 
       const pedidos = getPagingData(data, page, limit);

@@ -181,7 +181,7 @@ module.exports = {
           where: { [Op.and]: [{ clienteId: cliente.id }, condition] },
         });
 
-        if (cantidadPedidos !== 0) {
+        if (cantidadPedidos.length > 0) {
           clienteConPedidos = {
             cliente,
             cantidadPedidos: cantidadPedidos,
