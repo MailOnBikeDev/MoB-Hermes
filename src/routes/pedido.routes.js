@@ -80,6 +80,13 @@ module.exports = (app) => {
     controller.getHistorialPedidos
   );
 
+  // Ruta para obtener los Pedidos por Ruteos en el rango de fechas
+  app.get(
+    "/ruteos-pedidos",
+    [authJwt.verifyToken, authJwt.isEquipoAdmin],
+    controller.getPedidosByRuteo
+  );
+
   // Ruta para procesar CSV y retornar un JSON
   app.post("/procesar-csv", uploadFiles.single("file"), controller.procesarCSV);
 };
