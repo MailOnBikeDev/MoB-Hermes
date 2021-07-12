@@ -254,10 +254,7 @@ module.exports = {
     try {
       const { page, size, fecha } = req.query;
       let condition = {
-        [Op.and]: [
-          { fecha: { [Op.startsWith]: `${fecha}` } },
-          { isRuteo: false },
-        ],
+        fecha: { [Op.startsWith]: `${fecha}` },
       };
       const { limit, offset } = getPagination(page, size);
 

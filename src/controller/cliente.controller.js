@@ -105,7 +105,7 @@ module.exports = {
     try {
       let clientes = await Cliente.findAll({
         order: [
-          ["biciEnvios", "ASC"],
+          ["biciEnvios", "DESC"],
           ["razonComercial", "ASC"],
         ],
         limit: 30,
