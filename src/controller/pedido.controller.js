@@ -699,7 +699,14 @@ module.exports = {
       if (mob) {
         const pedido = await Pedido.findAll({
           where: {
-            mobikerId: mob.id,
+            [Op.or]: [
+              { id: { [Op.like]: `%${query}%` } },
+              { contactoRemitente: { [Op.like]: `%${query}%` } },
+              { empresaRemitente: { [Op.like]: `%${query}%` } },
+              { contactoConsignado: { [Op.like]: `%${query}%` } },
+              { empresaConsignado: { [Op.like]: `%${query}%` } },
+              { mobikerId: mob.id },
+            ],
           },
           order: [["id", "DESC"]],
           include: [
@@ -727,45 +734,45 @@ module.exports = {
         });
 
         res.json(pedido);
-      }
-
-      const pedido = await Pedido.findAll({
-        where: {
-          [Op.or]: [
-            { id: { [Op.like]: `%${query}%` } },
-            { contactoRemitente: { [Op.like]: `%${query}%` } },
-            { empresaRemitente: { [Op.like]: `%${query}%` } },
-            { contactoConsignado: { [Op.like]: `%${query}%` } },
-            { empresaConsignado: { [Op.like]: `%${query}%` } },
+      } else {
+        const pedido = await Pedido.findAll({
+          where: {
+            [Op.or]: [
+              { id: { [Op.like]: `%${query}%` } },
+              { contactoRemitente: { [Op.like]: `%${query}%` } },
+              { empresaRemitente: { [Op.like]: `%${query}%` } },
+              { contactoConsignado: { [Op.like]: `%${query}%` } },
+              { empresaConsignado: { [Op.like]: `%${query}%` } },
+            ],
+          },
+          order: [["id", "DESC"]],
+          limit: 20,
+          include: [
+            {
+              model: Distrito,
+            },
+            {
+              model: Mobiker,
+              attributes: ["fullName"],
+            },
+            {
+              model: Cliente,
+              attributes: ["contacto", "razonComercial"],
+            },
+            {
+              model: Envio,
+            },
+            {
+              model: Modalidad,
+            },
+            {
+              model: Status,
+            },
           ],
-        },
-        order: [["id", "DESC"]],
-        limit: 20,
-        include: [
-          {
-            model: Distrito,
-          },
-          {
-            model: Mobiker,
-            attributes: ["fullName"],
-          },
-          {
-            model: Cliente,
-            attributes: ["contacto", "razonComercial"],
-          },
-          {
-            model: Envio,
-          },
-          {
-            model: Modalidad,
-          },
-          {
-            model: Status,
-          },
-        ],
-      });
+        });
 
-      res.json(pedido);
+        res.json(pedido);
+      }
     } catch (error) {
       res.status(500).send({ message: error.message });
     }
