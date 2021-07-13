@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
-  const Distrito = sequelize.define(
-    "distritos",
+  const ZonaCobertura = sequelize.define(
+    "zonaCobertura",
     {
       id: {
         type: Sequelize.INTEGER(2),
@@ -13,9 +13,9 @@ module.exports = (sequelize, Sequelize) => {
       },
     },
     {
-      tableName: "distritos",
+      tableName: "zona de cobertura",
       timestamps: false,
     }
   );
-  return Distrito;
+  return ZonaCobertura;
 };

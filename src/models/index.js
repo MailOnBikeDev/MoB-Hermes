@@ -42,6 +42,10 @@ db.distrito = require("./tablas auxiliares/distrito.model")(
   sequelize,
   Sequelize
 );
+db.zonaCobertura = require("./tablas auxiliares/zonaCobertura.model")(
+  sequelize,
+  Sequelize
+);
 db.codigoPostal = require("./tablas auxiliares/codigoPostal.model")(
   sequelize,
   Sequelize

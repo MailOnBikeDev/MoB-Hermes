@@ -15,6 +15,9 @@ module.exports = (app) => {
   // Ruta para obtener los distritos
   app.get("/auxiliares/distritos", controller.sendDistritos);
 
+  // Ruta para obtener la Zona de Cobertura
+  app.get("/auxiliares/zona-cobertura", controller.sendZonaCobertura);
+
   // Ruta para obtener los tipo de carga
   app.get("/auxiliares/tipos-de-carga", controller.sendTipoCarga);
 

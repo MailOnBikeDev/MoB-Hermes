@@ -4,6 +4,7 @@ const Mobiker = db.mobiker;
 const Cliente = db.cliente;
 const Role = db.role;
 const Distrito = db.distrito;
+const ZonaCobertura = db.zonaCobertura;
 const CodigoPostal = db.codigoPostal;
 const Rango = db.rango;
 const Comprobante = db.comprobante;
@@ -60,6 +61,9 @@ const estadosPedido = require("./tablas auxiliares/estadosPedido.seed");
 // Distritos
 const distritos = require("./tablas auxiliares/distritos.seed");
 
+// Distritos de la Zona de cobertura
+const zonas = require("./tablas auxiliares/zonaCobertura.seed");
+
 // Franquicias o derviados de Mail On Bike
 const franquicias = require("./tablas auxiliares/franquicias.seed");
 
@@ -86,6 +90,9 @@ const ejecutarSeed = async () => {
 
     // Creando los distritos
     distritos.forEach(async (distrito) => await Distrito.create(distrito));
+
+    // Creando la Zona de Cobertura
+    zonas.forEach(async (zona) => await ZonaCobertura.create(zona));
 
     // Creando tabla de comprobante
     tipoDeComprobante.forEach(
