@@ -87,6 +87,12 @@ module.exports = (app) => {
     controller.getPedidosByRuteo
   );
 
+  app.get(
+    "/ruteo/:id",
+    [authJwt.verifyToken, authJwt.isEquipoAdmin],
+    controller.getRutaById
+  );
+
   // Ruta para procesar CSV y retornar un JSON
   app.post("/procesar-csv", uploadFiles.single("file"), controller.procesarCSV);
 };

@@ -869,6 +869,7 @@ module.exports = {
       for (let ruta of ruteos) {
         let pedidosRuta = await Pedido.findAll({
           where: { [Op.and]: [{ ruteoId: ruta.id }, condition] },
+          order: [["id", "DESC"]],
           include: [
             {
               model: Distrito,
@@ -911,6 +912,50 @@ module.exports = {
       const pedidos = getPagingData(data, page, limit);
 
       res.json(pedidos);
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  },
+
+  getRutaById: async (req, res) => {
+    try {
+      const id = req.params.id;
+
+      const ruta = await Ruteo.findByPk(id);
+
+      const pedidosRuta = await Pedido.findAll({
+        where: { ruteoId: ruta.id },
+        order: [["id", "DESC"]],
+        include: [
+          {
+            model: Distrito,
+          },
+          {
+            model: Mobiker,
+            attributes: ["fullName"],
+          },
+          {
+            model: Cliente,
+            attributes: ["contacto", "razonComercial"],
+          },
+          {
+            model: Envio,
+          },
+          {
+            model: Modalidad,
+          },
+          {
+            model: Status,
+          },
+        ],
+      });
+
+      let rutaConPedido = {
+        ruta,
+        pedidosRuta,
+      };
+
+      res.json(rutaConPedido);
     } catch (error) {
       res.status(500).send({ message: error.message });
     }
