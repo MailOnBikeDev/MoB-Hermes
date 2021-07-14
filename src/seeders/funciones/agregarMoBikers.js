@@ -22,8 +22,8 @@ const capitalizar = (nombres) => {
 };
 
 const agregarMoBikers = () => {
-  mobikersPorAgregar.forEach(async (mobiker) => {
-    try {
+  try {
+    for (let mobiker of mobikersPorAgregar) {
       mobiker.fullName = capitalizar(mobiker.MoBiker);
       mobiker.nombres = mobiker.fullName.split(" ")[0];
       mobiker.apellidos = mobiker.fullName.split(" ")[1];
@@ -64,18 +64,12 @@ const agregarMoBikers = () => {
 
         await nuevoMobiker.setDistrito(distritoDelMoBiker);
         await nuevoMobiker.setRango(nivelMoB);
-      } else {
-        console.log(
-          `No hagas nada con ${mobiker.fullName} que viene de ${distritoDelMoBiker.distrito} con el Rango ${nivelMoB.rangoMoBiker}`
-        );
       }
-    } catch (error) {
-      console.log(`Ocurrió un error al añadir MoBikers: ${error.message}`);
-      console.log(error);
     }
-  });
-
-  console.log(mobikersPorAgregar[0]);
+  } catch (error) {
+    console.log(`Ocurrió un error al añadir MoBikers: ${error.message}`);
+    console.log(error);
+  }
 };
 
 // Se ejecuta la función

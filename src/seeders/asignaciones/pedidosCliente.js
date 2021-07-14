@@ -5,8 +5,8 @@ const Pedido = db.pedido;
 const contarPedidosCliente = async () => {
   const clientes = await Cliente.findAll();
 
-  clientes.forEach(async (cliente) => {
-    try {
+  try {
+    for (let cliente of clientes) {
       let cantidadPedidosDelCliente = await Pedido.sum("viajes", {
         where: { empresaRemitente: cliente.razonComercial },
       });
@@ -34,13 +34,13 @@ const contarPedidosCliente = async () => {
           where: { id: cliente.id },
         }
       );
-    } catch (error) {
-      console.log(
-        `Ocurrió un error al asignar los Pedidos al Cliente: ${error.message}`
-      );
-      console.log(error);
     }
-  });
+  } catch (error) {
+    console.log(
+      `Ocurrió un error al asignar los Pedidos al Cliente: ${error.message}`
+    );
+    console.log(error);
+  }
 };
 
 // Asignar al Cliente

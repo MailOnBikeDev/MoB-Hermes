@@ -7,8 +7,8 @@ const Op = db.Sequelize.Op;
 const contarPedidosMoBiker = async () => {
   const mobikers = await Mobiker.findAll();
 
-  mobikers.forEach(async (mobiker) => {
-    try {
+  try {
+    for (let mobiker of mobikers) {
       let cantidadPedidosDelMoBiker = await Pedido.sum("viajes", {
         where: {
           [Op.and]: [
@@ -56,13 +56,13 @@ const contarPedidosMoBiker = async () => {
           where: { id: mobiker.id },
         }
       );
-    } catch (error) {
-      console.log(
-        `Ocurrió un error al asignar los Pedidos al MoBiker: ${error.message}`
-      );
-      console.log(error);
     }
-  });
+  } catch (error) {
+    console.log(
+      `Ocurrió un error al asignar los Pedidos al MoBiker: ${error.message}`
+    );
+    console.log(error);
+  }
 };
 
 // Función local Asignar al MoBiker

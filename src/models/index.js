@@ -5,17 +5,18 @@ const Sequelize = require("sequelize");
 const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
   host: config.HOST,
   dialect: config.dialect,
+  timezone: "-05:00",
   port: 3306,
-  // define: {
-  //   charset: "utf8mb4",
-  //   dialectOptions: {
-  //     collate: "utf8mb4_unicode_ci",
-  //   },
-  // },
+  define: {
+    charset: "utf8",
+    // dialectOptions: {
+    //   collate: "utf8mb4_unicode_ci",
+    // },
+  },
   pool: {
-    max: 5,
+    max: 10,
     min: 0,
-    // acquire: 60000,
+    acquire: 30000,
     idle: 10000,
   },
 });
