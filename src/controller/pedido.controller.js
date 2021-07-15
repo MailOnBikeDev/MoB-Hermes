@@ -399,6 +399,8 @@ module.exports = {
         modalidadId: modalidadPedido.id,
         rolCliente: req.body.rolCliente,
         viajes: req.body.viajes,
+        isRuteo: req.body.isRuteo,
+        ruteoId: req.body.ruteoId,
       };
 
       let pedidoActualizado = await Pedido.update(pedido, {
@@ -618,6 +620,8 @@ module.exports = {
       let estadoCambiado = {
         comentario: req.body.comentario,
         statusId: req.body.status,
+        isRuteo: req.body.isRuteo,
+        ruteoId: req.body.ruteoId,
       };
 
       let pedidoActualizado = await Pedido.update(estadoCambiado, {
