@@ -251,10 +251,6 @@ module.exports = {
       let mobikerConPedidos = {};
 
       const mobikers = await Mobiker.findAll({
-        order: [
-          ["biciEnvios", "DESC"],
-          ["fullName", "ASC"],
-        ],
         include: [
           {
             model: Distrito,
@@ -266,11 +262,11 @@ module.exports = {
       });
 
       for (let mobiker of mobikers) {
-        let cantidadPedidos = await Pedido.count({
+        let cantidadPedidos = await Pedido.sum("viajes", {
           where: { [Op.and]: [{ mobikerId: mobiker.id }, condition] },
         });
 
-        if (cantidadPedidos !== 0) {
+        if (cantidadPedidos > 0) {
           mobikerConPedidos = {
             mobiker,
             cantidadPedidos: cantidadPedidos,
