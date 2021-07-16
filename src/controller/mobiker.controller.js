@@ -104,6 +104,31 @@ module.exports = {
     }
   },
 
+  // Mostrar todos los MoBikers
+  filterMobiker: async (req, res) => {
+    try {
+      const { status } = req.query;
+
+      let mobikers = await Mobiker.findAll({
+        where: { status },
+        order: [["fullName", "ASC"]],
+        limit: 100,
+        include: [
+          {
+            model: Distrito,
+          },
+          {
+            model: Rango,
+          },
+        ],
+      });
+
+      res.json(mobikers);
+    } catch (err) {
+      res.status(500).send({ message: err.message });
+    }
+  },
+
   // Mostrar 1 MoBiker por id
   getMobikerById: async (req, res) => {
     try {

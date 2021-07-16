@@ -24,6 +24,13 @@ module.exports = (app) => {
     controller.equipoMobiker
   );
 
+  // Ruta para filtrar los MoBikers por status
+  app.get(
+    "/mobikers/filter-mobiker",
+    [authJwt.verifyToken, authJwt.isEquipoAdmin],
+    controller.filterMobiker
+  );
+
   // Ruta para mostrar UN MoBiker
   app.get(
     "/mobikers/equipo-mobiker/:id",
